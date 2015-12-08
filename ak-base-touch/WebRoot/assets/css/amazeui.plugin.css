@@ -1,4 +1,29 @@
- 
+@CHARSET "UTF-8";
+/**
+ * common
+ */
+body {
+	background-color: #F3F3F3;
+	font-family: '微软雅黑';
+}
+
+ul {
+	padding: 0;
+	margin: 0;
+}
+
+li {
+	list-style: none;
+}
+
+a, s, span, h1, h2, h3, h4, h5, i, b, font, label, p {
+	display: inline-block;
+}
+
+input, button {
+	outline: none;
+	border: 0;
+} 
 
 .am-animation-leftsidepopup{
 	position: fixed;
@@ -63,6 +88,20 @@
 
 .am-plugin-actionbar-active span{
 	color: #E60012;
+}
+
+
+.am-plugin-actionbar-container-full{
+	width: 100%;
+	position : absolute;
+	left : 0;
+	top : 0;
+	border-right: 1px solid #EFEFEF;
+	/* background-color: #EFEFEF; */
+	background-color: #e5e5e5;
+	overflow: hidden;
+	-webkit-overflow-scrolling: touch;
+	cursor: pointer;
 }
 
 .am-plugin-actionbar-container-l{

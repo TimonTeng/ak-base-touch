@@ -113,8 +113,8 @@
 				
 				var path = self.getAttr('template'),
 				    data = self.model.toJSON();
+ 
 				
-				 
 				var	template = Template.compile(path, data);
 				
 				self.$el = $(template);

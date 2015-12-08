@@ -10,40 +10,40 @@
 	if ('function' === typeof define) {
 		
 		if (define.amd) {
-		
 			define(function(require) {
 
-				var $        = require('jquery'),
-				    _        = require('lodash'),
-					Backbone = require('backbone'),
-					View     = require('backbone.view'),
-					Template = require('template');
-					
-				return factory($, _, Backbone, View, Template);
+				var $           = require('jquery'),
+				    _           = require('lodash'),
+					Backbone    = require('backbone'),
+					View        = require('backbone.view'),
+					Template    = require('template'),
+					AlphabetBar = require('alphabetBar');
+				return factory($, _, Backbone, View, Template, AlphabetBar);
 			});
 		
 		} else if (define.cmd) {
-
+			
 			define(function(require, exports, module) {
 				
-				var $        = require('jquery'),
-				    _        = require('lodash'),
-					Backbone = require('backbone'),
-					View     = require('backbone.view'),
-					Template = require('template');
+				var $         = require('jquery'),
+				    _         = require('lodash'),
+					Backbone  = require('backbone'),
+					View      = require('backbone.view'),
+					Template  = require('template'),
+				  AlphabetBar = require('alphabetBar');
 				
-				return factory($, _, Backbone, View, Template);
+				return factory($, _, Backbone, View, Template, AlphabetBar);
 			});
 		}
 		
 	} else {
 
-		root.listView = factory(root.listView);
+		root.ActionBar = factory(root.ActionBar);
 	}
 	
-}(this, function($, _, Backbone, View, Template) {
+}(this, function($, _, Backbone, View, Template, AlphabetBar) {
 	'use strict'
-  		
+  	
 	var Model = Backbone.Model.extend({
 		idAttribute: 'ActionBar',
 		defaults : {
@@ -62,94 +62,130 @@
 	
 	
 	/**
-	 * 字母导航对象
+	 * 一级选择容器
 	 */
-	var alphabetNavBar = {
-			/**
-			 * 选中的action
-			 */
-			activeActionItem : null,
-			
-			/**
-			 * 组件el
-			 */
-			elContainer : new Array(),
-			
-			/**
-			 * iscroll 对象容器
-			 */
-			iscrolls : new Array(),
-			
-			/**
-			 * 
-			 */
-			alphabet : ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'],
-			
-			/**
-			 * 导航条
-			 */
-			alphabetNav : null,
-			
-			/**
-			 * 字母提示层
-			 */
-			alphabetTip : null,
-			
-			/**
-			 * 字母提示内容
-			 */
-			alphabetText : '#',
-			
-			/**
-			 * 
-			 */
-			alphabetNavSetup : function(){
-				var self = this;
-				var alphabetNavBar   = $("<div>", {'id' : 'alphabetNavBar', 'class' : 'am-plugin-alphabet-nav'}); 
-				var alphabetNavBarBg = $("<div>", {'class' : 'am-plugin-alphabet-nav-bg'});
-				$(alphabetNavBarBg).appendTo(alphabetNavBar);
-				var ul = $("<ul>", {'class' : ''});
-				for (var i = 0; i < self.alphabet.length; i++) {
-					var alp = $("<li>",{}).text(self.alphabet[i]);
-					$(alp).text(self.alphabet[i]);
-					$(alp).appendTo(ul);
-				}
-				$(ul).appendTo(alphabetNavBar);
-				self.alphabetNav = alphabetNavBar;
-				
-				var alphabetTip  = $("<div>", {'class' : 'am-plugin-alphabet-nav-tip'});
-				alphabetTip.text('#');
-				self.alphabetTip = alphabetTip;
-				
-			}
-	};
+	var SelectView = function(attr){
+		this.attr = attr;
+		this.root = $("<div>", {'id' : attr.id, 'class' : attr.class});
+		this.selectedContext =  $("<div>", {'id' : attr.id+'_context'});
+		this.selectedContext.appendTo(this.root);
+	}
+	
+	SelectView.prototype.displaySetting = function(parentContainer){
+		var ht = $(parentContainer).height() - this.attr.offset;
+		this.root.css({height : ht});
+	}
+	
+	/**
+	 * 二级选择容器
+	 */
+	var DoubleSelectView = function(attr){
+ 
+		this.attr = attr;
+		this.root = $("<div>",{ id : 'double-select-view'});
+		this.leftSelectView = new SelectView({
+			'id' : 'left',
+			'class' :  'am-plugin-actionbar-container-l',
+			'offset' : attr.offset
+		});
 		
+		this.rightSelectView = new SelectView({
+			'id' : 'right',
+			'class' :  'am-plugin-actionbar-container-r',
+			'offset' : attr.offset
+		});
+		this.leftSelectView.root.appendTo(this.root);
+		this.rightSelectView.root.appendTo(this.root);
+	}
+	
+	DoubleSelectView.prototype.displaySetting = function(parentContainer){
+		var ht = $(parentContainer).height() - this.attr.offset;
+		this.leftSelectView.root.css({height : ht});
+		this.rightSelectView.root.css({height : ht});
+	}
+	
+	
+	/**
+	 * 一级字母导航选择器
+	 */
+	var AplhabetSelectView = function(attr){
+		var selectView = new SelectView(attr);
+		this.attr = attr;
+		this.root = selectView.root;
+	}
+	
+	AplhabetSelectView.prototype.displaySetting = function(parentContainer){
+		var ht = $(parentContainer).height() - this.attr.offset;
+		this.root.css({height : ht});
+		var alphabetBarView = this.aplhabetBar.alphabetBarView;
+		alphabetBarView.root.appendTo(this.root);
+	}
+	
+	AplhabetSelectView.prototype.setAplhabetBar = function(aplhabetBar){
+		this.aplhabetBar = aplhabetBar;
+	}
+	
+	
+	/**
+	 * 二级字母导航选择器
+	 */
+	var AplhabetDoubleSelectView = function(attr){
+		
+	}
+	
+	AplhabetDoubleSelectView.prototype.displaySetting = function(parentContainer){
+		
+	}
+	
+	
+	/**
+	 * 确认按钮
+	 */
+	var ConfirmView = function(css){
+		this.root = $("<div>",{'class' : 'am-plugin-actionbar-container-b am-vertical-align  am-cf'});
+		this.root.css(css);
+		this.button = $("<button>", {'type' : 'button', 'id' : 'confirmButton', 'class' : 'am-btn am-btn-danger'});
+		this.button.text('确认');
+		this.button.appendTo(this.root);
+		return this;
+	}
+	
 	return View.extend({
 		
-		id: '',
+		id: 'ActionBarView',
 		
 		model: new Model,
 		
 		attrs: {
 			
-			template: 'assets/template/widget/base-action-bar.tpl'
+			template: 'assets/template/base-action-bar.tpl?ver='+  new Date().getTime()
 		},
 		
 		events: {
-			'click a:first-child' : 'onExpand'
+			'click a[action-event]' : 'onExpand'
+		},
+		
+		actionNodes : {
+ 
 		},
 		
 		setup: function() {
 			
 			var self = this;
+			
 			var parentNode = self.getAttr('parentNode'),
 			    type       = self.getAttr('type'),
 				data       = self.getAttr('data');
 			
 			var actions = self.getAttr('actions');
+			
 			for(var i = 0; i < actions.length; i++){
 				switch(actions[i].type){
-					case 'base' : self.base(actions[i]); break;
+					case 'SelectView'       		: self.selectView(actions[i]); break;
+					case 'DoubleSelectView' 		: self.doubleSelectView(actions[i]); break;
+					case 'AplhabetSelectView'       : self.aplhabetSelectView(actions[i]); break;
+					case 'AplhabetDoubleSelectView'	: self.aplhabetDoubleSelectView(actions[i]); break;
+					case 'Base'             	    : self.base(actions[i]); break;
 					default : break;
 				}
 			}
@@ -167,7 +203,6 @@
 					}
 			};
 			
-			self.alphabetNavSetup();
 			document.addEventListener('touchmove', function(e) {
 				if(self.activeActionItem != null){
 					e.preventDefault();
@@ -203,49 +238,6 @@
 		/**
 		 * 
 		 */
-		alphabet : ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'],
-		
-		/**
-		 * 导航条
-		 */
-		alphabetNav : null,
-		
-		/**
-		 * 字母提示层
-		 */
-		alphabetTip : null,
-		
-		/**
-		 * 字母提示内容
-		 */
-		alphabetText : '#',
-		
-		/**
-		 * 
-		 */
-		alphabetNavSetup : function(){
-			var self = this;
-			var alphabetNavBar   = $("<div>", {'id' : 'alphabetNavBar', 'class' : 'am-plugin-alphabet-nav'}); 
-			var alphabetNavBarBg = $("<div>", {'class' : 'am-plugin-alphabet-nav-bg'});
-			$(alphabetNavBarBg).appendTo(alphabetNavBar);
-			var ul = $("<ul>", {'class' : ''});
-			for (var i = 0; i < self.alphabet.length; i++) {
-				var alp = $("<li>",{}).text(self.alphabet[i]);
-				$(alp).text(self.alphabet[i]);
-				$(alp).appendTo(ul);
-			}
-			$(ul).appendTo(alphabetNavBar);
-			self.alphabetNav = alphabetNavBar;
-			
-			var alphabetTip  = $("<div>", {'class' : 'am-plugin-alphabet-nav-tip'});
-			alphabetTip.text('#');
-			self.alphabetTip = alphabetTip;
-			
-		},
-		
-		/**
-		 * 
-		 */
 		base : function(action){
 			
 			var self = this;
@@ -257,6 +249,85 @@
 			self.setModel('data', data);
  
 		},
+		
+		/**
+		 * 单选
+		 */
+		selectView : function(action){
+			
+			var self = this;
+			self.base(action);
+			
+			var   id 		     = action.id,
+				type 			 = action.type;
+			self.actionNodes[id] = null;
+			var selectView = new SelectView({
+				'id'     : 'select-container',
+				'class'  : 'am-plugin-actionbar-container-full',
+				'offset' : 146
+			});
+			var element = {
+				selectView : selectView
+			}
+			self.actionNodes[id] = element;
+			
+		},
+		
+		/**
+		 * 二级关联选择器
+		 */
+		doubleSelectView : function(action){
+			
+			var self = this;
+			self.base(action);
+			
+			var   id 		       = action.id,
+				type 	           = action.type;
+			  self.actionNodes[id] = null;
+			
+			var selectView = new DoubleSelectView({
+				'offset' : 146
+			});
+			var element = {
+				selectView : selectView
+			}
+			self.actionNodes[id] = element;
+		},
+		
+		/**
+		 * 字母导航选择器
+		 */
+		aplhabetSelectView : function(action){
+			
+			var self = this;
+			self.base(action);
+			
+			var    id		     = action.id,
+				 type		     = action.type;
+		    self.actionNodes[id] = null;
+		
+			var selectView = new AplhabetSelectView({
+				'id'     : 'select-container',
+				'class'  : 'am-plugin-actionbar-container-full',
+				'offset' : 146
+			});
+			selectView.setAplhabetBar(new AlphabetBar({}));
+			
+			var element = {
+				selectView : selectView
+			}
+			self.actionNodes[id] = element;
+		},
+		
+		/**
+		 * 字母导航二级选择器
+		 */
+		aplhabetDoubleSelectView : function(action){
+			
+			var self = this;
+			self.base(action);
+		},
+		
 		
 		/**
 		 * 弹出层
@@ -277,7 +348,7 @@
 		showActionBarContainer : function(){
 			
 			var self = this;
-			var container = $("<div>",{'class' : 'am-plugin-actionbar-container'});
+			var container = $("<div>",{'class' : 'am-plugin-actionbar-container', 'id' : 'action-bar-container'});
 			$(container).appendTo(document.body);
 			self.createChildContainer(container);
 			self.elContainer.push(container);
@@ -289,124 +360,14 @@
 		createChildContainer : function(parentContainer){
 			
 			var self = this;
-			var offset = 60 + 86;
-			var ht = $(parentContainer).height() - offset;
-			
-			var l = $("<div>",{'class' : 'am-plugin-actionbar-container-l', 'id' : 'left'});
-			var r = $("<div>",{'class' : 'am-plugin-actionbar-container-r', 'id' : 'right'});
-			$(l).css({height : ht});
-			$(r).css({height : ht});
-			$(l).appendTo(parentContainer);
-			$(r).appendTo(parentContainer);
-			
-			var b = $("<div>",{'class' : 'am-plugin-actionbar-container-b am-vertical-align  am-cf'});
-			$(b).css({bottom : 86});
-			$(b).html("<button type='button' id='pageY' class='am-btn am-btn-danger'>确认</button>");
-			$(b).appendTo(parentContainer);
-			
-			var lcontext = $("<div id='contextl'></div>");
-			var rcontext = $("<div id='contextr'></div>");
-			
-			for(var a = 0 ; a < self.alphabet.length; a++){
-				var wrapAlphabet = $("<div>",{ 'id' : 'warp_alphabet_'+self.alphabet[a], 'class' : 'warp_alphabet_mark'});
-				var hd = $("<div><li><h2>"+self.alphabet[a]+"</h2></li></div>");
-				$(hd).appendTo(wrapAlphabet);
-				var apt = $("<ul>",{ 'id' : 'warp_u_'+self.alphabet[a]});
-				for(var i =0 ; i< 50; i++){
-					$(apt).append("<li>"+i+"</li>");
-				}
-				$(apt).appendTo(wrapAlphabet);
-				$(wrapAlphabet).appendTo(lcontext);
-			}
-			
-			$(lcontext).appendTo(l);
-			$(rcontext).appendTo(r);
-			 
-			var iScroll = $.AMUI.iScroll;
-			var lScroll = new iScroll('#left', {
-				scrollbars: true,
-				mouseWheel: true,
-				interactiveScrollbars: true,
-				shrinkScrollbars: 'scale',
-				fadeScrollbars: true
-			});
-			
-			var rScroll = new iScroll('#right', {
-				scrollbars: true,
-				mouseWheel: true,
-				interactiveScrollbars: true,
-				shrinkScrollbars: 'scale',
-				fadeScrollbars: true
-			});
-			self.iscrolls.push(lScroll);
-			self.iscrolls.push(rScroll);
-			
-			$(self.alphabetNav).appendTo(parentContainer);
-			$(self.alphabetTip).appendTo(parentContainer);
- 
-			
-			var alphabetNavBarOffsetTop = parseInt($('#alphabetNavBar').offset().top);
-			
-			$.each($("#alphabetNavBar li"), function(){
-				var top = parseInt($(this).offset().top);
-				var position = top+',';
-				for(var i = 1; i <= 18; i++){
-					position +=(top+i)+',';
-				}
-				$(this).attr('data-position', position);
-			});
-			
-			$.each($('.warp_alphabet_mark'), function(){
-				var top = $(this).offset().top;
-				$(this).attr('data-position', top);
-			});
- 
-			$("#alphabetNavBar li").unbind('touchstart').bind('touchstart', function(e){
-				 console.log($(e.target).text());
-				 $(self.alphabetTip).text($(e.target).text());
-				 var positionAlphabet = $('#warp_alphabet_'+$(e.target).text());
-				 lScroll.scrollToElement($(positionAlphabet).get(0), 10, 0, -32);
-			});
-			
-			$("#alphabetNavBar li").unbind('touchend').bind('touchend', function(e){
-				console.log($(e.target).text());
-				if($(self.alphabetTip).text() == $(e.target).text()){
-					$(self.alphabetTip).text('');
-				}
-			});
-
-			$("#alphabetNavBar li").swipe({
- 
-				swipeStatus:function(event, phase, direction, distance, duration, fingers) {
-					var pageY = parseInt(event.touches[0].pageY)-20;
-					try {
-						$('#pageY').text(parseInt(event.touches[0].pageY));
-					} catch (e) {
-						$('#pageY').text('error');
-					}
-					var alphabet = $('li[data-position^='+pageY+']');
-					if(!alphabet || pageY < alphabetNavBarOffsetTop ||$(alphabet).text() == ''){
-						return;
-					}
-					
-					var alphabetText = $(alphabet).text();
-					if(self.alphabetText != alphabetText){
-						self.alphabetText = alphabetText;
-						$("#alphabetNavBar li").css('color','#AAA');
-						$(alphabet).css('color', '#E60012');
-						$(self.alphabetTip).text(self.alphabetText);
-						
-						var positionAlphabet = $('#warp_alphabet_'+self.alphabetText);
-						
-						lScroll.scrollToElement($(positionAlphabet).get(0), 10, 0, -32);
-					}
- 
-			    },
-				threshold: 0,
-				maxTimeThreshold: 1000*60,
-				fingers:$.fn.swipe.fingers.ALL
-			});
-			
+			var id   = self.activeActionItem.data('id'),
+				type = self.activeActionItem.data('type');
+			var actionNode = self.actionNodes[id];
+			actionNode.selectView.displaySetting(parentContainer);
+			actionNode.selectView.root.appendTo(parentContainer);
+			var confirmView = new ConfirmView({bottom : 86});
+			confirmView.root.appendTo(parentContainer);
+		 
 		},
  
 		/**
@@ -448,13 +409,12 @@
 			
 			var self   = this;
 			var status = $(self.activeActionItem).attr('status');
-			
-			var nowCondition = $(nowActiveAction).data('condition'),
-				oldCondition = $(self.activeActionItem).data('condition');
+			var nowAction = $(nowActiveAction).data('id'),
+				oldAction = $(self.activeActionItem).data('id');
 			
 			if(self.activeActionItem != null){
 				self.destroyAction();
-				if(nowCondition == oldCondition && status == '1'){
+				if(nowAction == oldAction && status == '1'){
 					return false;
 				}else{
 					return true;
@@ -488,12 +448,12 @@
 			if(!activeStatus){
 				return;
 			}
- 
+			
 			self.activeActionItem = nowActiveItem;
 			switch(status){
-				case '0' :  self.activeAction();break;
+				case '0' :  self.activeAction();  break;
 				case '1' :  self.destroyAction(); break;
-				default :   self.activeAction(); break;
+				default :   alert('error');  break;
 			}
 			
 		} 

@@ -74,11 +74,7 @@ define(["jquery", "handlebars"], function($, handlebars){
 			var tplHtml = handlebars.compile(tplContext);
 			return tplHtml(config.data);
 		},
-		
-		loadTemplate : function(url){
-			return this.load(url);
-		},
-		
+ 
 		load : function(url, params){
 			var rnd = this.random();
 			url+="?rnd="+rnd;
