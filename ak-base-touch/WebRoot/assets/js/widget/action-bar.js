@@ -67,13 +67,34 @@
 	var SelectView = function(attr){
 		this.attr = attr;
 		this.root = $("<div>", {'id' : attr.id, 'class' : attr.class});
-		this.selectedContext =  $("<div>", {'id' : attr.id+'_context'});
+		this.selectedContext = $("<div>", {'id' : attr.id+'_context'});
 		this.selectedContext.appendTo(this.root);
+        for (var i = 0; i < 100; i++) {
+			this.selectedContext.append("<li class='am-g'>"+i+"</li>");
+		}
 	}
 	
+	/**
+	 * 
+	 * 显示元素前设置
+	 */
 	SelectView.prototype.displaySetting = function(parentContainer){
 		var ht = $(parentContainer).height() - this.attr.offset;
 		this.root.css({height : ht});
+	}
+	
+	/**
+	 * 容器渲染至父元素之后执行
+	 */
+	SelectView.prototype.renderAfter = function(view){
+		
+	      this.iScroll = new $.AMUI.iScroll('#'+this.attr.id, {
+		      scrollbars: true,
+		      mouseWheel: true,
+		      interactiveScrollbars: true,
+		      shrinkScrollbars: 'scale',
+		      fadeScrollbars: true
+	      });
 	}
 	
 	/**
@@ -99,9 +120,32 @@
 	}
 	
 	DoubleSelectView.prototype.displaySetting = function(parentContainer){
+		
 		var ht = $(parentContainer).height() - this.attr.offset;
 		this.leftSelectView.root.css({height : ht});
 		this.rightSelectView.root.css({height : ht});
+	}
+	
+	/**
+	 * 容器渲染至父元素之后执行
+	 */
+	DoubleSelectView.prototype.renderAfter = function(view){
+		
+		this.leftSelectView.iScroll = new $.AMUI.iScroll('#'+this.leftSelectView.attr.id, {
+		      scrollbars: true,
+		      mouseWheel: true,
+		      interactiveScrollbars: true,
+		      shrinkScrollbars: 'scale',
+		      fadeScrollbars: true
+	    });
+		
+		this.rightSelectView.iScroll = new $.AMUI.iScroll('#'+this.rightSelectView.attr.id, {
+			scrollbars: true,
+			mouseWheel: true,
+			interactiveScrollbars: true,
+			shrinkScrollbars: 'scale',
+			fadeScrollbars: true
+		});
 	}
 	
 	
@@ -109,20 +153,35 @@
 	 * 一级字母导航选择器
 	 */
 	var AplhabetSelectView = function(attr){
+		
 		var selectView = new SelectView(attr);
 		this.attr = attr;
 		this.root = selectView.root;
 	}
 	
 	AplhabetSelectView.prototype.displaySetting = function(parentContainer){
+		
 		var ht = $(parentContainer).height() - this.attr.offset;
 		this.root.css({height : ht});
 		var alphabetBarView = this.aplhabetBar.alphabetBarView;
-		alphabetBarView.root.appendTo(this.root);
+		alphabetBarView.renderTo(parentContainer, ht);
 	}
 	
 	AplhabetSelectView.prototype.setAplhabetBar = function(aplhabetBar){
 		this.aplhabetBar = aplhabetBar;
+	}
+	
+	/**
+	 * 容器渲染至父元素之后执行
+	 */
+	AplhabetSelectView.prototype.renderAfter = function(view){
+	      this.iScroll = new $.AMUI.iScroll('#'+this.attr.id, {
+		      scrollbars: true,
+		      mouseWheel: true,
+		      interactiveScrollbars: true,
+		      shrinkScrollbars: 'scale',
+		      fadeScrollbars: true
+	      });
 	}
 	
 	
@@ -137,6 +196,27 @@
 		
 	}
 	
+	/**
+	 * 容器渲染至父元素之后执行
+	 */
+	AplhabetDoubleSelectView.prototype.renderAfter = function(view){
+		
+		this.leftSelectView.iScroll = new $.AMUI.iScroll('#'+this.leftSelectView.attr.id, {
+		      scrollbars: true,
+		      mouseWheel: true,
+		      interactiveScrollbars: true,
+		      shrinkScrollbars: 'scale',
+		      fadeScrollbars: true
+	    });
+		
+		this.rightSelectView.iScroll = new $.AMUI.iScroll('#'+this.rightSelectView.attr.id, {
+			scrollbars: true,
+			mouseWheel: true,
+			interactiveScrollbars: true,
+			shrinkScrollbars: 'scale',
+			fadeScrollbars: true
+		});
+	}
 	
 	/**
 	 * 确认按钮
@@ -328,7 +408,6 @@
 			self.base(action);
 		},
 		
-		
 		/**
 		 * 弹出层
 		 */
@@ -365,6 +444,8 @@
 			var actionNode = self.actionNodes[id];
 			actionNode.selectView.displaySetting(parentContainer);
 			actionNode.selectView.root.appendTo(parentContainer);
+			actionNode.selectView.renderAfter(self);
+			
 			var confirmView = new ConfirmView({bottom : 86});
 			confirmView.root.appendTo(parentContainer);
 		 

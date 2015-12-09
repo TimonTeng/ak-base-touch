@@ -46,7 +46,6 @@
 	
 	
 	var AlphabetBarView = function(){
-		
 		this.root           = $("<div>", {'id' : 'alphabetNavBar', 'class' : 'am-plugin-alphabet-nav'});
 		this.backgroundView = $("<div>", {'class' : 'am-plugin-alphabet-nav-bg'});
 		this.alphabetBox    = $("<ul>", {'class' : ''});
@@ -62,6 +61,27 @@
 		var alphabet = $("<li>",{});
 		alphabet.text(alphabetText);
 		alphabet.appendTo(this.alphabetBox);
+	}
+	
+	/**
+	 * 导航条定位高度
+	 * @param viewHeight
+	 */
+	AlphabetBarView.prototype.positionHeight = function(positionHeight){
+		positionHeight -= 10;
+		this.root.css({height : positionHeight});
+		this.backgroundView.css({height : positionHeight});
+		this.alphabetBox.css({height : positionHeight});
+		this.alphabetBox.find('li').css({height : positionHeight/26});
+	}
+	
+	/**
+	 * 渲染至元素内部
+	 * @param element
+	 */
+	AlphabetBarView.prototype.renderTo = function(element, positionHeight){
+		this.positionHeight(positionHeight);
+		this.root.appendTo(element);
 	}
 	
 	
