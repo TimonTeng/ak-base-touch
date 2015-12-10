@@ -46,11 +46,20 @@
 	
 	
 	var AlphabetBarView = function(){
+		
 		this.root           = $("<div>", {'id' : 'alphabetNavBar', 'class' : 'am-plugin-alphabet-nav'});
 		this.backgroundView = $("<div>", {'class' : 'am-plugin-alphabet-nav-bg'});
 		this.alphabetBox    = $("<ul>", {'class' : ''});
+		this.tip		    = $("<div>", {'class' : 'am-plugin-alphabet-nav-tip'});
+		this.alphabetText   = null;
 		this.backgroundView.appendTo(this.root);
 		this.alphabetBox.appendTo(this.root);
+		
+		/**
+		 * 导航控制的选择空间视图
+		 */
+		this.selectView = null;
+		
 	}
 	
 	/**
@@ -72,18 +81,125 @@
 		this.root.css({height : positionHeight});
 		this.backgroundView.css({height : positionHeight});
 		this.alphabetBox.css({height : positionHeight});
-		this.alphabetBox.find('li').css({height : positionHeight/26});
+		this.alphabetItemHeight = positionHeight/26;
+		this.alphabetBox.find('li').css({height : this.alphabetItemHeight});
+		
+		
 	}
+	
+	/**
+	 * 绑定选择控件视图
+	 */
+	AlphabetBarView.prototype.bindSelectView = function(selectView){
+		this.selectView = selectView;
+	}
+	
+	/**
+	 * 定位字母在屏幕Y轴坐标位置
+	 */
+	AlphabetBarView.prototype.positionAlphabetOffsetY = function(){
+		
+		var self = this;
+        $.each($('li', this.alphabetBox), function(){
+            var top = parseInt($(this).offset().top);
+            var position = top+',';
+            var height = parseInt(self.alphabetItemHeight);
+            for(var i = 1; i <= height; i++){
+                 position +=(top+i)+',';
+            }
+            $(this).attr('data-position', position);
+       });
+		
+	}
+	
+	/**
+	 * 展示字母导航栏前参数设置
+	 */
+	AlphabetBarView.prototype.displaySetting = function(){
+		this.tip.removeClass('am-plugin-alphabet-nav-tip-active');
+		this.tip.removeClass('am-plugin-alphabet-nav-tip-destroy');
+	}
+	
 	
 	/**
 	 * 渲染至元素内部
 	 * @param element
 	 */
 	AlphabetBarView.prototype.renderTo = function(element, positionHeight){
+		
 		this.positionHeight(positionHeight);
+		this.displaySetting();
 		this.root.appendTo(element);
+		this.tip.appendTo(element);
+		this.positionAlphabetOffsetY();
+		this.onTouchStart();
+		this.onTouchEnd();
+		this.onSwipe();
 	}
 	
+	/**
+	 * 按下字母触发
+	 */
+	AlphabetBarView.prototype.onTouchStart = function(){
+		var self = this;
+        $('li', self.alphabetBox).unbind('touchstart').bind('touchstart', function(e){
+        	 $(self.tip).text($(e.target).text());
+        	 $(self.tip).addClass('am-plugin-alphabet-nav-tip-active');
+        	 $(self.tip).removeClass('am-plugin-alphabet-nav-tip-destroy');
+        	 var positionAlphabet = $('#warp_alphabet_'+$(e.target).text());
+        	 self.selectView.rootIScroll.scrollToElement($(positionAlphabet).get(0), 10, 0, -5);
+        });
+ 
+	}
+	
+	/**
+	 * 释放按下的字母
+	 */
+	AlphabetBarView.prototype.onTouchEnd = function(){
+		var self = this;
+        $('li', self.alphabetBox).unbind('touchend').bind('touchend', function(e){
+        	$(self.tip).addClass('am-plugin-alphabet-nav-tip-destroy');
+        	$(self.tip).removeClass('am-plugin-alphabet-nav-tip-active');
+        });
+	}
+	
+	
+	/**
+	 * 滑动字母导航条触发
+	 */
+	AlphabetBarView.prototype.onSwipe = function(){
+		
+		var self = this;
+		var alphabetNavBarOffsetTop = parseInt(self.root.offset().top);
+		$('li', self.root).swipe({
+
+           swipeStatus : function(event, phase, direction, distance, duration, fingers) {
+        	   
+               var pageY = parseInt(event.touches[0].pageY)-20;
+	           var alphabet = $('li[data-position^='+pageY+']', self.alphabetBox);
+	           if(!alphabet || pageY < alphabetNavBarOffsetTop || alphabet.text() == ''){
+	           		return;
+	           }
+	             
+               var alphabetText = alphabet.text();
+               if(self.alphabetText != alphabetText){
+            	   
+                    self.alphabetText = alphabetText;
+                    $('li', self.root).css('color','#AAA');
+                    $(alphabet).css('color', '#E60012');
+                    self.tip.text(alphabetText);
+                    var positionAlphabet = $('#warp_alphabet_'+self.alphabetText);
+                    self.selectView.rootIScroll.scrollToElement($(positionAlphabet).get(0), 10, 0, -5);
+               }
+           },
+           
+           threshold: 0,
+           
+           maxTimeThreshold: 1000*60,
+           
+           fingers:$.fn.swipe.fingers.ALL
+       });
+	}
 	
 	var Model = Backbone.Model.extend({
 		idAttribute: 'AlphabetBar',
@@ -114,11 +230,6 @@
 		alphabetBarView : null,
 		
 		/**
-		 * 字母提示层
-		 */
-		alphabetTip : null,
-		
-		/**
 		 * 字母提示内容
 		 */
 		alphabetText : '#',
@@ -134,8 +245,6 @@
 			self.structure();
 		},
 		
-		
-		
 		structure : function(){
 			
 			var self = this;
@@ -144,6 +253,8 @@
 				self.alphabetBarView.putAlphabet(self.alphabet[i]);
 			}
 			
+			self.alphabetTip = $("<div>", {'class' : 'am-plugin-alphabet-nav-tip'});
+			self.alphabetTip.text('#');
 		}
 		
 	});

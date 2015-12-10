@@ -105,19 +105,28 @@ input, button {
 }
 
 .am-plugin-actionbar-container-l{
-	width: 50%;
+	width: 40%;
 	position : absolute;
 	left : 0;
 	top : 0;
 	border-right: 1px solid #EFEFEF;
-	background-color: #EFEFEF;
+/* 	background-color: #EFEFEF; */
 	overflow: hidden;
 	-webkit-overflow-scrolling: touch;
 	cursor: pointer;
 }
 
+.am-plugin-actionbar-container-l li{
+	height: 50px;	
+	line-height : 50px;
+	font-size : 1.4rem;
+	border-bottom: 1px solid #dbdbdb;
+	background-color: white;
+	width: 100%;
+}
+
 .am-plugin-actionbar-container-r{
-	width: 50%;
+	width: 60%;
 	position : absolute;
 	top : 0;
 	right : 0;
@@ -188,7 +197,7 @@ input, button {
 	right: 0;
 	z-index: 11;
 	background-color: black;
-	opacity : .6;
+	opacity : 0;
 	border-radius : 7px;
 	width: 100px;
 	height: 100px;
@@ -200,12 +209,40 @@ input, button {
 	margin:auto;
 }
 
+.am-plugin-alphabet-nav-tip-active{
+	animation-name : am-plugin-actionbar-tip-active;
+	animation-duration: 0.3s;
+	-webkit-animation-name : am-plugin-actionbar-tip-active;
+	-webkit-animation-duration:  0.3s;
+	opacity : .6;
+}
+
+.am-plugin-alphabet-nav-tip-destroy{
+	animation-name : am-plugin-actionbar-tip-destroy;
+	animation-duration: 0.3s;
+	-webkit-animation-name : am-plugin-actionbar-tip-destroy;
+	-webkit-animation-duration:  0.3s;
+	opacity : 0;
+}
+
 #select-container_context li{
 	height: 50px;	
 	line-height : 50px;
 	font-size : 1.4rem;
 	border-bottom: 1px solid #dbdbdb;
 	background-color: white;
+}
+
+
+.warp_alphabet_mark h2{
+	background-color: #e1e1e1;
+	width: 100%;
+	padding-left: 5px;
+}
+
+.warp_context li{
+	padding-left: 10px;
+	width: 100%;
 }
 
 
@@ -231,5 +268,29 @@ input, button {
 
   from {top:-30px;}
   to {top:0px;}
+}
+
+
+@keyframes am-plugin-actionbar-tip-active{
+	0%   {opacity: 0;}
+	100% {opacity: .6;}
+ 
+}
+
+@-webkit-keyframes am-plugin-actionbar-tip-active {
+	0%   {opacity: 0;}
+	100% {opacity: .6;}
+}
+
+
+@keyframes am-plugin-actionbar-tip-destroy{
+	0%   {opacity: .6;}
+	100% {opacity: 0;}
+ 
+}
+
+@-webkit-keyframes am-plugin-actionbar-tip-destroy {
+	0%   {opacity: .6;}
+	100% {opacity: 0;}
 }
  

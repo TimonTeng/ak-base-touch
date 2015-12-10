@@ -73,14 +73,14 @@
  				   {
 					   id : 'view2',
 					   title : '品牌',
-					   type : 'DoubleSelectView',
-					   url : '#'
+					   type : 'AplhabetDoubleSelectView',
+					   url : 'http://192.168.1.53/ak-sw-p2pm/appClubBrandList.html'
 				   },
  				   {
 					   id : 'view3',
 					   title : '地区',
 					   type : 'AplhabetSelectView',
-					   url : '#'
+					   url : 'http://192.168.1.53/ak-sw-p2pm/appClubBrandList.html'
 				   }
 				]
 			}).render();

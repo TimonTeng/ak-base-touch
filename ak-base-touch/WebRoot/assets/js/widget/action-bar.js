@@ -69,9 +69,36 @@
 		this.root = $("<div>", {'id' : attr.id, 'class' : attr.class});
 		this.selectedContext = $("<div>", {'id' : attr.id+'_context'});
 		this.selectedContext.appendTo(this.root);
-        for (var i = 0; i < 100; i++) {
-			this.selectedContext.append("<li class='am-g'>"+i+"</li>");
+		
+		/**
+		 * BackBone.View
+		 */
+		this.view = null;
+		
+		/**
+		 * ActionBar Item Config
+		 */
+		this.config = null;
+		
+		this.clearSelectedContext = function(){
+			this.selectedContext.html('');
 		}
+		
+	}
+	
+	/**
+	 * 数据加载
+	 */
+	SelectView.prototype.onloadData = function(){
+		
+		var self = this;
+		var apiUrl = self.view.getAttr('apiUrl');
+		$.getJSON(apiUrl, {}, function(data) {
+ 
+		}).error(function() {
+			console.log('Ajax Request Error!');
+		});
+		
 	}
 	
 	/**
@@ -88,13 +115,15 @@
 	 */
 	SelectView.prototype.renderAfter = function(view){
 		
-	      this.iScroll = new $.AMUI.iScroll('#'+this.attr.id, {
+	      this.rootIScroll = new $.AMUI.iScroll('#'+this.attr.id, {
 		      scrollbars: true,
 		      mouseWheel: true,
 		      interactiveScrollbars: true,
 		      shrinkScrollbars: 'scale',
 		      fadeScrollbars: true
 	      });
+	      
+	      this.view.iscrolls.push(this.rootIScroll);
 	}
 	
 	/**
@@ -117,13 +146,43 @@
 		});
 		this.leftSelectView.root.appendTo(this.root);
 		this.rightSelectView.root.appendTo(this.root);
+		
+		/**
+		 * BackBone.View
+		 */
+		this.view = null;
+		
+		/**
+		 * ActionBar Item Config
+		 */
+		this.config = null;
+		
+		var self = this;
+		this.clearSelectedContext = function(){
+			self.leftSelectView.clearSelectedContext();
+			self.rightSelectView.clearSelectedContext();
+		}
+		
 	}
 	
 	DoubleSelectView.prototype.displaySetting = function(parentContainer){
-		
 		var ht = $(parentContainer).height() - this.attr.offset;
 		this.leftSelectView.root.css({height : ht});
 		this.rightSelectView.root.css({height : ht});
+	}
+	
+	/**
+	 * 数据加载
+	 */
+	DoubleSelectView.prototype.onloadData = function(){
+		var self   = this;
+		var apiUrl = self.config.url;
+		$.getJSON(apiUrl, {}, function(data) {
+			alert(JSON.stringify(data));
+		}).error(function() {
+			console.log('Ajax Request Error!');
+		});
+		
 	}
 	
 	/**
@@ -131,7 +190,7 @@
 	 */
 	DoubleSelectView.prototype.renderAfter = function(view){
 		
-		this.leftSelectView.iScroll = new $.AMUI.iScroll('#'+this.leftSelectView.attr.id, {
+		this.rootIScroll = new $.AMUI.iScroll('#'+this.leftSelectView.attr.id, {
 		      scrollbars: true,
 		      mouseWheel: true,
 		      interactiveScrollbars: true,
@@ -139,13 +198,16 @@
 		      fadeScrollbars: true
 	    });
 		
-		this.rightSelectView.iScroll = new $.AMUI.iScroll('#'+this.rightSelectView.attr.id, {
+		this.nodeIScroll = new $.AMUI.iScroll('#'+this.rightSelectView.attr.id, {
 			scrollbars: true,
 			mouseWheel: true,
 			interactiveScrollbars: true,
 			shrinkScrollbars: 'scale',
 			fadeScrollbars: true
 		});
+		
+		this.view.iscrolls.push(this.rootIScroll);
+		this.view.iscrolls.push(this.nodeIScroll);
 	}
 	
 	
@@ -157,6 +219,23 @@
 		var selectView = new SelectView(attr);
 		this.attr = attr;
 		this.root = selectView.root;
+		this.selectedContext = selectView.selectedContext;
+		
+		/**
+		 * BackBone.View
+		 */
+		this.view = null;
+		
+		/**
+		 * ActionBar Item Config
+		 */
+		this.config = null;
+		
+		var self = this;
+		this.clearSelectedContext = function(){
+			self.selectedContext.html('');
+		}
+		
 	}
 	
 	AplhabetSelectView.prototype.displaySetting = function(parentContainer){
@@ -169,19 +248,58 @@
 	
 	AplhabetSelectView.prototype.setAplhabetBar = function(aplhabetBar){
 		this.aplhabetBar = aplhabetBar;
+		this.aplhabetBar.alphabetBarView.bindSelectView(this);
 	}
 	
 	/**
 	 * 容器渲染至父元素之后执行
 	 */
-	AplhabetSelectView.prototype.renderAfter = function(view){
-	      this.iScroll = new $.AMUI.iScroll('#'+this.attr.id, {
+	AplhabetSelectView.prototype.renderAfter = function(){
+	      this.rootIScroll = new $.AMUI.iScroll('#'+this.attr.id, {
 		      scrollbars: true,
 		      mouseWheel: true,
 		      interactiveScrollbars: true,
 		      shrinkScrollbars: 'scale',
 		      fadeScrollbars: true
 	      });
+	      this.view.iscrolls.push(this.rootIScroll);
+	      
+//	      $('.warp_context li',this.selectContext).unbind('touchend').bind('touchend', function(){
+//	    	  $(this).css('backgroundColor', 'red');
+//	      });
+	      
+	}
+	
+	/**
+	 * 数据加载
+	 */
+	AplhabetSelectView.prototype.onloadData = function(){
+		var self   = this;
+		var apiUrl = self.config.url;
+		$.getJSON(apiUrl+'?ver='+new Date(), null, function(data) {
+			
+	        for (var i = 0; i < data.form.length; i++) {
+				var wrap = $("<div>",{ 'id' : 'warp_alphabet_'+data.form[i].code, 'class' : 'warp_alphabet_mark'});
+				var hd   = $("<div><li><h2>"+data.form[i].code+"</h2></li></div>");
+				$(hd).appendTo(wrap);
+				var apt = $("<ul>",{ 'id' : 'warp_u_'+data.form[i].code, 'class' : 'warp_context'});
+				for(var n = 0; n < data.form[i].p2pcb.length; n++){
+					$(apt).append("<li data-id='"+data.form[i].p2pcb[n].id+"'>"+data.form[i].p2pcb[n].name+"</li>");
+				}
+				$(apt).appendTo(wrap);
+				$(wrap).appendTo(self.selectedContext);
+ 
+			}
+	        
+			$.each($('.warp_alphabet_mark'), function(){
+				$(this).attr('data-position', parseInt($(this).offset().top));
+			});
+	        
+	        self.renderAfter();
+	        
+		}).error(function() {
+			console.log('Ajax Request Error!');
+		});
 	}
 	
 	
@@ -190,18 +308,61 @@
 	 */
 	var AplhabetDoubleSelectView = function(attr){
 		
+		this.attr = attr;
+		this.root = $("<div>",{ id : 'double-select-view'});
+		this.leftSelectView = new SelectView({
+			'id' : 'left',
+			'class' :  'am-plugin-actionbar-container-l',
+			'offset' : attr.offset
+		});
+		
+		this.rightSelectView = new SelectView({
+			'id' : 'right',
+			'class' :  'am-plugin-actionbar-container-r',
+			'offset' : attr.offset
+		});
+		this.leftSelectView.root.appendTo(this.root);
+		this.rightSelectView.root.appendTo(this.root);
+		
+		/**
+		 * BackBone.View
+		 */
+		this.view = null;
+		
+		/**
+		 * ActionBar Item Config
+		 */
+		this.config = null;
+		
+		var self = this;
+		this.clearSelectedContext = function(){
+			self.leftSelectView.clearSelectedContext();
+			self.rightSelectView.clearSelectedContext();
+		}
+		
 	}
 	
 	AplhabetDoubleSelectView.prototype.displaySetting = function(parentContainer){
-		
+		var ht = $(parentContainer).height() - this.attr.offset;
+		this.leftSelectView.root.css({height : ht});
+		this.rightSelectView.root.css({height : ht});
+		var alphabetBarView = this.aplhabetBar.alphabetBarView;
+		alphabetBarView.renderTo(parentContainer, ht);
 	}
+	
+	
+	AplhabetDoubleSelectView.prototype.setAplhabetBar = function(aplhabetBar){
+		this.aplhabetBar = aplhabetBar;
+		this.aplhabetBar.alphabetBarView.bindSelectView(this);
+	}
+	
 	
 	/**
 	 * 容器渲染至父元素之后执行
 	 */
-	AplhabetDoubleSelectView.prototype.renderAfter = function(view){
+	AplhabetDoubleSelectView.prototype.renderAfter = function(){
 		
-		this.leftSelectView.iScroll = new $.AMUI.iScroll('#'+this.leftSelectView.attr.id, {
+		this.rootIScroll = new $.AMUI.iScroll('#'+this.leftSelectView.attr.id, {
 		      scrollbars: true,
 		      mouseWheel: true,
 		      interactiveScrollbars: true,
@@ -209,14 +370,52 @@
 		      fadeScrollbars: true
 	    });
 		
-		this.rightSelectView.iScroll = new $.AMUI.iScroll('#'+this.rightSelectView.attr.id, {
+		this.nodeIScroll = new $.AMUI.iScroll('#'+this.rightSelectView.attr.id, {
 			scrollbars: true,
 			mouseWheel: true,
 			interactiveScrollbars: true,
 			shrinkScrollbars: 'scale',
 			fadeScrollbars: true
 		});
+		
+		this.view.iscrolls.push(this.rootIScroll);
+		this.view.iscrolls.push(this.nodeIScroll);
 	}
+	
+	/**
+	 * 数据加载
+	 */
+	AplhabetDoubleSelectView.prototype.onloadData = function(){
+		
+		var self   = this;
+		var apiUrl = self.config.url;
+		$.getJSON(apiUrl+'?ver='+new Date(), null, function(data) {
+			 
+	        for (var i = 0; i < data.form.length; i++) {
+				var wrap = $("<div>",{ 'id' : 'warp_alphabet_'+data.form[i].code, 'class' : 'warp_alphabet_mark'});
+				var hd   = $("<div><li><h2>"+data.form[i].code+"</h2></li></div>");
+				$(hd).appendTo(wrap);
+				var apt = $("<ul>",{ 'id' : 'warp_u_'+data.form[i].code, 'class' : 'warp_context'});
+				for(var n = 0; n < data.form[i].p2pcb.length; n++){
+					$(apt).append("<li data-id='"+data.form[i].p2pcb[n].id+"'>"+data.form[i].p2pcb[n].name+"</li>");
+				}
+				$(apt).appendTo(wrap);
+				$(wrap).appendTo(self.leftSelectView.selectedContext);
+ 
+			}
+	        
+			$.each($('.warp_alphabet_mark'), function(){
+				$(this).attr('data-position', parseInt($(this).offset().top));
+			});
+			
+			self.renderAfter();
+	        
+		}).error(function() {
+			console.log('Ajax Request Error!');
+		});
+	}
+
+	
 	
 	/**
 	 * 确认按钮
@@ -346,6 +545,10 @@
 				'class'  : 'am-plugin-actionbar-container-full',
 				'offset' : 146
 			});
+			
+			selectView.view = self;
+			selectView.config = action;
+			
 			var element = {
 				selectView : selectView
 			}
@@ -368,6 +571,10 @@
 			var selectView = new DoubleSelectView({
 				'offset' : 146
 			});
+			
+			selectView.view = self;
+			selectView.config = action;
+			
 			var element = {
 				selectView : selectView
 			}
@@ -391,6 +598,9 @@
 				'class'  : 'am-plugin-actionbar-container-full',
 				'offset' : 146
 			});
+			
+			selectView.view   = self;
+			selectView.config = action;
 			selectView.setAplhabetBar(new AlphabetBar({}));
 			
 			var element = {
@@ -406,6 +616,23 @@
 			
 			var self = this;
 			self.base(action);
+			
+			var     id			   = action.id,
+			 	  type			   = action.type;
+			  self.actionNodes[id] = null;
+			
+			var selectView = new AplhabetDoubleSelectView({
+				'offset' : 146
+			});
+			
+			selectView.view   = self;
+			selectView.config = action;
+			selectView.setAplhabetBar(new AlphabetBar({}));
+			
+			var element = {
+				selectView : selectView
+			}
+			self.actionNodes[id] = element;
 		},
 		
 		/**
@@ -443,9 +670,9 @@
 				type = self.activeActionItem.data('type');
 			var actionNode = self.actionNodes[id];
 			actionNode.selectView.displaySetting(parentContainer);
+			actionNode.selectView.clearSelectedContext();
 			actionNode.selectView.root.appendTo(parentContainer);
-			actionNode.selectView.renderAfter(self);
-			
+			actionNode.selectView.onloadData();
 			var confirmView = new ConfirmView({bottom : 86});
 			confirmView.root.appendTo(parentContainer);
 		 
@@ -534,7 +761,7 @@
 			switch(status){
 				case '0' :  self.activeAction();  break;
 				case '1' :  self.destroyAction(); break;
-				default :   alert('error');  break;
+				default :     break;
 			}
 			
 		} 
