@@ -191,6 +191,7 @@
                     var positionAlphabet = $('#warp_alphabet_'+self.alphabetText);
                     self.selectView.rootIScroll.scrollToElement($(positionAlphabet).get(0), 10, 0, -5);
                }
+               
            },
            
            threshold: 0,

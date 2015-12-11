@@ -61,6 +61,8 @@
 	});
 	
 	
+	
+	
 	/**
 	 * 一级选择容器
 	 */
@@ -252,9 +254,49 @@
 	}
 	
 	/**
+	 * 在主列表滑动时触发
+	 */
+	AplhabetSelectView.prototype.onSwipe = function(){
+		
+		var self = this;
+		$('li', self.selectedContext).swipe({
+
+           swipeStatus : function(event, phase, direction, distance, duration, fingers) {
+        	   
+        	   if(phase == 'move'){
+        		   var select = $(event.target).data('select');
+        		   if(select){
+        			   $(event.target).data('select', false);
+        			   $(event.target).css('backgroupColor', '#fff');
+        		   }
+        	   }
+           },
+           
+           threshold: 0,
+           
+           maxTimeThreshold: 1000*60,
+           
+           fingers:$.fn.swipe.fingers.ALL
+       });
+	}
+	
+	
+	/**
+	 * 清空选择
+	 */
+	AplhabetSelectView.prototype.clearSelect = function(){
+		
+  	    $(".warp_context li", this.selectedContext).css('backgroundColor', '#fff');
+  	    $(".warp_context li", this.selectedContext).data('select', false);
+    }
+
+	
+	/**
 	 * 容器渲染至父元素之后执行
 	 */
 	AplhabetSelectView.prototype.renderAfter = function(){
+		
+		  var self = this;
 	      this.rootIScroll = new $.AMUI.iScroll('#'+this.attr.id, {
 		      scrollbars: true,
 		      mouseWheel: true,
@@ -263,10 +305,38 @@
 		      fadeScrollbars: true
 	      });
 	      this.view.iscrolls.push(this.rootIScroll);
+
+	      $.each($('.warp_context li',this.selectContext), function(){
+	    	  
+	    	  /**
+	    	   * 选中参数处理过程
+	    	   */
+	    	  $(this).unbind('touchstart').bind('touchstart' , function(e){
+	    		  
+	    		  self.clearSelect();
+	    		  $(e.target).css('backgroundColor', '#ececec');
+	    		  var select = $(e.target).data('select');
+	    		  if(!select){
+	    			  $(e.target).data('select', true);
+	    			  $(e.target).css('backgroundColor', '#ececec');
+	    		  }else{
+	    			  $(e.target).data('select', false);
+	    		  }
+	    		 
+	    	  });
+	    	  
+	    	  $(this).unbind('touchend').bind('touchend' , function(e){
+	    		  
+	    		  if($(e.target).data('select') == true){
+	    			 
+	    		  }else{
+	    			  $(e.target).css('backgroundColor', '#fff');
+	    		  }
+	    	  });
+ 
+	      });
 	      
-//	      $('.warp_context li',this.selectContext).unbind('touchend').bind('touchend', function(){
-//	    	  $(this).css('backgroundColor', 'red');
-//	      });
+	      this.onSwipe();
 	      
 	}
 	
@@ -280,7 +350,7 @@
 			
 	        for (var i = 0; i < data.form.length; i++) {
 				var wrap = $("<div>",{ 'id' : 'warp_alphabet_'+data.form[i].code, 'class' : 'warp_alphabet_mark'});
-				var hd   = $("<div><li><h2>"+data.form[i].code+"</h2></li></div>");
+				var hd   = $("<div class='warp_alphabet_title'><li><h2>"+data.form[i].code+"</h2></li></div>");
 				$(hd).appendTo(wrap);
 				var apt = $("<ul>",{ 'id' : 'warp_u_'+data.form[i].code, 'class' : 'warp_context'});
 				for(var n = 0; n < data.form[i].p2pcb.length; n++){
@@ -342,6 +412,10 @@
 		
 	}
 	
+	/**
+	 * 
+	 * @param parentContainer
+	 */
 	AplhabetDoubleSelectView.prototype.displaySetting = function(parentContainer){
 		var ht = $(parentContainer).height() - this.attr.offset;
 		this.leftSelectView.root.css({height : ht});
@@ -350,18 +424,31 @@
 		alphabetBarView.renderTo(parentContainer, ht);
 	}
 	
-	
+	/**
+	 * 
+	 * @param aplhabetBar
+	 */
 	AplhabetDoubleSelectView.prototype.setAplhabetBar = function(aplhabetBar){
 		this.aplhabetBar = aplhabetBar;
 		this.aplhabetBar.alphabetBarView.bindSelectView(this);
 	}
 	
+	/**
+	 * 清空选择
+	 */
+	AplhabetDoubleSelectView.prototype.clearSelect = function(view){
+		
+  	    $(".warp_context li", view.selectedContext).css('backgroundColor', '#fff');
+  	    $(".warp_context li", view.selectedContext).data('select', false);
+    }
 	
 	/**
 	 * 容器渲染至父元素之后执行
 	 */
 	AplhabetDoubleSelectView.prototype.renderAfter = function(){
 		
+		
+		var self = this;
 		this.rootIScroll = new $.AMUI.iScroll('#'+this.leftSelectView.attr.id, {
 		      scrollbars: true,
 		      mouseWheel: true,
@@ -370,6 +457,47 @@
 		      fadeScrollbars: true
 	    });
 		
+		this.view.iscrolls.push(this.rootIScroll);
+		
+	    $.each($('.warp_context li', this.leftSelectView.selectContext), function(){
+	    	  
+	    	  /**
+	    	   * 选中参数处理过程
+	    	   */
+	    	  $(this).unbind('touchstart').bind('touchstart' , function(e){
+	    		  
+	    		  self.clearSelect(self.leftSelectView);
+	    		  $(e.target).css('backgroundColor', '#ececec');
+	    		  var select = $(e.target).data('select');
+	    		  if(!select){
+	    			  $(e.target).data('select', true);
+	    			  $(e.target).css('backgroundColor', '#ececec');
+	    		  }else{
+	    			  $(e.target).data('select', false);
+	    		  }
+	    		 
+	    	  });
+	    	  
+	    	  $(this).unbind('touchend').bind('touchend' , function(e){
+	    		  
+	    		  if($(e.target).data('select') == true){
+	    			  self.data = $(e.target).data('object');
+	    			  self.onloadNodeData();
+	    		  }else{
+	    			  $(e.target).css('backgroundColor', '#fff');
+	    		  }
+	    	  });
+ 
+	    });
+	      
+	    this.onSwipe();
+		
+	}
+	
+	
+	AplhabetDoubleSelectView.prototype.renderNodeAfter = function(){
+		
+		var self = this;
 		this.nodeIScroll = new $.AMUI.iScroll('#'+this.rightSelectView.attr.id, {
 			scrollbars: true,
 			mouseWheel: true,
@@ -378,8 +506,85 @@
 			fadeScrollbars: true
 		});
 		
-		this.view.iscrolls.push(this.rootIScroll);
 		this.view.iscrolls.push(this.nodeIScroll);
+		
+	    $.each($('#warp_alphabet_node li', self.rightSelectView.selectContext), function(){
+	    	  
+	    	  /**
+	    	   * 选中参数处理过程
+	    	   */
+	    	  $(this).unbind('touchstart').bind('touchstart' , function(e){
+	    		  
+	    		  self.clearSelect(self.rightSelectView);
+	    		  $(e.target).css('backgroundColor', '#ececec');
+	    		  var select = $(e.target).data('select');
+	    		  if(!select){
+	    			  $(e.target).data('select', true);
+	    			  $(e.target).css('backgroundColor', '#ececec');
+	    		  }else{
+	    			  $(e.target).data('select', false);
+	    		  }
+	    		 
+	    	  });
+	    	  
+	    	  $(this).unbind('touchend').bind('touchend' , function(e){
+	    		  
+	    		  if($(e.target).data('select') == true){
+	    			  self.nodeData = $(e.target).data('object');
+	    		  }else{
+	    			  $(e.target).css('backgroundColor', '#fff');
+	    		  }
+	    	  });
+
+	    });
+		
+	}
+	
+	
+	
+	/**
+	 * 在主列表滑动时触发
+	 */
+	AplhabetDoubleSelectView.prototype.onSwipe = function(){
+		
+		var self = this;
+		$('li', self.leftSelectView.selectedContext).swipe({
+
+           swipeStatus : function(event, phase, direction, distance, duration, fingers) {
+        	   
+        	   if(phase == 'move'){
+        		   var select = $(event.target).data('select');
+        		   if(select){
+        			   $(event.target).data('select', false);
+        			   $(event.target).css('backgroupColor', '#fff');
+        		   }
+        	   }
+           },
+           
+           threshold: 0,
+           
+           maxTimeThreshold: 1000*60,
+           
+           fingers:$.fn.swipe.fingers.ALL
+       });
+	}
+	
+	
+	/**
+	 * 格式化加载子节点数据的url
+	 */
+	AplhabetDoubleSelectView.prototype.formatNodeApiUrl = function(){
+		var node 	       = this.config.url.node;
+		this.nodeUrl 	   = node.apiUrl;
+		this.rootPropertys = node.rootPropertys;
+		var params = "?"
+			
+		for(var i = 0; i < node.rootPropertys.length; i++){
+			for (var f in node.rootPropertys[i]) {
+				params += "&"+f+"={"+f+"}"
+			}
+		}
+		this.nodeUrl+=params;
 	}
 	
 	/**
@@ -388,31 +593,77 @@
 	AplhabetDoubleSelectView.prototype.onloadData = function(){
 		
 		var self   = this;
-		var apiUrl = self.config.url;
+		var apiUrl = null;
+		
+		if(self.config.url && typeof(self.config.url) == 'string'){
+			apiUrl = self.config.url;
+		}
+		
+		if(self.config.url && typeof(self.config.url) == 'object'){
+			apiUrl = self.config.url.root.apiUrl;
+		}
+		
 		$.getJSON(apiUrl+'?ver='+new Date(), null, function(data) {
 			 
 	        for (var i = 0; i < data.form.length; i++) {
 				var wrap = $("<div>",{ 'id' : 'warp_alphabet_'+data.form[i].code, 'class' : 'warp_alphabet_mark'});
-				var hd   = $("<div><li><h2>"+data.form[i].code+"</h2></li></div>");
+				var hd   = $("<div class='warp_alphabet_title'><li><h2>"+data.form[i].code+"</h2></li></div>");
 				$(hd).appendTo(wrap);
 				var apt = $("<ul>",{ 'id' : 'warp_u_'+data.form[i].code, 'class' : 'warp_context'});
 				for(var n = 0; n < data.form[i].p2pcb.length; n++){
-					$(apt).append("<li data-id='"+data.form[i].p2pcb[n].id+"'>"+data.form[i].p2pcb[n].name+"</li>");
+					var node = $("<li>", {'data-object' : JSON.stringify(data.form[i].p2pcb[n]), 'data-select' : false});
+					node.text(data.form[i].p2pcb[n].name);
+					node.appendTo(apt);
 				}
 				$(apt).appendTo(wrap);
 				$(wrap).appendTo(self.leftSelectView.selectedContext);
- 
 			}
 	        
 			$.each($('.warp_alphabet_mark'), function(){
 				$(this).attr('data-position', parseInt($(this).offset().top));
 			});
 			
+			self.formatNodeApiUrl();
 			self.renderAfter();
 	        
 		}).error(function() {
 			console.log('Ajax Request Error!');
 		});
+	}
+	
+	/**
+	 * 加载节点数据
+	 */
+	AplhabetDoubleSelectView.prototype.onloadNodeData = function(){
+ 
+		var self   = this;
+		var apiUrl = this.nodeUrl+'';
+		for(var i = 0; i < this.rootPropertys.length; i++){
+			for (var f in this.rootPropertys[i]) {
+				apiUrl = apiUrl.replace('{'+f+'}', this.data[this.rootPropertys[i][f]]);
+			}
+		}
+		self.rightSelectView.selectedContext.html('');
+		$.getJSON(apiUrl, null, function(data) {
+			
+			var wrap = $("<div>",{ 'id' : 'warp_alphabet_node', 'class' : 'warp_alphabet_mark'});
+			var apt = $("<ul>",{ 'id' : 'warp_u_node', 'class' : 'warp_context'});
+			var allNode = $("<li>", {'data-object' : 'all', 'data-select' : true});
+			allNode.text('全部');
+			allNode.css('backgroundColor', '#ececec');
+			allNode.appendTo(apt);
+	        for (var i = 0; i < data.form.length; i++) {
+				var node = $("<li>", {'data-object' : JSON.stringify(data.form[i]), 'data-select' : false});
+				node.text(data.form[i].name);
+				node.appendTo(apt);
+			}
+	        apt.appendTo(wrap);
+	        wrap.appendTo(self.rightSelectView.selectedContext);
+	        self.renderNodeAfter();
+		}).error(function() {
+			console.log('Ajax Request Error!');
+		});
+		
 	}
 
 	
@@ -426,7 +677,20 @@
 		this.button = $("<button>", {'type' : 'button', 'id' : 'confirmButton', 'class' : 'am-btn am-btn-danger'});
 		this.button.text('确认');
 		this.button.appendTo(this.root);
-		return this;
+	}
+	
+	/**
+	 * 
+	 * @param submitFunction : config function
+	 * @param selectView : ui view
+	 * @param view : backbone.view
+	 */
+	ConfirmView.prototype.submit = function(submitFunction, selectView, view){
+		$(this.button).unbind('click').bind('click', function(e){
+			var data = {rootValue : selectView.data, nodeValue : selectView.nodeData};
+			submitFunction(data);
+			view.destroyAction();
+		});
 	}
 	
 	return View.extend({
@@ -674,6 +938,10 @@
 			actionNode.selectView.root.appendTo(parentContainer);
 			actionNode.selectView.onloadData();
 			var confirmView = new ConfirmView({bottom : 86});
+			if(actionNode.selectView.config.submit){
+				confirmView.submit(actionNode.selectView.config.submit, actionNode.selectView, self);
+			}
+			
 			confirmView.root.appendTo(parentContainer);
 		 
 		},
@@ -707,8 +975,8 @@
 			self.elContainer = new Array();
 			self.iscrolls = new Array();
 			self.activeActionItem = null;
- 
 		},
+ 
 		
 		/**
 		 * 销毁选中的Action Item

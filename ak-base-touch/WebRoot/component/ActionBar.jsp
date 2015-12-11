@@ -74,19 +74,36 @@
 					   id : 'view2',
 					   title : '品牌',
 					   type : 'AplhabetDoubleSelectView',
-					   url : 'http://192.168.1.53/ak-sw-p2pm/appClubBrandList.html'
+					   url : {
+					   
+					   		root : {
+					   			apiUrl : 'http://192.168.1.53/ak-sw-p2pm/appClubBrandList.html'
+					   		},
+					   		
+					   		node : {
+					   			apiUrl : 'http://192.168.1.53/ak-sw-p2pm/appClubBrandModalList.html',
+					   			rootPropertys : [
+					   				{'brandId' : 'id'},
+					   				{'name' : 'name'}
+					   			]
+					   		}
+					   },
+					   submit : function(data){
+					   		 
+					   }
 				   },
  				   {
 					   id : 'view3',
 					   title : '地区',
 					   type : 'AplhabetSelectView',
-					   url : 'http://192.168.1.53/ak-sw-p2pm/appClubBrandList.html'
+					   url : 'http://192.168.1.53/ak-sw-p2pm/appClubBrandList.html',
+					   submit : function(data){
+					   		 
+					   }
 				   }
 				]
 			}).render();
-			
-			
-	
+			 
 		});
 	
 	</script>
