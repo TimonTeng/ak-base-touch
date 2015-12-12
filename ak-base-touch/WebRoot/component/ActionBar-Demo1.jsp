@@ -61,37 +61,55 @@
 		
 		require(['jquery', 'amazeui', 'actionBar'], function($, amazeui, ActionBar){
 		
+		
+			var store = [
+				{id : 'all', labelText : '全部'},
+				{id : 'works', labelText : '作业最多'},
+				{id : 'mostactive', labelText : '最活跃'}
+			];
+		
+		
 			var actionBar = new ActionBar({
 				parentNode : '#action-bar',
 				actions : [
 				   {
-					   id : 'view1',
-					   title : '筛选',
-					   type : 'SelectView',
-					   dataType : 'remote',
-					   url : 'http://192.168.1.53/ak-sw-p2pm/appHomeworkLabelFirstLevelList.html',
-					   submit : function(data){
+					   id 	        : 'view1',
+					   title        : '筛选A',
+					   type         : 'SelectView',
+					   result		: 'data',
+					   displayField : 'labelText',
+					   url 		    : 'assets/data/compose.json',
+					   submit       : function(data){
 					   		  
 					   }
 					   
-				   },	
- 				   {
-					   id : 'view2',
-					   title : '品牌',
-					   type : 'SelectView',
-					   url : 'http://192.168.1.53/ak-sw-p2pm/appHomeworkLabelFirstLevelList.html',
-					   submit : function(data){
+				   }
+				   ,{
+					   id 	        : 'view2',
+					   title        : '筛选B',
+					   type         : 'SelectView',
+					   dataType     : 'local',
+					   store        : store,
+					   displayField : 'labelText',
+					   submit       : function(data){
+					   		  
+					   }
+					   
+				   }
+ 				   ,{
+					   id 	  		: 'view3',
+					   title 	    : '品牌',
+					   type 		: 'SelectView',
+					   result		: 'data',
+					   displayField : 'labelText',
+					   dataType 	: 'compose',
+					   store 		: store,
+					   url 		    : 'assets/data/compose.json',
+					   submit 	    : function(data){
 					   		 
 					   }
-				   },
- 				   {
-					   id : 'view3',
-					   title : '我的',
-					   type : 'Button',
-					   submit : function(){
-					   
-					   }
 				   }
+ 
 				]
 			}).render();
 			 

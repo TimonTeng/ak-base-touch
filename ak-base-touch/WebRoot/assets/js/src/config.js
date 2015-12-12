@@ -30,5 +30,5 @@
 	        }
 		},
 		
-		urlArgs: "ver=" +  new Date().getTime()
+		urlArgs: null
 	});

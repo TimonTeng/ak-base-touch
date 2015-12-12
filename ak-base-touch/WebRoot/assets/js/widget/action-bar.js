@@ -81,27 +81,76 @@
 		
 		/**
 		 * BackBone.View
+		 * this.view;
 		 */
-		this.view = null;
-		
 		/**
 		 * ActionBar Item Config
+		 * this.config
 		 */
-		this.config = null;
-		
+		this.config = this.view = this.store = this.displayField = this.result = null;
+
 		var self = this;
 		this.clearSelectedContext = function(){
 			self.selectedContext.html('');
 		}
-		
 		this.dataType = ViewAttributes.DataType.Remote;
 		
 		/**
 		 * 设置数据类型
 		 */
 		this.setDataType = function(dataType){
-			if(dataType) {self.dataType = dataType;}
+			if(dataType) {
+				this.dataType = dataType;
+			}
 		}
+		
+		/**
+		 * bind data store typeof is Array
+		 */ 
+		this.setStore = function(store){
+			if(store) {
+				self.store = store;
+			}
+		}
+		
+		this.setDisplayField = function(displayField){
+			if(!displayField){
+				throw Error("displayField can't not null");
+				return null;
+			}
+			this.displayField = displayField;
+		}
+		
+		/**
+		 * set load data collection in json field
+		 */
+		this.setResult = function(result){
+			
+			if(this.DataType == ViewAttributes.DataType.Remote || this.DataType == ViewAttributes.DataType.Compose){
+				
+				if(!result){
+					throw Error("result can't not null");
+					return null;
+				}
+			} 
+			this.result = result;
+		}
+	}
+	
+	/**
+	 * 
+	 * @param config
+	 * @param view
+	 */
+	SelectView.prototype.initConfiguration = function(config, view){
+		
+		var self = this;
+		self.config = config;
+		self.view = view;
+		self.setDataType(config.dataType);
+		self.setResult(config.result);
+		self.setStore(config.store);
+		self.setDisplayField(config.displayField);
 	}
 	
 	SelectView.prototype.displaySetting = function(parentContainer){
@@ -205,12 +254,20 @@
 		var self   = this;
 		var apiUrl = self.config.url;
 		$.getJSON(apiUrl+'?ver='+new Date(), null, function(data) {
+			
+			var store = data[self.result];
+			if(!store){
+				return;
+			}
+			
 			var wrap   = $("<div>",{ 'id' : 'warp_root', 'class' : 'warp_mark'});
 			var wrapUl = $("<ul>",{ 'id' : 'warp_ul_root', 'class' : 'warp_context'});
 			wrapUl.appendTo(wrap);
-	        for (var i = 0; i < data.form.length; i++) {
-				var node = $("<li>", {'data-object' : JSON.stringify(data.form[i]), 'data-select' : false});
-				node.text(data.form[i].labelText);
+	        for (var i = 0; i < store.length; i++) {
+	        	var storeElement = store[i];
+	        	storeElement.dataType = self.dataType;
+				var node = $("<li>", {'data-object' : JSON.stringify(storeElement), 'data-select' : false});
+				node.text(storeElement[self.displayField]);
 				node.appendTo(wrapUl);
 			}
 			wrap.appendTo(self.selectedContext);
@@ -225,7 +282,23 @@
 	 */
 	SelectView.prototype.loadLocalData = function(){
 		
+		var self = this;
+		if(!self.store){
+			return;
+		}
 		
+		var wrap   = $("<div>",{ 'id' : 'warp_root', 'class' : 'warp_mark'});
+		var wrapUl = $("<ul>",{ 'id' : 'warp_ul_root', 'class' : 'warp_context'});
+		wrapUl.appendTo(wrap);
+		for (var i = 0; i < self.store.length; i++) {
+			var storeElement = self.store[i];
+			storeElement.dataType = self.dataType;
+			var node = $("<li>", {'data-object' : JSON.stringify(storeElement), 'data-select' : false});
+			node.text(storeElement[self.displayField]);
+			node.appendTo(wrapUl);
+		}
+		wrap.appendTo(self.selectedContext);
+		self.renderAfter();
 	}
 	
 	/**
@@ -233,6 +306,39 @@
 	 */
 	SelectView.prototype.loadComposeData = function(){
 		
+		var self = this;
+		if(!self.store){
+			return;
+		}
+		
+		var wrap   = $("<div>",{ 'id' : 'warp_root', 'class' : 'warp_mark'});
+		var wrapUl = $("<ul>",{ 'id' : 'warp_ul_root', 'class' : 'warp_context'});
+		wrapUl.appendTo(wrap);
+		for (var i = 0; i < self.store.length; i++) {
+			var storeElement = self.store[i];
+			storeElement.dataType = ViewAttributes.DataType.Local;
+			var node = $("<li>", {'data-object' : JSON.stringify(storeElement), 'data-select' : false});
+			node.text(storeElement[self.displayField]);
+			node.appendTo(wrapUl);
+		}
+		
+		var apiUrl = self.config.url;
+		$.getJSON(apiUrl+'?ver='+new Date(), null, function(data) {
+			var store = data[self.result];
+			if(store){
+				for (var i = 0; i < store.length; i++) {
+					var storeElement = store[i];
+					storeElement.dataType = ViewAttributes.DataType.Compose;
+					var node = $("<li>", {'data-object' : JSON.stringify(storeElement), 'data-select' : false});
+					node.text(storeElement[self.displayField]);
+					node.appendTo(wrapUl);
+				}
+			}
+			wrap.appendTo(self.selectedContext);
+	        self.renderAfter();
+		}).error(function() {
+			console.log('Ajax Request Error!');
+		});
 		
 	}
 	
@@ -1117,15 +1223,14 @@
 			var   id 		     = action.id,
 				type 			 = action.type;
 			self.actionNodes[id] = null;
+			
 			var selectView = new SelectView({
 				'id'     : 'select-container',
 				'class'  : 'am-plugin-actionbar-container-full',
 				'offset' : 146
 			});
 			
-			selectView.view   = self;
-			selectView.config = action;
-			selectView.setDataType(action.dataType);
+			selectView.initConfiguration(action, self);
 			
 			var element = {
 				selectView : selectView
