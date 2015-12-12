@@ -16,8 +16,13 @@ public class WidgetController extends WebController {
 	
 	
 	@RequestMapping(value="/ActionBar.html",  method = RequestMethod.GET)
-	public String checkWeixinToken(HttpServletResponse response, HttpServletRequest request) throws IOException {
+	public String ActionBar(HttpServletResponse response, HttpServletRequest request) throws IOException {
 		return "forward:/component/ActionBar.jsp";
+	}
+	
+	@RequestMapping(value="/ActionBar-Demo1.html",  method = RequestMethod.GET)
+	public String ActionBarDemo1(HttpServletResponse response, HttpServletRequest request) throws IOException {
+		return "forward:/component/ActionBar-Demo1.jsp";
 	}
 
 }

@@ -67,49 +67,29 @@
 				   {
 					   id : 'view1',
 					   title : '筛选',
-					   type : 'DoubleSelectView',
-					   url : {
-					   		root : {
-					   			apiUrl : 'http://192.168.1.53/ak-sw-p2pm/appHomeworkLabelFirstLevelList.html'
-					   		},
-					   		node : {
-					   			apiUrl : 'http://192.168.1.53/ak-sw-p2pm/appHomeworkLabelSecondLevelList.html',
-					   			rootPropertys : [
-					   				{'labelId' : 'id'}
-					   			]
-					   		}
-					   },
+					   type : 'SelectView',
+					   dataType : 'remote',
+					   url : 'http://192.168.1.53/ak-sw-p2pm/appHomeworkLabelFirstLevelList.html',
 					   submit : function(data){
 					   		  
 					   }
+					   
 				   },	
  				   {
 					   id : 'view2',
 					   title : '品牌',
-					   type : 'AplhabetDoubleSelectView',
-					   url : {
-					   		root : {
-					   			apiUrl : 'http://192.168.1.53/ak-sw-p2pm/appClubBrandList.html'
-					   		},
-					   		node : {
-					   			apiUrl : 'http://192.168.1.53/ak-sw-p2pm/appClubBrandModalList.html',
-					   			rootPropertys : [
-					   				{'brandId' : 'id'},
-					   				{'name'    : 'name'}
-					   			]
-					   		}
-					   },
+					   type : 'SelectView',
+					   url : 'http://192.168.1.53/ak-sw-p2pm/appHomeworkLabelFirstLevelList.html',
 					   submit : function(data){
 					   		 
 					   }
 				   },
  				   {
 					   id : 'view3',
-					   title : '智能',
-					   type : 'AplhabetSelectView',
-					   url : 'http://192.168.1.53/ak-sw-p2pm/appClubBrandList.html',
-					   submit : function(data){
-					   		 
+					   title : '我的',
+					   type : 'Button',
+					   submit : function(){
+					   
 					   }
 				   }
 				]

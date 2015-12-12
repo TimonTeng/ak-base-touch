@@ -44,6 +44,14 @@
 }(this, function($, _, Backbone, View, Template, AlphabetBar) {
 	'use strict'
   	
+	var ViewAttributes = {
+		DataType : {
+			'Remote'   : 'remote',
+			'Local'    : 'local',
+			'Compose'  : 'compose'
+		} 
+	};
+	
 	var Model = Backbone.Model.extend({
 		idAttribute: 'ActionBar',
 		defaults : {
@@ -59,14 +67,13 @@
 			]
 		}
 	});
-	
-	
-	
+	 
 	
 	/**
-	 * 一级选择容器
+	 * 一级字母导航选择器
 	 */
 	var SelectView = function(attr){
+		
 		this.attr = attr;
 		this.root = $("<div>", {'id' : attr.id, 'class' : attr.class});
 		this.selectedContext = $("<div>", {'id' : attr.id+'_context'});
@@ -82,9 +89,150 @@
 		 */
 		this.config = null;
 		
+		var self = this;
 		this.clearSelectedContext = function(){
-			this.selectedContext.html('');
+			self.selectedContext.html('');
 		}
+		
+		this.dataType = ViewAttributes.DataType.Remote;
+		
+		/**
+		 * 设置数据类型
+		 */
+		this.setDataType = function(dataType){
+			if(dataType) {self.dataType = dataType;}
+		}
+	}
+	
+	SelectView.prototype.displaySetting = function(parentContainer){
+		
+		var ht = $(parentContainer).height() - this.attr.offset;
+		this.root.css({height : ht});
+	}
+ 
+	
+	/**
+	 * 在主列表滑动时触发
+	 */
+	SelectView.prototype.onSwipe = function(){
+		
+		var self = this;
+		$('li', self.selectedContext).swipe({
+
+           swipeStatus : function(event, phase, direction, distance, duration, fingers) {
+        	   
+        	   if(phase == 'move'){
+        		   var select = $(event.target).data('select');
+        		   if(select){
+        			   $(event.target).data('select', false);
+        			   $(event.target).css('backgroupColor', '#fff');
+        		   }
+        	   }
+           },
+           
+           threshold: 0,
+           
+           maxTimeThreshold: 1000*60,
+           
+           fingers:$.fn.swipe.fingers.ALL
+       });
+	}
+	
+	
+	/**
+	 * 清空选择
+	 */
+	SelectView.prototype.clearSelect = function(){
+		
+  	    $(".warp_context li", this.selectedContext).css('backgroundColor', '#fff');
+  	    $(".warp_context li", this.selectedContext).data('select', false);
+    }
+
+	
+	/**
+	 * 容器渲染至父元素之后执行
+	 */
+	SelectView.prototype.renderAfter = function(){
+		
+		  var self = this;
+	      this.rootIScroll = new $.AMUI.iScroll('#'+this.attr.id, {
+		      scrollbars: true,
+		      mouseWheel: true,
+		      interactiveScrollbars: true,
+		      shrinkScrollbars: 'scale',
+		      fadeScrollbars: true
+	      });
+	      this.view.iscrolls.push(this.rootIScroll);
+
+	      $.each($('.warp_context li',this.selectContext), function(){
+	    	  
+	    	  /**
+	    	   * 选中参数处理过程
+	    	   */
+	    	  $(this).unbind('touchstart').bind('touchstart' , function(e){
+	    		  
+	    		  self.clearSelect();
+	    		  $(e.target).css('backgroundColor', '#ececec');
+	    		  var select = $(e.target).data('select');
+	    		  if(!select){
+	    			  $(e.target).data('select', true);
+	    			  $(e.target).css('backgroundColor', '#ececec');
+	    		  }else{
+	    			  $(e.target).data('select', false);
+	    		  }
+	    		 
+	    	  });
+	    	  
+	    	  $(this).unbind('touchend').bind('touchend' , function(e){
+	    		  
+	    		  if($(e.target).data('select') == true){
+	    			  self.data = $(e.target).data('object');
+	    		  }else{
+	    			  $(e.target).css('backgroundColor', '#fff');
+	    		  }
+	    	  });
+ 
+	      });
+	      
+	      this.onSwipe();
+	}
+	
+	/**
+	 * 加载远程数据
+	 */
+	SelectView.prototype.loadRemoteData = function(){
+		
+		var self   = this;
+		var apiUrl = self.config.url;
+		$.getJSON(apiUrl+'?ver='+new Date(), null, function(data) {
+			var wrap   = $("<div>",{ 'id' : 'warp_root', 'class' : 'warp_mark'});
+			var wrapUl = $("<ul>",{ 'id' : 'warp_ul_root', 'class' : 'warp_context'});
+			wrapUl.appendTo(wrap);
+	        for (var i = 0; i < data.form.length; i++) {
+				var node = $("<li>", {'data-object' : JSON.stringify(data.form[i]), 'data-select' : false});
+				node.text(data.form[i].labelText);
+				node.appendTo(wrapUl);
+			}
+			wrap.appendTo(self.selectedContext);
+	        self.renderAfter();
+		}).error(function() {
+			console.log('Ajax Request Error!');
+		});
+	}
+	
+	/**
+	 * 加载本地数据
+	 */
+	SelectView.prototype.loadLocalData = function(){
+		
+		
+	}
+	
+	/**
+	 * 加载混合数据
+	 */
+	SelectView.prototype.loadComposeData = function(){
+		
 		
 	}
 	
@@ -93,39 +241,13 @@
 	 */
 	SelectView.prototype.onloadData = function(){
 		
-		var self = this;
-		var apiUrl = self.view.getAttr('apiUrl');
-		$.getJSON(apiUrl, {}, function(data) {
- 
-		}).error(function() {
-			console.log('Ajax Request Error!');
-		});
-		
-	}
-	
-	/**
-	 * 
-	 * 显示元素前设置
-	 */
-	SelectView.prototype.displaySetting = function(parentContainer){
-		var ht = $(parentContainer).height() - this.attr.offset;
-		this.root.css({height : ht});
-	}
-	
-	/**
-	 * 容器渲染至父元素之后执行
-	 */
-	SelectView.prototype.renderAfter = function(view){
-		
-	      this.rootIScroll = new $.AMUI.iScroll('#'+this.attr.id, {
-		      scrollbars: true,
-		      mouseWheel: true,
-		      interactiveScrollbars: true,
-		      shrinkScrollbars: 'scale',
-		      fadeScrollbars: true
-	      });
-	      
-	      this.view.iscrolls.push(this.rootIScroll);
+		var self   = this;
+		switch(self.dataType){
+			case ViewAttributes.DataType.Remote  : self.loadRemoteData(); break;
+			case ViewAttributes.DataType.Local   : self.loadLocalData(); break;
+			case ViewAttributes.DataType.Compose : self.loadComposeData(); break;
+			default : break;
+		}
 	}
 	
 	/**
@@ -177,7 +299,6 @@
 		this.rightSelectView.root.css({height : ht});
  
 	}
-	
  
 	
 	/**
@@ -225,7 +346,6 @@
 	    	  });
 	    	  
 	    	  $(this).unbind('touchend').bind('touchend' , function(e){
-	    		  console.log($(this).text());
 	    		  if($(e.target).data('select') == true){
 	    			  self.data = $(e.target).data('object');
 	    			  self.onloadNodeData();
@@ -296,8 +416,6 @@
 		$('li', self.leftSelectView.selectedContext).swipe({
 
            swipeStatus : function(event, phase, direction, distance, duration, fingers) {
-        	   console.log(phase);
-        	   
         	   if(phase == 'move'){
         		   var select = $(event.target).data('select');
         		   if(select){
@@ -899,7 +1017,8 @@
 		},
 		
 		events: {
-			'click a[action-event]' : 'onExpand'
+			'click a[action-selectview-event]' : 'onSelectView',
+			'click a[action-button-event]'     : 'onButton'
 		},
 		
 		actionNodes : {
@@ -922,7 +1041,7 @@
 					case 'DoubleSelectView' 		: self.doubleSelectView(actions[i]); break;
 					case 'AplhabetSelectView'       : self.aplhabetSelectView(actions[i]); break;
 					case 'AplhabetDoubleSelectView'	: self.aplhabetDoubleSelectView(actions[i]); break;
-					case 'Base'             	    : self.base(actions[i]); break;
+					case 'Button'             	    : self.actionButton(actions[i]); break;
 					default : break;
 				}
 			}
@@ -1004,8 +1123,9 @@
 				'offset' : 146
 			});
 			
-			selectView.view = self;
+			selectView.view   = self;
 			selectView.config = action;
+			selectView.setDataType(action.dataType);
 			
 			var element = {
 				selectView : selectView
@@ -1090,6 +1210,23 @@
 			var element = {
 				selectView : selectView
 			}
+			self.actionNodes[id] = element;
+		},
+		
+		/**
+		 * 按钮
+		 */
+		actionButton : function(action){
+			var self = this;
+			self.base(action);
+			
+			var     id			   = action.id,
+			 	  type			   = action.type;
+			  self.actionNodes[id] = null;
+			  
+			var element = {
+					config : action
+			};
 			self.actionNodes[id] = element;
 		},
 		
@@ -1209,7 +1346,7 @@
 		/**
 		 * 展开下选框
 		 */
-		onExpand : function(e){
+		onSelectView : function(e){
 			
 			var self = this;
 			var nowActiveItem = $(e.target).parent();
@@ -1226,7 +1363,19 @@
 				default :     break;
 			}
 			
-		} 
+		},
+		
+		/**
+		 * 点击按钮组件入口
+		 */
+		onButton : function(e){
+			
+			var self = this;
+			var nowActiveItem = $(e.target).parent();
+			var id = $(nowActiveItem).data('id');
+			var config = self.actionNodes[id].config;
+			config.submit();
+		}
 		
 	});
 }));
