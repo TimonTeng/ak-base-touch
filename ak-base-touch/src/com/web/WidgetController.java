@@ -24,5 +24,10 @@ public class WidgetController extends WebController {
 	public String ActionBarDemo1(HttpServletResponse response, HttpServletRequest request) throws IOException {
 		return "forward:/component/ActionBar-Demo1.jsp";
 	}
+	
+	@RequestMapping(value="/ListView.html",  method = RequestMethod.GET)
+	public String ListView(HttpServletResponse response, HttpServletRequest request) throws IOException {
+		return "forward:/component/ListView.jsp";
+	}
 
 }

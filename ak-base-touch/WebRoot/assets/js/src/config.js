@@ -20,15 +20,19 @@
 			'backbone.view'    : 'js/lib/backbone.view',
 			'amazeui'		   : 'js/lib/amazeui.min',
 			'alphabetBar' 	   : 'js/widget/alphabet-bar',
-			'actionBar'		   : 'js/widget/action-bar'
+			'actionBar'		   : 'js/widget/action-bar',
+			'listView'		   : 'js/widget/list-view'
 		},
 		
 		shim: {
 			'amazeui'   : { deps: ['jquery'] },
 	        'actionBar' : {
-	        	deps: ['underscore','lodash', 'handlebars', 'backbone', 'backbone.view','swipe', 'alphabetBar']
-	        }
+	        	deps: ['underscore','lodash', 'handlebars', 'backbone', 'backbone.view', 'swipe', 'alphabetBar']
+	        },
+			'listView' : {
+				deps: ['underscore','lodash', 'handlebars', 'backbone', 'backbone.view','swipe']
+			}
 		},
 		
-		urlArgs: null
+		urlArgs: 'v='+new Date()
 	});

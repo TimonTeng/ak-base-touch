@@ -3,7 +3,6 @@
  * @Require: jQuery
  * @Extend:
  */
-
 !(function(root, factory) {
 	'use strict'
   

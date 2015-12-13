@@ -83,7 +83,6 @@
 			 * @returns  {View}
 			 */
 			initialize: function(options) {
-				
 				options || (options = {});
 				
 				var self = this;
@@ -113,7 +112,6 @@
 				
 				var path = self.getAttr('template'),
 				    data = self.model.toJSON();
- 
 				
 				var	template = Template.compile(path, data);
 				
