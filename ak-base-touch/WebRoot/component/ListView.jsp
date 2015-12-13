@@ -112,7 +112,6 @@
 			 	}
 			 });
 			 
-			 listView.render();
 		});
 	
 	</script>
