@@ -216,6 +216,15 @@
 	}
 	
 	
+	/**
+	 * 重新加载
+	 */
+	ListView.prototype.reload = function(options){
+		this.setParams(options);
+		this.load();
+	}
+	
+	
 	
 	/**
 	 * 加载

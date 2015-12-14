@@ -82,7 +82,7 @@
 	
 	<div id="wrapper" class="am-list-news am-list-news-default"></div>
 	
-	
+	<button onclick="listView.reload()">reload</button>
 	 
 	<script type="text/javascript">
 		 window.mainPath = '${ctx}'; 
@@ -90,11 +90,11 @@
 	<script src="${ctx}/assets/js/lib/require.js"></script>
 	<script src="${ctx}/assets/js/src/config.js"></script>
 	<script type="text/javascript">
-	
+		var listView = null;
 		
 		require(['jquery', 'amazeui', 'listView'], function($, amazeui, ListView){
 		
-			 var listView = new ListView({
+			listView = new ListView({
 			 	parentNode : '#wrapper',
 			 	template : 'assets/template/list-view.tpl',
 			 	apiUrl : 'https://api.douban.com/v2/event/list',

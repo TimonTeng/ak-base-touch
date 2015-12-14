@@ -15,6 +15,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public class WidgetController extends WebController {
 	
 	
+	@RequestMapping(value="/index.html",  method = RequestMethod.GET)
+	public String index(HttpServletResponse response, HttpServletRequest request) throws IOException {
+		return "forward:/component/index.jsp";
+	}
+	
 	@RequestMapping(value="/ActionBar.html",  method = RequestMethod.GET)
 	public String ActionBar(HttpServletResponse response, HttpServletRequest request) throws IOException {
 		return "forward:/component/ActionBar.jsp";
