@@ -34,23 +34,9 @@
 	
 	<div id="action-bar" class="nav am-g"></div>
 	
+	<div id="wrapper" class="am-plugin-listviwe"></div>
 	
-	<div data-am-widget="navbar" class="am-navbar am-cf am-navbar-default " id="">
-	      <ul class="am-navbar-nav am-cf am-avg-sm-4">
-	          <li data-am-navbar-share>
-	            <a href="###" class="">
-	                  <span class="am-icon-share-square-o"></span>
-	                <span class="am-navbar-label">分享</span>
-	            </a>
-	          </li>
-	          <li data-am-navbar-qrcode>
-	            <a href="###" class="">
-	                  <span class="am-icon-qrcode"></span>
-	                <span class="am-navbar-label">二维码</span>
-	            </a>
-	          </li>
-	      </ul>
-	</div>
+ 
 	<script type="text/javascript">
 		 window.mainPath = '${ctx}'; 
 	</script>
@@ -59,7 +45,7 @@
 	<script type="text/javascript">
 	
 		
-		require(['jquery', 'amazeui', 'actionBar'], function($, amazeui, ActionBar){
+		require(['jquery', 'amazeui', 'actionBar', 'listView'], function($, amazeui, ActionBar, ListView){
 		
 			var actionBar = new ActionBar({
 				parentNode : '#action-bar',
@@ -114,6 +100,28 @@
 				   }
 				]
 			}).render();
+			
+			
+			
+			var listView = new ListView({
+			 	parentNode : '#wrapper',
+			 	template : 'assets/template/list-view.tpl?v='+new Date(),
+			 	apiUrl : 'http://192.168.1.53/ak-sw-p2pm/getClubByPage.html',
+			 	style : {
+			 		top : '80px'
+			 	},
+			 	params : {
+				
+			 	},
+				page : {
+					result          : 'data',   // 服务应用返回列表集合 在json属性键值 , set load data collection in json field
+					pageNo          : 1,    // 开始页码
+					pageSize        : 20, // 每页记录数量
+					pageNoField     : 'pageNum',   // 服务应用接收pageNo 变量名
+					pageSizeField   : 'pageSize',	// 服务应用接收pageSize 变量名
+					pageTotalField  : 'lastPageNumber'    // 服务应用返回pageTotal 在json中的属性键值
+				}
+			 });
 			 
 		});
 	

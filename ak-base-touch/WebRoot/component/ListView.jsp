@@ -12,50 +12,7 @@
   	<link rel="stylesheet" href="${ctx}/assets/css/amazeui.plugin.css"/>
   	
   <style>
-    html,
-    body,
-    .page {
-      height: 100%;
-    }
 
-    #wrapper {
-      position: absolute;
-      top: 49px;
-      bottom: 0;
-      overflow: hidden;
-      margin: 0;
-      width: 100%;
-      padding: 0 8px;
-      background-color: #f8f8f8;
-    }
-
-    .am-list {
-      margin: 0;
-    }
-
-    .am-list > li {
-      background: none;
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
-    }
-
-    .pull-action {
-      text-align: center;
-      height: 45px;
-      line-height: 45px;
-      color: #999;
-    }
-
-    .pull-action .am-icon-spin {
-      display: none;
-    }
-
-    .pull-action.loading .am-icon-spin {
-      display: block;
-    }
-
-    .pull-action.loading .pull-label {
-      display: none;
-    }
   </style>
   	
 </head>
@@ -73,7 +30,7 @@
 		</h1>
 
 		<div class="am-header-right am-header-nav">
-			<a href="#right-link" class=""> <i
+			<a href="#right-link" class="" onclick="listView.reload();"> <i
 				class="am-header-icon am-icon-bars"></i>
 			</a>
 		</div>
@@ -82,8 +39,6 @@
 	
 	<div id="wrapper" class="am-list-news am-list-news-default"></div>
 	
-	<button onclick="listView.reload()">reload</button>
-	 
 	<script type="text/javascript">
 		 window.mainPath = '${ctx}'; 
 	</script>
@@ -96,20 +51,19 @@
 		
 			listView = new ListView({
 			 	parentNode : '#wrapper',
-			 	template : 'assets/template/list-view.tpl',
-			 	apiUrl : 'https://api.douban.com/v2/event/list',
+			 	template : 'assets/template/list-view.tpl?v='+new Date(),
+			 	apiUrl : 'http://192.168.1.53/ak-sw-p2pm/getClubByPage.html',
 			 	params : {
-					'type' : 'music',
-					'loc'  : 'beijing',
-					'_'    : '1449996635902'
+				
 			 	},
-			 	page : {
-					result    : 'events',  //set load data collection in json field
-					start     : 1,       // 开始页码
-					pageSize  : 20,      // 每页记录数量
-					pageStartField : 'start',
-					pageSizeField  : 'count'
-			 	}
+				page : {
+					result          : 'data',   // 服务应用返回列表集合 在json属性键值 , set load data collection in json field
+					pageNo          : 1,    // 开始页码
+					pageSize        : 20, // 每页记录数量
+					pageNoField     : 'pageNum',   // 服务应用接收pageNo 变量名
+					pageSizeField   : 'pageSize',	// 服务应用接收pageSize 变量名
+					pageTotalField  : 'lastPageNumber'    // 服务应用返回pageTotal 在json中的属性键值
+				}
 			 });
 			 
 		});

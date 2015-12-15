@@ -48,21 +48,23 @@
 	var ListView = function(){
 		 this.apiUrl = 
 	     this.parentNode = 
-		 this.$main = this.$list = this.$pullDown = this.$pullDownLabel = this.$pullUp = this.topOffset = 
+		 this.$main = this.$list = this.$pullDown = this.$pullDownLabel = this.$pullUp = this.$pullUpLabel = this.topOffset = 
+		 this.style = 
 		 this.page = this.params = this.view = null;
 		 
 		 this.iScroll = null;
 		 
 		 this.page = {
-			result    : '',   //set load data collection in json field
-			start     : 1,    // 开始页码
-			prev      : 0,    // 前1页码
-			next      : 0,    // 下1页码
-			pageSize  : null, // 每页记录数量
-			pageTotal : null, // 总共页数 
-			total     : null,  // 总共记录数
-			pageStartField : '', // 服务应用接收start 变量名
-			pageSizeField  : ''	// 服务应用接收pageSize 变量名
+			result          : '',   // 服务应用返回列表集合 在json属性键值 , set load data collection in json field
+			pageNo          : 1,    // 开始页码
+			pageSize        : 0, // 每页记录数量
+			pageTotal       : 0, // 总共页数 
+			total     	    : 0, // 总共记录数
+			prev            : 0,    // 前1页码
+			next            : 0,    // 下1页码
+			pageNoField     : '',   // 服务应用接收pageNo 变量名
+			pageSizeField   : '',	// 服务应用接收pageSize 变量名
+			pageTotalField  : ''    // 服务应用返回pageTotal 在json中的属性键值
 		 };
 	}
 	
@@ -72,11 +74,13 @@
 		this.setPage(view.getAttr('page'));
 		this.setParams(view.getAttr('params'));
 		this.apiUrl = view.getAttr('apiUrl');
+		this.style  = view.getAttr('style');
 		var parentNode = this.parentNode = view.getAttr('parentNode');
 		
 		this.$main          = $(parentNode);
+		this.$main.css(this.style);
 		this.$warpiscroll = $("<div>", {'id' : 'warp-iscroll'})
-		$(this.$warpiscroll, parentNode).append(this.pullDownTpl());
+//		$(this.$warpiscroll, parentNode).append(this.pullDownTpl());
 		$(this.$warpiscroll, parentNode).append(this.bodyContext());
 		$(this.$warpiscroll, parentNode).append(this.pullUpTpl());
 		this.$warpiscroll.appendTo(this.$main);
@@ -85,14 +89,15 @@
 		this.$pullDown      = this.$main.find('#pull-down');
 		this.$pullDownLabel = this.$main.find('#pull-down-label');
 		this.$pullUp        = this.$main.find('#pull-up');
+		this.$pullUpLabel = this.$main.find('#pull-up-label');
 		this.topOffset      = -this.$pullDown.outerHeight();
 	}
 	
 	ListView.prototype.init = function(){
- 
+		 
         var iscroll = this.iScroll = new $.AMUI.iScroll(this.parentNode, {
-            click: true
-        });
+        	click: true
+	    });
           
 	    var self = this;
 	    var pullFormTop = false;
@@ -101,9 +106,6 @@
 	    this.load();
  
 	    iscroll.on('scrollStart', function() {
-	    	console.log('scrollStart');
-	    	console.log('this.y='+this.y);
-	    	console.log('topOffset='+self.topOffset);
             if (this.y >= self.topOffset) {
               pullFormTop = true;
             }
@@ -122,14 +124,16 @@
             }
         });
 	    
-	    self.resetLoading(self.$pullDown);
 	}
 	
 	ListView.prototype.handlePullUp = function(){
-        if (this.page.next < this.page.total) {
+        if (this.page.next < this.page.pageTotal) {
           this.setLoading(this.$pullUp);
-          this.page.next += this.page.pageSize;
+          this.page.next += 1;
           this.loadNextPage();
+          if(this.page.next == this.page.pageTotal){
+        	  this.$pullUpLabel.text('已经到最后了');
+          }
         } else {
         }
 	}
@@ -173,13 +177,14 @@
 	 * 组装URL
 	 */
 	ListView.prototype.getUrl = function(){
-        var queries = ['callback=?'];
+//        var queries = ['callback=?'];
+        var queries = [];
         for (var key in  this.params) {
           if (this.params[key]) {
             queries.push(key + '=' + this.params[key]);
           }
         }
-        queries.push(this.page.pageStartField + '=' + this.page.start);
+        queries.push(this.page.pageNoField + '=' + this.page.pageNo);
         queries.push(this.page.pageSizeField + '=' + this.page.pageSize);
         return this.apiUrl + '?' + queries.join('&');
 	}
@@ -202,9 +207,10 @@
 		
 		var self = this;
         $.getJSON(self.getUrl()).then(function(data) {
-        	self.page.total = data.total;
+        	self.page.pageTotal = data[self.page.pageTotalField];
             var html = self.renderList(data[self.page.result]);
             self.$list.html(html);
+            self.resetLoading(self.$pullUp);
             setTimeout(function() {
               self.iScroll.refresh();
             }, 100);
@@ -221,6 +227,23 @@
 	 */
 	ListView.prototype.reload = function(options){
 		this.setParams(options);
+		this.page.pageNo = 0;
+		this.page.pageTotal = 0;
+		
+		this.$main          = $(this.parentNode);
+		this.$main.html('');
+		this.$warpiscroll = $("<div>", {'id' : 'warp-iscroll'})
+		$(this.$warpiscroll, this.parentNode).append(this.bodyContext());
+		$(this.$warpiscroll, this.parentNode).append(this.pullUpTpl());
+		this.$warpiscroll.appendTo(this.$main);
+		
+		this.$list          = this.$main.find('#events-list');
+		this.$pullDown      = this.$main.find('#pull-down');
+		this.$pullDownLabel = this.$main.find('#pull-down-label');
+		this.$pullUp        = this.$main.find('#pull-up');
+		this.$pullUpLabel = this.$main.find('#pull-up-label');
+		this.topOffset      = -this.$pullDown.outerHeight();
+		this.init();
 		this.load();
 	}
 	
@@ -232,7 +255,7 @@
 	ListView.prototype.loadNextPage = function(){
 		var self = this;
         $.getJSON(self.getUrl()).then(function(data) {
-        	self.page.total = data.total;
+        	self.page.pageTotal = data[self.page.pageTotalField];
             var html = self.renderList(data[self.page.result]);
             self.$list.append(html);
             setTimeout(function() {
@@ -283,11 +306,12 @@
 			parentNode : null,
 			template : null,
 			page : {
-				result    : '', //set load data collection in json field
-				start     : 1,    // 开始页码
-				pageSize  : null, // 每页记录数量
-				pageStartField : '', // 服务应用接收start 变量名
-				pageSizeField  : ''	// 服务应用接收pageSize 变量名
+				result          : '',   // 服务应用返回列表集合 在json属性键值 , set load data collection in json field
+				pageNo          : 0,    // 开始页码
+				pageSize        : 0, // 每页记录数量
+				pageNoField     : 'pageNum',   // 服务应用接收pageNo 变量名
+				pageSizeField   : 'pageSize',	// 服务应用接收pageSize 变量名
+				pageTotalField  : 'lastPageNumber'    // 服务应用返回pageTotal 在json中的属性键值
 			},
 			params : { //加载列表数据的查询条件
 				
@@ -300,7 +324,7 @@
  
 		setup: function() {
 			var self = this;
-			var parentNode = self.getAttr('type'),
+			var parentNode = self.getAttr('parentNode'),
 			    type       = self.getAttr('type'),
 				data       = self.getAttr('data');
 			

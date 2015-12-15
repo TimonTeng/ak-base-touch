@@ -2,10 +2,17 @@
 /**
  * common
  */
+html,
 body {
 	background-color: #F3F3F3;
 	font-family: '微软雅黑';
+	margin: 0px;
+	padding:0px;
+	width: 100%;
+	height: 100%;
+	margin:0px;
 }
+
 
 ul {
 	padding: 0;
@@ -62,6 +69,12 @@ input, button {
   opacity: 1;
 }
 
+.am-plugin-actionbar{
+	position: absolute;
+	z-index: 10px;
+	background-color: white;
+}
+
 
 .am-plugin-actionbar-container{
 	position : fixed;
@@ -85,11 +98,6 @@ input, button {
 	margin-top : 86px;
 	
 }
-
-.am-plugin-actionbar-active span{
-	color: #E60012;
-}
-
 
 .am-plugin-actionbar-container-full{
 	width: 100%;
@@ -250,6 +258,33 @@ input, button {
 	background-color: white;
 	padding-left: 10px;
 	width: 100%;
+}
+
+.pull-action {
+  text-align: center;
+  height: 45px;
+  line-height: 45px;
+  color: #999;
+}
+
+.pull-action .am-icon-spin {
+  display: none;
+}
+
+.pull-action.loading .am-icon-spin {
+  display: block;
+}
+
+.pull-action.loading .pull-label {
+  display: none;
+}
+
+.am-plugin-listviwe {
+     position: absolute;
+     overflow: hidden;
+     width: 100%;
+     bottom : 0;
+     background-color: #f8f8f8;
 }
 
 
