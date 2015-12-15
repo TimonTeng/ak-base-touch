@@ -1,5 +1,5 @@
 {{#each this}}
   <li class="am-list-item-desced">
-    {{name}}
+    {{brandName}}
   </li>
 {{/each}}

@@ -43,15 +43,22 @@
 	
 }(this, function($, _, Backbone, View, Template) {
 	'use strict'
-	
+
+	var ViewAttributes = {
+		Type : {
+			'Waterfall' : 'waterfall',
+			'Pivot'	    : 'pivot'
+		} 
+    };
 	
 	var ListView = function(){
+		
+		 this.type   = ViewAttributes.Type.Waterfall;//默认使用瀑布流分页模式
 		 this.apiUrl = 
 	     this.parentNode = 
 		 this.$main = this.$list = this.$pullDown = this.$pullDownLabel = this.$pullUp = this.$pullUpLabel = this.topOffset = 
 		 this.style = 
 		 this.page = this.params = this.view = null;
-		 
 		 this.iScroll = null;
 		 
 		 this.page = {
@@ -68,33 +75,56 @@
 		 };
 	}
 	
+	/**
+	 * 
+	 * @param view
+	 */
 	ListView.prototype.initConfiguration = function(view){
 		this.view   = view;
 		
 		this.setPage(view.getAttr('page'));
 		this.setParams(view.getAttr('params'));
-		this.apiUrl = view.getAttr('apiUrl');
-		this.style  = view.getAttr('style');
-		var parentNode = this.parentNode = view.getAttr('parentNode');
+		this.apiUrl     = view.getAttr('apiUrl');
+		this.style      = view.getAttr('style');
+		this.parentNode = view.getAttr('parentNode');
+		var type  	    = view.getAttr('type');
+		this.$main	    = $(this.parentNode);
 		
-		this.$main          = $(parentNode);
-		this.$main.css(this.style);
+		if(this.style){
+			this.$main.css(this.style);
+		}
+		
+		if(type && type != ''){
+			this.type = type;
+		}
+		
+		switch(this.type){
+			case ViewAttributes.Type.Waterfall :  this.initWaterfallMode(); break;
+			case ViewAttributes.Type.Pivot 	   :  this.initPivotMode(); break;
+			default : break;
+		}
+
+	}
+	
+	/**
+	 * 瀑布流模式初始化
+	 */
+	ListView.prototype.initWaterfallMode = function(){
+		
+
 		this.$warpiscroll = $("<div>", {'id' : 'warp-iscroll'})
 //		$(this.$warpiscroll, parentNode).append(this.pullDownTpl());
-		$(this.$warpiscroll, parentNode).append(this.bodyContext());
-		$(this.$warpiscroll, parentNode).append(this.pullUpTpl());
+		$(this.$warpiscroll, this.parentNode).append(this.bodyContext());
+		$(this.$warpiscroll, this.parentNode).append(this.pullUpTpl());
 		this.$warpiscroll.appendTo(this.$main);
 		
 		this.$list          = this.$main.find('#events-list');
 		this.$pullDown      = this.$main.find('#pull-down');
 		this.$pullDownLabel = this.$main.find('#pull-down-label');
 		this.$pullUp        = this.$main.find('#pull-up');
-		this.$pullUpLabel = this.$main.find('#pull-up-label');
+		this.$pullUpLabel   = this.$main.find('#pull-up-label');
 		this.topOffset      = -this.$pullDown.outerHeight();
-	}
-	
-	ListView.prototype.init = function(){
-		 
+		
         var iscroll = this.iScroll = new $.AMUI.iScroll(this.parentNode, {
         	click: true
 	    });
@@ -115,7 +145,7 @@
 
 	    iscroll.on('scrollEnd', function() {
             if (pullFormTop && this.directionY === -1) {
-//            	self.handlePullDown();
+            	//self.handlePullDown();
             }
             pullFormTop = false;
 
@@ -123,8 +153,61 @@
             	self.handlePullUp();
             }
         });
+		
+	}
+	
+	/**
+	 * 枢模式初始化
+	 */
+	ListView.prototype.initPivotMode = function(){
+		this.$warpiscroll = $("<div>", {'id' : 'warp-iscroll'})
+		$(this.$warpiscroll, this.parentNode).append(this.bodyContext());
+		this.$warpiscroll.appendTo(this.$main);
+		this.$list      = this.$main.find('#events-list');
+		this.scrollView = this.view.getAttr('scrollView');
+	    this.load();
+	}
+	
+	/**
+	 * 渲染Dom之后处理入口
+	 */
+	ListView.prototype.renderAfterHandle = function(){
+		switch(this.type){
+			case ViewAttributes.Type.Waterfall :  this.renderAfterWaterfallModeHandle(); break;
+			case ViewAttributes.Type.Pivot 	   :  this.renderAfterPivotModeHandle(); break;
+			default : break;
+		}
+	}
+	
+	
+	/**
+	 * 瀑布流模式渲染Dom之后执行
+	 */
+	ListView.prototype.renderAfterWaterfallModeHandle = function(){
+		var self = this;
+        self.resetLoading(self.$pullUp);
+        setTimeout(function() {
+          self.iScroll.refresh();
+        }, 100);
+	}
+	
+	/**
+	 * 枢模式渲染Dom之后执行
+	 */
+	ListView.prototype.renderAfterPivotModeHandle = function(){
+		
+		if(this.scrollView){
+			this.scrollView.refresh();
+		}
+	}
+ 
+	
+	ListView.prototype.init = function(){
+		 
+
 	    
 	}
+	
 	
 	ListView.prototype.handlePullUp = function(){
         if (this.page.next < this.page.pageTotal) {
@@ -210,11 +293,7 @@
         	self.page.pageTotal = data[self.page.pageTotalField];
             var html = self.renderList(data[self.page.result]);
             self.$list.html(html);
-            self.resetLoading(self.$pullUp);
-            setTimeout(function() {
-              self.iScroll.refresh();
-            }, 100);
-            
+            self.renderAfterHandle();
         }, function() {
             console.log('Error...')
         });
@@ -330,7 +409,6 @@
 			
 			var listView = new ListView();
 			listView.initConfiguration(self);
-			listView.init();
 			self.setAttr('listView', listView);
 			
 		    document.addEventListener('touchmove', function(e) {

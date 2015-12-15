@@ -52,7 +52,7 @@
 			listView = new ListView({
 			 	parentNode : '#wrapper',
 			 	template : 'assets/template/list-view.tpl?v='+new Date(),
-			 	apiUrl : 'http://192.168.1.53/ak-sw-p2pm/getClubByPage.html',
+			 	apiUrl : 'http://192.168.1.81/ak-sw-p2pm/appClubHotestListMessage.html',
 			 	params : {
 				
 			 	},

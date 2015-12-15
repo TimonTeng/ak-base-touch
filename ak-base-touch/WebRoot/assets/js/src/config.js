@@ -21,7 +21,8 @@
 			'amazeui'		   : 'js/lib/amazeui.min',
 			'alphabetBar' 	   : 'js/widget/alphabet-bar',
 			'actionBar'		   : 'js/widget/action-bar',
-			'listView'		   : 'js/widget/list-view'
+			'listView'		   : 'js/widget/list-view',
+		    'scrollView'	   : 'js/widget/scroll-view'
 		},
 		
 		shim: {

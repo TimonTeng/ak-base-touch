@@ -7,9 +7,14 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-  	<title>ActionBar</title>
+  	<title>PivotListView</title>
   	<link rel="stylesheet" href="${ctx}/assets/css/amazeui.css"/>
   	<link rel="stylesheet" href="${ctx}/assets/css/amazeui.plugin.css"/>
+  	
+  <style>
+
+  </style>
+  	
 </head>
 
 <body>
@@ -25,91 +30,41 @@
 		</h1>
 
 		<div class="am-header-right am-header-nav">
-			<a href="#right-link" class=""> <i
+			<a href="#right-link" class="" onclick="listView.reload();"> <i
 				class="am-header-icon am-icon-bars"></i>
 			</a>
 		</div>
 	</header>
 	
+	<div id="ScrollView" class="am-plugin-scrollview">
+		<div id="context">
+			<div id="pivolist1"></div>
+			<h1>h1 标题1</h1>
+			<div id="pivolist2"></div>
+		</div>
+	</div>
 	
-	<div id="action-bar" class="nav am-g"></div>
-	
-	<div id="wrapper" class="am-plugin-listviwe"></div>
-	
- 
 	<script type="text/javascript">
 		 window.mainPath = '${ctx}'; 
 	</script>
 	<script src="${ctx}/assets/js/lib/require.js"></script>
 	<script src="${ctx}/assets/js/src/config.js"></script>
 	<script type="text/javascript">
-	
 		
-		require(['jquery', 'amazeui', 'actionBar', 'listView'], function($, amazeui, ActionBar, ListView){
+		require(['jquery', 'amazeui', 'listView', 'scrollView'], function($, amazeui, ListView, ScrollView){
 		
-			var actionBar = new ActionBar({
-				parentNode : '#action-bar',
-				actions : [
-				   {
-					   id : 'view1',
-					   title : '筛选',
-					   type : 'DoubleSelectView',
-					   url : {
-					   		root : {
-					   			apiUrl : 'http://192.168.1.81/ak-sw-p2pm/appHomeworkLabelFirstLevelList.html'
-					   		},
-					   		node : {
-					   			apiUrl : 'http://192.168.1.81/ak-sw-p2pm/appHomeworkLabelSecondLevelList.html',
-					   			rootPropertys : [
-					   				{'labelId' : 'id'}
-					   			]
-					   		}
-					   },
-					   submit : function(data){
-					   		  
-					   }
-				   },	
- 				   {
-					   id : 'view2',
-					   title : '品牌',
-					   type : 'AplhabetDoubleSelectView',
-					   url : {
-					   		root : {
-					   			apiUrl : 'http://192.168.1.81/ak-sw-p2pm/appClubBrandList.html'
-					   		},
-					   		node : {
-					   			apiUrl : 'http://192.168.1.81/ak-sw-p2pm/appClubBrandModalList.html',
-					   			rootPropertys : [
-					   				{'brandId' : 'id'},
-					   				{'name'    : 'name'}
-					   			]
-					   		}
-					   },
-					   submit : function(data){
-					   		 
-					   }
-				   },
- 				   {
-					   id : 'view3',
-					   title : '智能',
-					   type : 'AplhabetSelectView',
-					   url : 'http://192.168.1.81/ak-sw-p2pm/appClubBrandList.html',
-					   submit : function(data){
-					   		 
-					   }
-				   }
-				]
-			}).render();
+			var scrollView = new ScrollView({
+			     parentNode : '#ScrollView',
+			     style : {
+			     	top : '80px'
+			     }
+		    });
 			
-			
-			
-			var listView = new ListView({
-			 	parentNode : '#wrapper',
+ 			var pivolist1 = new ListView({
+			 	parentNode : '#pivolist1',
+			 	type : 'pivot',
 			 	template : 'assets/template/list-view.tpl?v='+new Date(),
 			 	apiUrl : 'http://192.168.1.81/ak-sw-p2pm/appClubHotestListMessage.html',
-			 	style : {
-			 		top : '80px'
-			 	},
 			 	params : {
 				
 			 	},
@@ -120,8 +75,30 @@
 					pageNoField     : 'pageNum',   // 服务应用接收pageNo 变量名
 					pageSizeField   : 'pageSize',	// 服务应用接收pageSize 变量名
 					pageTotalField  : 'lastPageNumber'    // 服务应用返回pageTotal 在json中的属性键值
-				}
+				},
+				scrollView : scrollView
+				
+			});
+			 
+			var pivolist2 = new ListView({
+			 	parentNode : '#pivolist2',
+			 	type : 'pivot',
+			 	template : 'assets/template/list-view.tpl?v='+new Date(),
+			 	apiUrl : 'http://192.168.1.81/ak-sw-p2pm/appClubHotestListMessage.html',
+			 	params : {
+				
+			 	},
+				page : {
+					result          : 'form',   // 服务应用返回列表集合 在json属性键值 , set load data collection in json field
+					pageNo          : 1,    // 开始页码
+					pageSize        : 20, // 每页记录数量
+					pageNoField     : 'pageNum',   // 服务应用接收pageNo 变量名
+					pageSizeField   : 'pageSize',	// 服务应用接收pageSize 变量名
+					pageTotalField  : 'lastPageNumber'    // 服务应用返回pageTotal 在json中的属性键值
+				},
+				scrollView : scrollView
 			 });
+			 
 			 
 		});
 	

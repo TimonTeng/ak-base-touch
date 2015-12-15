@@ -34,5 +34,10 @@ public class WidgetController extends WebController {
 	public String ListView(HttpServletResponse response, HttpServletRequest request) throws IOException {
 		return "forward:/component/ListView.jsp";
 	}
+	
+	@RequestMapping(value="/PivotListView.html",  method = RequestMethod.GET)
+	public String PivotListView(HttpServletResponse response, HttpServletRequest request) throws IOException {
+		return "forward:/component/PivotListView.jsp";
+	}
 
 }
