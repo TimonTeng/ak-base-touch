@@ -73,6 +73,8 @@
 			pageSizeField   : '',	// 服务应用接收pageSize 变量名
 			pageTotalField  : ''    // 服务应用返回pageTotal 在json中的属性键值
 		 };
+		 
+		 this.renderAfter = null;
 	}
 	
 	/**
@@ -84,11 +86,12 @@
 		
 		this.setPage(view.getAttr('page'));
 		this.setParams(view.getAttr('params'));
-		this.apiUrl     = view.getAttr('apiUrl');
-		this.style      = view.getAttr('style');
-		this.parentNode = view.getAttr('parentNode');
-		var type  	    = view.getAttr('type');
-		this.$main	    = $(this.parentNode);
+		this.apiUrl      = view.getAttr('apiUrl');
+		this.style       = view.getAttr('style');
+		this.parentNode  = view.getAttr('parentNode');
+		var type  	     = view.getAttr('type');
+		this.$main	     = $(this.parentNode);
+		this.renderAfter = view.getAttr('renderAfter');
 		
 		if(this.style){
 			this.$main.css(this.style);
@@ -189,6 +192,14 @@
         setTimeout(function() {
           self.iScroll.refresh();
         }, 100);
+        var len = $('.am-list-item-desced', self.parentNode).length;
+        if(len == 0){
+        	self.$pullUp.remove();
+        }
+        
+		if(this.renderAfter){
+			this.renderAfter();
+		}
 	}
 	
 	/**
@@ -199,15 +210,11 @@
 		if(this.scrollView){
 			this.scrollView.refresh();
 		}
+		
+		if(this.renderAfter){
+			this.renderAfter();
+		}
 	}
- 
-	
-	ListView.prototype.init = function(){
-		 
-
-	    
-	}
-	
 	
 	ListView.prototype.handlePullUp = function(){
         if (this.page.next < this.page.pageTotal) {
@@ -311,7 +318,7 @@
 		
 		this.$main          = $(this.parentNode);
 		this.$main.html('');
-		this.$warpiscroll = $("<div>", {'id' : 'warp-iscroll'})
+		this.$warpiscroll   = $("<div>", {'id' : 'warp-iscroll'})
 		$(this.$warpiscroll, this.parentNode).append(this.bodyContext());
 		$(this.$warpiscroll, this.parentNode).append(this.pullUpTpl());
 		this.$warpiscroll.appendTo(this.$main);
@@ -322,10 +329,8 @@
 		this.$pullUp        = this.$main.find('#pull-up');
 		this.$pullUpLabel = this.$main.find('#pull-up-label');
 		this.topOffset      = -this.$pullDown.outerHeight();
-		this.init();
 		this.load();
 	}
-	
 	
 	
 	/**
@@ -348,6 +353,13 @@
              // self.iScroll.scrollTo(0, self.topOffset, 800, $.AMUI.iScroll.utils.circular);
         });
  
+	}
+	
+	/**
+	 * 刷新iScroll触摸效果
+	 */
+	ListView.prototype.refresh = function(){
+		this.iScroll.refresh();
 	}
 	
 	ListView.prototype.setPage = function(options){
@@ -443,6 +455,17 @@
 		 */
 		reload : function(params){
 			this.getAttr('listView').reload(params);
+		},
+		
+		/**
+		 * 刷新触摸布局
+		 * 只支持 Waterfall 模式
+		 */
+		refreshTouchLayout : function(){
+			var listView = this.getAttr('listView');
+			if(listView.type == ViewAttributes.Type.Waterfall){
+				listView.refresh();
+			}
 		}
 		
 	});

@@ -384,13 +384,67 @@
 		/**
 		 * ActionBar Item Config
 		 */
-		this.config = null;
+		this.config = this.store = this.result = null;
+
+		this.dataType = ViewAttributes.DataType.Remote;
+
+		/**
+		 * 设置数据类型
+		 */
+		this.setDataType = function(dataType){
+			if(dataType) {
+				this.dataType = dataType;
+			}
+		}
+
+
+		/**
+		 * bind data store typeof is Array
+		 */ 
+		this.setStore = function(store){
+			if(store) {
+				self.store = store;
+			}
+		}
+
 		
 		var self = this;
 		this.clearSelectedContext = function(){
 			self.leftSelectView.clearSelectedContext();
 			self.rightSelectView.clearSelectedContext();
 		}
+
+		/**
+		 * set load data collection in json field
+		 */
+		this.setResult = function(result){
+			
+			if(this.DataType == ViewAttributes.DataType.Remote || this.DataType == ViewAttributes.DataType.Compose){
+				
+				if(!result){
+					throw Error("result can't not null");
+					return null;
+				}
+			} 
+			this.result = result;
+		}
+		
+	}
+
+	/**
+	 * 
+	 * @param config
+	 * @param view
+	 */
+	DoubleSelectView.prototype.initConfiguration = function(config, view){
+		
+		var self = this;
+		self.config = config;
+		self.view = view;
+		self.url  = config.url;
+		self.setDataType(config.dataType);
+		self.setResult(config.result);
+		self.setStore(config.store);
 		
 	}
 	
@@ -431,7 +485,6 @@
 		
 		this.view.iscrolls.push(this.rootIScroll);
 		
-		
 	    $.each($('#warp_ul_root li', this.leftSelectView.selectContext), function(){
 	    	  
 	    	  /**
@@ -453,7 +506,7 @@
 	    	  $(this).unbind('touchend').bind('touchend' , function(e){
 	    		  if($(e.target).data('select') == true){
 	    			  self.data = $(e.target).data('object');
-	    			  self.onloadNodeData();
+	    			  self.onloadNodeData(self.data.dataType);
 	    		  }else{
 	    			  $(e.target).css('backgroundColor', '#fff');
 	    		  }
@@ -555,31 +608,53 @@
 		}
 		this.nodeUrl+=params;
 	}
-	
-	/**
-	 * 数据加载
-	 */
+
+
+
+
+
 	DoubleSelectView.prototype.onloadData = function(){
+		this.onloadRootData();
+	}
+
+
+	/***********************onload root data*********************/
+
+	DoubleSelectView.prototype.onloadRootData = function(){
+		var self   = this;
+		switch(self.dataType){
+			case ViewAttributes.DataType.Remote  : self.onloadRootRemoteData(); break;
+			case ViewAttributes.DataType.Local   : self.onloadRootLocalData(); break;
+			case ViewAttributes.DataType.Compose : self.onloadRootComposeData(); break;
+			default : break;
+		}
+	}
+
+
+	DoubleSelectView.prototype.onloadRootRemoteData = function(){
 		
 		var self   = this;
 		var apiUrl = null;
 		
-		if(self.config.url && typeof(self.config.url) == 'string'){
-			apiUrl = self.config.url;
+		if(self.url && typeof(self.url) == 'string'){
+			apiUrl = self.url;
 		}
 		
-		if(self.config.url && typeof(self.config.url) == 'object'){
-			apiUrl = self.config.url.root.apiUrl;
+		if(self.url && typeof(self.url) == 'object'){
+			apiUrl = self.url.root.apiUrl;
 		}
 		
-		$.getJSON(apiUrl+'?ver='+new Date(), null, function(data) {
+		$.getJSON(apiUrl, null, function(data) {
 			 
+			var store  = data[self.result];
 			var wrap   = $("<div>",{ 'id' : 'warp_root', 'class' : 'warp_mark'});
 			var wrapUl = $("<ul>",{ 'id' : 'warp_ul_root', 'class' : 'warp_context'});
 			wrapUl.appendTo(wrap);
-	        for (var i = 0; i < data.form.length; i++) {
-				var node = $("<li>", {'data-object' : JSON.stringify(data.form[i]), 'data-select' : false});
-				node.text(data.form[i].labelText);
+	        for (var i = 0; i < store.length; i++) {
+	        	var object =  store[i];
+	        	object['dataType'] = ViewAttributes.DataType.Remote;
+				var node = $("<li>", {'data-object' : JSON.stringify(object), 'data-select' : false});
+				node.text(object[self.url.root.displayField]);
 				node.appendTo(wrapUl);
 			}
 			wrap.appendTo(self.leftSelectView.selectedContext);
@@ -591,22 +666,99 @@
 			console.log('Ajax Request Error!');
 		});
 	}
-	
-	/**
-	 * 加载节点数据
-	 */
-	DoubleSelectView.prototype.onloadNodeData = function(){
- 
+
+	DoubleSelectView.prototype.onloadRootLocalData = function(){
+		
 		var self   = this;
+		var wrap   = $("<div>",{ 'id' : 'warp_root', 'class' : 'warp_mark'});
+		var wrapUl = $("<ul>",{ 'id' : 'warp_ul_root', 'class' : 'warp_context'});
+		wrapUl.appendTo(wrap);
+
+		if(!self.url.root.displayField){
+			throw Error("url.root.displayField can't not null");
+			return;
+		}
+		
+		if(!self.store){
+			throw Error("ListView store can't not null");
+			return;
+		}
+		
+        for (var i = 0; i < self.store.length; i++) {
+        	var object =  self.store[i];
+        	object['dataType'] = ViewAttributes.DataType.Local;
+			var node = $("<li>", {'data-object' : JSON.stringify(object), 'data-select' : false});
+			node.text(object[self.url.root.displayField]);
+			node.appendTo(wrapUl);
+		}
+		wrap.appendTo(self.leftSelectView.selectedContext);
+		self.renderAfter();
+
+	}
+
+	DoubleSelectView.prototype.onloadRootComposeData = function(){
+		var self   = this;
+		var wrap   = $("<div>",{ 'id' : 'warp_root', 'class' : 'warp_mark'});
+		var wrapUl = $("<ul>",{ 'id' : 'warp_ul_root', 'class' : 'warp_context'});
+		wrapUl.appendTo(wrap);
+		
+		if(self.store && self.store.length > 0){
+	        for (var i = 0; i < self.store.length; i++) {
+	        	var object =  self.store[i];
+	        	object['dataType'] = ViewAttributes.DataType.Local;
+				var node = $("<li>", {'data-object' : JSON.stringify(object), 'data-select' : false});
+				node.text(object[self.url.root.displayField]);
+				node.appendTo(wrapUl);
+			}
+		}
+		
+		$.getJSON(apiUrl, null, function(data) {
+			var store  = data[self.result];
+	        for (var i = 0; i < store.length; i++) {
+	        	var object =  store[i];
+	        	object['dataType'] = ViewAttributes.DataType.Remote;
+				var node = $("<li>", {'data-object' : JSON.stringify(object), 'data-select' : false});
+				node.text(object[self.url.root.displayField]);
+				node.appendTo(wrapUl);
+			}
+			wrap.appendTo(self.leftSelectView.selectedContext);
+			
+			self.formatNodeApiUrl();
+			self.renderAfter();
+	        
+		}).error(function() {
+			console.log('Ajax Request Error!');
+		});
+		 
+
+	}
+
+
+	/***********************onload node data*********************/
+
+	DoubleSelectView.prototype.onloadNodeData = function(dataType){
+		var self   = this;
+		switch(dataType){
+			case ViewAttributes.DataType.Remote  : self.onloadNodeRemoteData(); break;
+			case ViewAttributes.DataType.Local   : self.onloadNodeLocalData(); break;
+			case ViewAttributes.DataType.Compose : self.onloadNodeComposeData(); break;
+			default : break;
+		}
+	}
+
+	DoubleSelectView.prototype.onloadNodeRemoteData = function(){
+		console.log('DoubleSelectView.prototype.onloadNodeRemoteData');
+		
+		var self   = this;
+		self.rightSelectView.selectedContext.html('');
 		var apiUrl = this.nodeUrl+'';
 		for(var i = 0; i < this.rootPropertys.length; i++){
 			for (var f in this.rootPropertys[i]) {
 				apiUrl = apiUrl.replace('{'+f+'}', this.data[this.rootPropertys[i][f]]);
 			}
 		}
-		self.rightSelectView.selectedContext.html('');
 		$.getJSON(apiUrl, null, function(data) {
-			
+			var store   = data[self.result];
 			var wrap    = $("<div>", {'id' : 'warp_node', 'class' : 'warp_mark'});
 			var wrapUl  = $("<ul>", {'id' : 'warp_ul_node', 'class' : 'warp_context'});
 			var allNode = $("<li>", {'data-object' : 'all', 'data-select' : true});
@@ -614,9 +766,10 @@
 			allNode.css('backgroundColor', '#ececec');
 			allNode.appendTo(wrapUl);
 			wrapUl.appendTo(wrap);
-	        for (var i = 0; i < data.form.length; i++) {
-				var node = $("<li>", {'data-object' : JSON.stringify(data.form[i]), 'data-select' : false});
-				node.text(data.form[i].labelText);
+	        for (var i = 0; i < store.length; i++) {
+	        	var object = store[i];
+				var node = $("<li>", {'data-object' : JSON.stringify(object), 'data-select' : false});
+				node.text(object[self.url.node.displayField]);
 				node.appendTo(wrapUl);
 			}
 	        wrap.appendTo(self.rightSelectView.selectedContext);
@@ -625,6 +778,35 @@
 			console.log('Ajax Request Error!');
 		});
 		
+	}
+
+	DoubleSelectView.prototype.onloadNodeLocalData = function(){
+		console.log('DoubleSelectView.prototype.onloadNodeLocalData');
+		var self = this;
+		self.rightSelectView.selectedContext.html('');
+		var rootValue = self.data;
+		var nodeStore = rootValue.nodes;
+		if(!nodeStore || nodeStore.length == 0){
+			return;
+		}
+		
+		var wrap    = $("<div>", {'id' : 'warp_node', 'class' : 'warp_mark'});
+		var wrapUl  = $("<ul>", {'id' : 'warp_ul_node', 'class' : 'warp_context'});
+		var allNode = $("<li>", {'data-object' : 'all', 'data-select' : true});
+		allNode.text('全部');
+		allNode.css('backgroundColor', '#ececec');
+		allNode.appendTo(wrapUl);
+		wrapUl.appendTo(wrap);
+		
+        for (var i = 0; i < nodeStore.length; i++) {
+        	var object = nodeStore[i];
+			var node = $("<li>", {'data-object' : JSON.stringify(object), 'data-select' : false});
+			node.text(object[self.url.node.displayField]);
+			node.appendTo(wrapUl);
+		}
+        wrap.appendTo(self.rightSelectView.selectedContext);
+        self.renderNodeAfter();
+
 	}
 	
 	
@@ -1254,8 +1436,7 @@
 				'offset' : 146
 			});
 			
-			selectView.view = self;
-			selectView.config = action;
+			selectView.initConfiguration(action, self);
 			
 			var element = {
 				selectView : selectView

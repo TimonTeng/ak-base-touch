@@ -34,9 +34,23 @@
 	
 	<div id="action-bar" class="nav am-g"></div>
 	
-	<div id="wrapper" class="am-plugin-listviwe"></div>
 	
- 
+	<div data-am-widget="navbar" class="am-navbar am-cf am-navbar-default " id="">
+	      <ul class="am-navbar-nav am-cf am-avg-sm-4">
+	          <li data-am-navbar-share>
+	            <a href="###" class="">
+	                  <span class="am-icon-share-square-o"></span>
+	                <span class="am-navbar-label">分享</span>
+	            </a>
+	          </li>
+	          <li data-am-navbar-qrcode>
+	            <a href="###" class="">
+	                  <span class="am-icon-qrcode"></span>
+	                <span class="am-navbar-label">二维码</span>
+	            </a>
+	          </li>
+	      </ul>
+	</div>
 	<script type="text/javascript">
 		 window.mainPath = '${ctx}'; 
 	</script>
@@ -45,7 +59,29 @@
 	<script type="text/javascript">
 	
 		
-		require(['jquery', 'amazeui', 'actionBar', 'listView'], function($, amazeui, ActionBar, ListView){
+		require(['jquery', 'amazeui', 'actionBar'], function($, amazeui, ActionBar){
+ 
+			var store = [
+				{id : 'all', labelText : '全部'},
+				{id : 'works', labelText : '奥迪', nodes : [
+					{id : '1', name : 'A3'},
+					{id : '2', name : 'A4'},
+					{id : '3', name : 'A5'},
+					{id : '4', name : 'A6'}
+				]},
+				{id : 'mostactive', labelText : '奔驰', nodes : [
+					{id : '1', name : 'CLK'},
+					{id : '2', name : 'GLA'},
+					{id : '3', name : 'GLK'},
+					{id : '4', name : 'GLE'}
+				]},
+				{id : 'mostactive', labelText : '雷克萨斯', nodes : [
+					{id : '1', name : 'CT200'},
+					{id : '2', name : 'IS300'},
+					{id : '3', name : 'ES250'},
+					{id : '4', name : 'GS250'}
+				]}
+			];
 		
 			var actionBar = new ActionBar({
 				parentNode : '#action-bar',
@@ -54,59 +90,23 @@
 					   id : 'view1',
 					   title : '筛选',
 					   type : 'DoubleSelectView',
+					   dataType : 'local', //可选  ： (默认)remote/local/compose
+					   store : store,
 					   url : {
 					   		root : {
-					   			apiUrl : 'http://192.168.1.19/ak-sw-p2pm/appHomeworkLabelFirstLevelList.html'
+					   			displayField : 'labelText'
 					   		},
 					   		node : {
-					   			apiUrl : 'http://192.168.1.19/ak-sw-p2pm/appHomeworkLabelSecondLevelList.html',
-					   			rootPropertys : [
-					   				{'labelId' : 'id'}
-					   			]
+					   			displayField : 'name'
 					   		}
 					   },
 					   submit : function(data){
 					   		  
 					   }
-				   },	
- 				   {
-					   id : 'view2',
-					   title : '品牌',
-					   type : 'AplhabetDoubleSelectView',
-					   url : {
-					   		root : {
-					   			apiUrl : 'http://192.168.1.19/ak-sw-p2pm/appClubBrandList.html'
-					   		},
-					   		node : {
-					   			apiUrl : 'http://192.168.1.19/ak-sw-p2pm/appClubBrandModalList.html',
-					   			rootPropertys : [
-					   				{'brandId' : 'id'},
-					   				{'name'    : 'name'}
-					   			]
-					   		}
-					   },
-					   submit : function(data){
-					   		 data = {rootValue : {id :'' , name : ''}, nodeValue : {}}
-					   
-					   
-					   		 lisView.reload({
-					   		 	'id' : data.rootValue.id
-					   		 });
-					   }
-				   },
- 				   {
-					   id : 'view3',
-					   title : '智能',
-					   type : 'AplhabetSelectView',
-					   url : 'http://192.168.1.19/ak-sw-p2pm/appClubBrandList.html',
-					   submit : function(data){
-					   		 
-					   }
 				   }
+ 
 				]
 			}).render();
-			
- 
 			 
 		});
 	

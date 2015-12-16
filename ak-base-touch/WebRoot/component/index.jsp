@@ -18,6 +18,7 @@
 		<ul class="am-list am-list-border">
 			<li><a href="ActionBar.html">Action Bar</a></li>
 			<li><a href="ActionBar-Demo1.html">ActionBar-Demo1</a></li>
+			<li><a href="ActionBar-DoubleSelectView.html">ActionBar-DoubleSelectView</a></li>
 			<li><a href="ListView.html">ListView</a></li>
 			<li><a href="PivotListView.html">PivotListView</a></li>
 		</ul>

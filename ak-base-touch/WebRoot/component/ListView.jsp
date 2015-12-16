@@ -52,9 +52,9 @@
 			listView = new ListView({
 			 	parentNode : '#wrapper',
 			 	template : 'assets/template/list-view.tpl?v='+new Date(),
-			 	apiUrl : 'http://192.168.1.81/ak-sw-p2pm/appClubHotestListMessage.html',
+			 	apiUrl : 'http://192.168.1.19/ak-sw-p2pm/appClubScreenOutList.html',
 			 	params : {
-				
+					brandId : 11
 			 	},
 				page : {
 					result          : 'data',   // 服务应用返回列表集合 在json属性键值 , set load data collection in json field

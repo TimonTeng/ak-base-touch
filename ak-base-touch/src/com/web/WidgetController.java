@@ -30,6 +30,11 @@ public class WidgetController extends WebController {
 		return "forward:/component/ActionBar-Demo1.jsp";
 	}
 	
+	@RequestMapping(value="/ActionBar-DoubleSelectView.html",  method = RequestMethod.GET)
+	public String ActionBarDoubleSelectView(HttpServletResponse response, HttpServletRequest request) throws IOException {
+		return "forward:/component/ActionBar-DoubleSelectView.jsp";
+	}
+	
 	@RequestMapping(value="/ListView.html",  method = RequestMethod.GET)
 	public String ListView(HttpServletResponse response, HttpServletRequest request) throws IOException {
 		return "forward:/component/ListView.jsp";
