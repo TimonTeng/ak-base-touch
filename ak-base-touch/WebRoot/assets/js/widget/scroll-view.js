@@ -102,7 +102,6 @@
 		 * 是否激活
 		 */
 		onActivate : function(activate){
-			
 			var self = this;
 			var parentNode = self.getAttr('parentNode');
 			var x = 0;
@@ -110,8 +109,7 @@
 				var transform = {
 						'transition-duration' : '.2s',
 						'transition-timing-function' : 'linear',
-						'transform' : 'translateX('+x+'px)',
-						'position' : 'fixed'
+						'transform' : 'translate('+x+'px, 0px)'
 				};
 				$(parentNode).css(transform);
 			}
@@ -120,8 +118,7 @@
 				var transform = { 
 						'transition-duration' : '0s',
 						'transition-timing-function' : 'linear',
-						'position' : 'fixed',
-						'transform' : 'translateX('+x+'px)'
+						'transform' : 'translate('+x+'px, 0px)'
 				};
 				$(parentNode).css(transform);
 			}

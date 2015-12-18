@@ -388,8 +388,7 @@
 			var transform = {
 					'transition-duration' : '.2s',
 					'transition-timing-function' : 'linear',
-					'transform' : 'translateX('+x+'px)',
-					'position' : 'fixed'
+					'transform' : 'translate('+x+'px, 0px)'
 			};
 			$(this.parentNode).css(transform);
 		}
@@ -398,8 +397,7 @@
 			var transform = { 
 					'transition-duration' : '0s',
 					'transition-timing-function' : 'linear',
-					'position' : 'fixed',
-					'transform' : 'translateX('+x+'px)'
+					'transform' : 'translate('+x+'px, 0px)'
 			};
 			$(this.parentNode).css(transform);
 		}
