@@ -78,6 +78,15 @@
 	        
 	        $main.css(style);
 	        $main.css('display', 'block');
+	        
+	        self.activate = true;
+	        var activate = self.getAttr('activate');
+	        
+	        if(activate){
+	        	this.activate = activate;
+	        	self.onActivate(activate);
+	        }
+	        
 		    document.addEventListener('touchmove', function(e) {
 		        e.preventDefault();
 		    }, false);
@@ -87,6 +96,35 @@
 			var self = this;
 			var iscroll = self.getAttr('iscroll');
 			iscroll.refresh();
+		},
+		
+		/**
+		 * 是否激活
+		 */
+		onActivate : function(activate){
+			
+			var self = this;
+			var parentNode = self.getAttr('parentNode');
+			var x = 0;
+			if(activate == true || activate == 'true'){
+				var transform = {
+						'transition-duration' : '.2s',
+						'transition-timing-function' : 'linear',
+						'transform' : 'translateX('+x+'px)',
+						'position' : 'fixed'
+				};
+				$(parentNode).css(transform);
+			}
+			if(activate == false || activate == 'false'){
+				x = document.body.clientWidth;
+				var transform = { 
+						'transition-duration' : '0s',
+						'transition-timing-function' : 'linear',
+						'position' : 'fixed',
+						'transform' : 'translateX('+x+'px)'
+				};
+				$(parentNode).css(transform);
+			}
 		}
 		
 		

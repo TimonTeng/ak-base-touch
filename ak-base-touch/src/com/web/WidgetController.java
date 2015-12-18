@@ -40,6 +40,12 @@ public class WidgetController extends WebController {
 		return "forward:/component/ListView.jsp";
 	}
 	
+	@RequestMapping(value="/PivotAndWaterfall.html",  method = RequestMethod.GET)
+	public String PivotAndWaterfall(HttpServletResponse response, HttpServletRequest request) throws IOException {
+		return "forward:/component/PivotAndWaterfall.jsp";
+	}
+	
+	
 	@RequestMapping(value="/PivotListView.html",  method = RequestMethod.GET)
 	public String PivotListView(HttpServletResponse response, HttpServletRequest request) throws IOException {
 		return "forward:/component/PivotListView.jsp";

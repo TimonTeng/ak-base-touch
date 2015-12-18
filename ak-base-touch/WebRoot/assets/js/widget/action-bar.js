@@ -506,6 +506,7 @@
 	    	  $(this).unbind('touchend').bind('touchend' , function(e){
 	    		  if($(e.target).data('select') == true){
 	    			  self.data = $(e.target).data('object');
+	    			  self.nodeData = null;
 	    			  self.onloadNodeData(self.data.dataType);
 	    		  }else{
 	    			  $(e.target).css('backgroundColor', '#fff');
@@ -650,6 +651,12 @@
 			var wrap   = $("<div>",{ 'id' : 'warp_root', 'class' : 'warp_mark'});
 			var wrapUl = $("<ul>",{ 'id' : 'warp_ul_root', 'class' : 'warp_context'});
 			wrapUl.appendTo(wrap);
+			if(!store){
+				wrap.appendTo(self.leftSelectView.selectedContext);
+				self.renderAfter();
+				return;
+			}
+			
 	        for (var i = 0; i < store.length; i++) {
 	        	var object =  store[i];
 	        	object['dataType'] = ViewAttributes.DataType.Remote;
@@ -712,7 +719,23 @@
 			}
 		}
 		
+		var apiUrl = null;
+		
+		if(self.url && typeof(self.url) == 'string'){
+			apiUrl = self.url;
+		}
+		
+		if(self.url && typeof(self.url) == 'object'){
+			apiUrl = self.url.root.apiUrl;
+		}
+		
 		$.getJSON(apiUrl, null, function(data) {
+			if(!data || !data[self.result]){
+				wrap.appendTo(self.leftSelectView.selectedContext);
+				self.renderAfter();
+				return;
+			}
+			
 			var store  = data[self.result];
 	        for (var i = 0; i < store.length; i++) {
 	        	var object =  store[i];
@@ -1081,6 +1104,7 @@
 	    		  
 	    		  if($(e.target).data('select') == true){
 	    			  self.data = $(e.target).data('object');
+	    			  self.nodeData = null;
 	    			  self.onloadNodeData();
 	    		  }else{
 	    			  $(e.target).css('backgroundColor', '#fff');
@@ -1300,7 +1324,7 @@
 		
 		attrs: {
 			
-			template: 'assets/template/base-action-bar.tpl?ver='+  new Date().getTime()
+			template: 'assets/template/widget/action-bar.tpl?ver='+  new Date().getTime()
 		},
 		
 		events: {

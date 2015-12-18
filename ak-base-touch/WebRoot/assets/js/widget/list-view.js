@@ -60,6 +60,7 @@
 		 this.style = 
 		 this.page = this.params = this.view = null;
 		 this.iScroll = null;
+		 this.activate = true;//是否激活状态
 		 
 		 this.page = {
 			result          : '',   // 服务应用返回列表集合 在json属性键值 , set load data collection in json field
@@ -83,7 +84,6 @@
 	 */
 	ListView.prototype.initConfiguration = function(view){
 		this.view   = view;
-		
 		this.setPage(view.getAttr('page'));
 		this.setParams(view.getAttr('params'));
 		this.apiUrl      = view.getAttr('apiUrl');
@@ -109,12 +109,12 @@
 
 	}
 	
+	
 	/**
 	 * 瀑布流模式初始化
 	 */
 	ListView.prototype.initWaterfallMode = function(){
 		
-
 		this.$warpiscroll = $("<div>", {'id' : 'warp-iscroll'})
 //		$(this.$warpiscroll, parentNode).append(this.pullDownTpl());
 		$(this.$warpiscroll, this.parentNode).append(this.bodyContext());
@@ -128,35 +128,9 @@
 		this.$pullUpLabel   = this.$main.find('#pull-up-label');
 		this.topOffset      = -this.$pullDown.outerHeight();
 		
-        var iscroll = this.iScroll = new $.AMUI.iScroll(this.parentNode, {
-        	click: true
-	    });
-          
-	    var self = this;
-	    var pullFormTop = false;
-	    var pullStart;
-	    
-	    this.load();
- 
-	    iscroll.on('scrollStart', function() {
-            if (this.y >= self.topOffset) {
-              pullFormTop = true;
-            }
-
-            pullStart = this.y;
-        });
-
-	    iscroll.on('scrollEnd', function() {
-            if (pullFormTop && this.directionY === -1) {
-            	//self.handlePullDown();
-            }
-            pullFormTop = false;
-
-            if (pullStart === this.y && (this.directionY === 1)) {
-            	self.handlePullUp();
-            }
-        });
-		
+		this.bindIScroll();
+		this.setActivate();
+		this.load();
 	}
 	
 	/**
@@ -168,6 +142,7 @@
 		this.$warpiscroll.appendTo(this.$main);
 		this.$list      = this.$main.find('#events-list');
 		this.scrollView = this.view.getAttr('scrollView');
+		this.setActivate();
 	    this.load();
 	}
 	
@@ -175,6 +150,8 @@
 	 * 渲染Dom之后处理入口
 	 */
 	ListView.prototype.renderAfterHandle = function(){
+		var self = this;
+		
 		switch(this.type){
 			case ViewAttributes.Type.Waterfall :  this.renderAfterWaterfallModeHandle(); break;
 			case ViewAttributes.Type.Pivot 	   :  this.renderAfterPivotModeHandle(); break;
@@ -188,6 +165,7 @@
 	 */
 	ListView.prototype.renderAfterWaterfallModeHandle = function(){
 		var self = this;
+ 
         self.resetLoading(self.$pullUp);
         setTimeout(function() {
           self.iScroll.refresh();
@@ -195,6 +173,10 @@
         var len = $('.am-list-item-desced', self.parentNode).length;
         if(len == 0){
         	self.$pullUp.remove();
+        }
+        
+        if(this.page.next == this.page.pageTotal){
+      	  this.$pullUpLabel.text('已经到最后了');
         }
         
 		if(this.renderAfter){
@@ -263,6 +245,42 @@
         $el.removeClass('loading');
 	};
 	
+	
+	ListView.prototype.bindIScroll = function(){
+		var self = this;
+        var iscroll = this.iScroll = new $.AMUI.iScroll(this.parentNode, {
+		      scrollbars: true,
+		      mouseWheel: true,
+		      interactiveScrollbars: true,
+		      shrinkScrollbars: 'scale',
+		      fadeScrollbars: true
+        });
+          
+  	    var self = this;
+  	    var pullFormTop = false;
+  	    var pullStart;
+  	    
+  	    iscroll.on('scrollStart', function() {
+              if (this.y >= self.topOffset) {
+                pullFormTop = true;
+              }
+
+              pullStart = this.y;
+        });
+
+  	    iscroll.on('scrollEnd', function() {
+              if (pullFormTop && this.directionY === -1) {
+              	//self.handlePullDown();
+              }
+              pullFormTop = false;
+
+              if (pullStart === this.y && (this.directionY === 1)) {
+              	self.handlePullUp();
+              }
+        });
+	}
+	
+	
 	/**
 	 * 组装URL
 	 */
@@ -294,7 +312,6 @@
 	 * 加载
 	 */
 	ListView.prototype.load = function(){
-		
 		var self = this;
         $.getJSON(self.getUrl()).then(function(data) {
         	self.page.pageTotal = data[self.page.pageTotalField];
@@ -313,7 +330,7 @@
 	 */
 	ListView.prototype.reload = function(options){
 		this.setParams(options);
-		this.page.pageNo = 0;
+		this.page.pageNo = 1;
 		this.page.pageTotal = 0;
 		
 		this.$main          = $(this.parentNode);
@@ -329,6 +346,7 @@
 		this.$pullUp        = this.$main.find('#pull-up');
 		this.$pullUpLabel = this.$main.find('#pull-up-label');
 		this.topOffset      = -this.$pullDown.outerHeight();
+		this.bindIScroll();
 		this.load();
 	}
 	
@@ -360,6 +378,40 @@
 	 */
 	ListView.prototype.refresh = function(){
 		this.iScroll.refresh();
+	}
+	
+	
+	ListView.prototype.onActivate = function(activate){
+		
+		var x = 0;
+		if(activate == true || activate == 'true'){
+			var transform = {
+					'transition-duration' : '.2s',
+					'transition-timing-function' : 'linear',
+					'transform' : 'translateX('+x+'px)',
+					'position' : 'fixed'
+			};
+			$(this.parentNode).css(transform);
+		}
+		if(activate == false || activate == 'false'){
+			x = document.body.clientWidth;
+			var transform = { 
+					'transition-duration' : '0s',
+					'transition-timing-function' : 'linear',
+					'position' : 'fixed',
+					'transform' : 'translateX('+x+'px)'
+			};
+			$(this.parentNode).css(transform);
+		}
+	}
+	
+	ListView.prototype.setActivate = function(){
+		var self = this;
+		var activate = self.view.getAttr('activate');
+		if(activate == 'true' || activate == 'false'){
+			self.activate = activate;
+			self.onActivate(activate);
+		}
 	}
 	
 	ListView.prototype.setPage = function(options){
@@ -419,6 +471,7 @@
 			    type       = self.getAttr('type'),
 				data       = self.getAttr('data');
 			
+			
 			var listView = new ListView();
 			listView.initConfiguration(self);
 			self.setAttr('listView', listView);
@@ -466,6 +519,14 @@
 			if(listView.type == ViewAttributes.Type.Waterfall){
 				listView.refresh();
 			}
+		},
+		
+		/**
+		 * 是否激活
+		 */
+		onActivate : function(activate){
+			var listView = this.getAttr('listView');
+			listView.onActivate(activate);
 		}
 		
 	});
