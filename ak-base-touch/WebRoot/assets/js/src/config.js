@@ -22,16 +22,25 @@
 			'alphabetBar' 	   : 'js/widget/alphabet-bar',
 			'actionBar'		   : 'js/widget/action-bar',
 			'listView'		   : 'js/widget/list-view',
-		    'scrollView'	   : 'js/widget/scroll-view'
+		    'scrollView'	   : 'js/widget/scroll-view',
+		    'sidebar'	   	   : 'js/widget/sidebar'
 		},
 		
 		shim: {
-			'amazeui'   : { deps: ['jquery'] },
+			'amazeui'   : { 
+				deps: ['jquery']
+			},
+			
 	        'actionBar' : {
-	        	deps: ['underscore','lodash', 'handlebars', 'backbone', 'backbone.view', 'swipe', 'alphabetBar']
+	        	deps: ['underscore', 'lodash', 'handlebars', 'backbone', 'backbone.view', 'swipe', 'alphabetBar']
 	        },
+	        
 			'listView' : {
-				deps: ['underscore','lodash', 'handlebars', 'backbone', 'backbone.view','swipe']
+				deps: ['underscore', 'lodash', 'handlebars', 'backbone', 'backbone.view','swipe']
+			},
+			
+			'sidebar' : {
+				deps: ['underscore', 'lodash', 'handlebars', 'backbone', 'backbone.view','swipe']
 			}
 		},
 		

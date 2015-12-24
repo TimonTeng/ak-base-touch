@@ -22,6 +22,7 @@
 			<li><a href="ListView.html">ListView</a></li>
 			<li><a href="PivotListView.html">PivotListView</a></li>
 			<li><a href="PivotAndWaterfall.html">Pivot And Waterfall</a></li>
+			<li><a href="Sidebar.html">Sidebar</a></li>
 		</ul>
 	  </div>
 	</div>

@@ -770,8 +770,6 @@
 	}
 
 	DoubleSelectView.prototype.onloadNodeRemoteData = function(){
-		console.log('DoubleSelectView.prototype.onloadNodeRemoteData');
-		
 		var self   = this;
 		self.rightSelectView.selectedContext.html('');
 		var apiUrl = this.nodeUrl+'';
@@ -973,10 +971,12 @@
 				var hd   = $("<div class='warp_alphabet_title'><li><h2>"+data.form[i].code+"</h2></li></div>");
 				$(hd).appendTo(wrap);
 				var apt = $("<ul>",{ 'id' : 'warp_u_'+data.form[i].code, 'class' : 'warp_context'});
-				for(var n = 0; n < data.form[i].p2pcb.length; n++){
-					var node = $("<li>", {'data-object' : JSON.stringify(data.form[i].p2pcb[n]), 'data-select' : false});
-					node.text(data.form[i].p2pcb[n].name);
-					node.appendTo(apt);
+				if(data.form[i].p2pcb){
+					for(var n = 0; n < data.form[i].p2pcb.length; n++){
+						var node = $("<li>", {'data-object' : JSON.stringify(data.form[i].p2pcb[n]), 'data-select' : false});
+						node.text(data.form[i].p2pcb[n].name);
+						node.appendTo(apt);
+					}
 				}
 				$(apt).appendTo(wrap);
 				$(wrap).appendTo(self.selectedContext);
@@ -1233,10 +1233,12 @@
 				var hd   = $("<div class='warp_alphabet_title'><li><h2>"+data.form[i].code+"</h2></li></div>");
 				$(hd).appendTo(wrap);
 				var apt = $("<ul>",{ 'id' : 'warp_u_'+data.form[i].code, 'class' : 'warp_context'});
-				for(var n = 0; n < data.form[i].p2pcb.length; n++){
-					var node = $("<li>", {'data-object' : JSON.stringify(data.form[i].p2pcb[n]), 'data-select' : false});
-					node.text(data.form[i].p2pcb[n].name);
-					node.appendTo(apt);
+				if(data.form[i].p2pcb){
+					for(var n = 0; n < data.form[i].p2pcb.length; n++){
+						var node = $("<li>", {'data-object' : JSON.stringify(data.form[i].p2pcb[n]), 'data-select' : false});
+						node.text(data.form[i].p2pcb[n].name);
+						node.appendTo(apt);
+					}
 				}
 				$(apt).appendTo(wrap);
 				$(wrap).appendTo(self.leftSelectView.selectedContext);

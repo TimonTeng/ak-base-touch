@@ -64,7 +64,7 @@
 			 	parentNode : '#pivolist1',
 			 	type : 'pivot',
 			 	template : 'assets/template/list-view.tpl?v='+new Date(),
-			 	apiUrl : 'http://192.168.1.19/ak-sw-p2pm/appClubHotestListMessage.html',
+			 	apiUrl : '${dataCtx}/ak-sw-p2pm/appClubHotestListMessage.html',
 			 	params : {
 				
 			 	},
@@ -84,7 +84,7 @@
 			 	parentNode : '#pivolist2',
 			 	type : 'pivot',
 			 	template : 'assets/template/list-view.tpl?v='+new Date(),
-			 	apiUrl : 'http://192.168.1.19/ak-sw-p2pm/appClubHotestListMessage.html',
+			 	apiUrl : '${dataCtx}/ak-sw-p2pm/appClubHotestListMessage.html',
 			 	params : {
 				
 			 	},

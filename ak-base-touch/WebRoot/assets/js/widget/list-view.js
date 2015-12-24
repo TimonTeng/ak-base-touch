@@ -83,7 +83,7 @@
 	 * @param view
 	 */
 	ListView.prototype.initConfiguration = function(view){
-		this.view   = view;
+		this.view   	 = view;
 		this.setPage(view.getAttr('page'));
 		this.setParams(view.getAttr('params'));
 		this.apiUrl      = view.getAttr('apiUrl');

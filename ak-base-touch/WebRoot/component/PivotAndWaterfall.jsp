@@ -70,10 +70,10 @@
 					   type : 'DoubleSelectView',
 					   url : {
 					   		root : {
-					   			apiUrl : 'http://192.168.1.19/ak-sw-p2pm/appHomeworkLabelFirstLevelList.html'
+					   			apiUrl : '${dataCtx}/ak-sw-p2pm/appHomeworkLabelFirstLevelList.html'
 					   		},
 					   		node : {
-					   			apiUrl : 'http://192.168.1.19/ak-sw-p2pm/appHomeworkLabelSecondLevelList.html',
+					   			apiUrl : '${dataCtx}/ak-sw-p2pm/appHomeworkLabelSecondLevelList.html',
 					   			rootPropertys : [
 					   				{'labelId' : 'id'}
 					   			]
@@ -115,7 +115,7 @@
 			 	parentNode : '#pivolist1',
 			 	type : 'pivot',
 			 	template : 'assets/template/list-view.tpl?v='+new Date(),
-			 	apiUrl : 'http://192.168.1.19/ak-sw-p2pm/appClubHotestListMessage.html',
+			 	apiUrl : '${dataCtx}/ak-sw-p2pm/appClubHotestListMessage.html',
 			 	params : {
 				
 			 	},
@@ -135,7 +135,7 @@
 			 	parentNode : '#pivolist2',
 			 	type : 'pivot',
 			 	template : 'assets/template/list-view.tpl?v='+new Date(),
-			 	apiUrl : 'http://192.168.1.19/ak-sw-p2pm/appClubHotestListMessage.html',
+			 	apiUrl : '${dataCtx}/ak-sw-p2pm/appClubHotestListMessage.html',
 			 	params : {
 				
 			 	},
@@ -154,7 +154,7 @@
 			var listview1 = new ListView({
 			 	parentNode : '#wrapper-listview1',
 			 	template : 'assets/template/list-view.tpl',
-			 	apiUrl : 'http://192.168.1.19/ak-sw-p2pm/appClubHotestListMessage.html',
+			 	apiUrl : '${dataCtx}/ak-sw-p2pm/appClubHotestListMessage.html',
 			 	style : {
 			 		top : '80px'
 			 	},
@@ -172,7 +172,7 @@
   			var listview2 = new ListView({
 			 	parentNode : '#wrapper-listview2',
 			 	template : 'assets/template/list-view.tpl',
-			 	apiUrl : 'http://192.168.1.19/ak-sw-p2pm/appClubHotestListMessage.html',
+			 	apiUrl : '${dataCtx}/ak-sw-p2pm/appClubHotestListMessage.html',
 			 	style : {
 			 		top : '80px'
 			 	},

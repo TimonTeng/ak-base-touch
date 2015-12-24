@@ -56,10 +56,10 @@
 					   type : 'DoubleSelectView',
 					   url : {
 					   		root : {
-					   			apiUrl : 'http://192.168.1.19/ak-sw-p2pm/appHomeworkLabelFirstLevelList.html'
+					   			apiUrl : '${dataCtx}/ak-sw-p2pm/appHomeworkLabelFirstLevelList.html'
 					   		},
 					   		node : {
-					   			apiUrl : 'http://192.168.1.19/ak-sw-p2pm/appHomeworkLabelSecondLevelList.html',
+					   			apiUrl : '${dataCtx}/ak-sw-p2pm/appHomeworkLabelSecondLevelList.html',
 					   			rootPropertys : [
 					   				{'labelId' : 'id'}
 					   			]
@@ -75,10 +75,10 @@
 					   type : 'AplhabetDoubleSelectView',
 					   url : {
 					   		root : {
-					   			apiUrl : 'http://192.168.1.19/ak-sw-p2pm/appClubBrandList.html'
+					   			apiUrl : '${dataCtx}/ak-sw-p2pm/appClubBrandList.html'
 					   		},
 					   		node : {
-					   			apiUrl : 'http://192.168.1.19/ak-sw-p2pm/appClubBrandModalList.html',
+					   			apiUrl : '${dataCtx}/ak-sw-p2pm/appClubBrandModalList.html',
 					   			rootPropertys : [
 					   				{'brandId' : 'id'},
 					   				{'name'    : 'name'}
@@ -98,7 +98,7 @@
 					   id : 'view3',
 					   title : '智能',
 					   type : 'AplhabetSelectView',
-					   url : 'http://192.168.1.19/ak-sw-p2pm/appClubBrandList.html',
+					   url : '${dataCtx}/ak-sw-p2pm/appClubBrandList.html',
 					   submit : function(data){
 					   		 
 					   }
