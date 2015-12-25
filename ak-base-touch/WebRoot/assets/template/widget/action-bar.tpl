@@ -1,37 +1,33 @@
 {{#each data}}
-<div class="each-nav am-u-sm-4 am-text-center">
-	{{#compare type '===' 'Button'}}
-		<a status="0" data-id="{{id}}" data-type="{{type}}" data-url="{{url}}" action-button-event>
-			<span>{{title}}</span>
-		</a> 
-	{{/compare}}
-	
-	{{#compare type '===' 'SelectView'}}
-		<a status="0" data-id="{{id}}" data-type="{{type}}" data-url="{{url}}" action-selectview-event>
-			<span>{{title}}</span>
-			<span class="am-icon-caret-down"></span>
-		</a> 
-	{{/compare}}
-	
-	{{#compare type '===' 'DoubleSelectView'}}
-		<a status="0" data-id="{{id}}" data-type="{{type}}" data-url="{{url}}" action-selectview-event>
-			<span>{{title}}</span>
-			<span class="am-icon-caret-down"></span>
-		</a> 
-	{{/compare}}
-	
-	{{#compare type '===' 'AplhabetSelectView'}}
-		<a status="0" data-id="{{id}}" data-type="{{type}}" data-url="{{url}}" action-selectview-event>
-			<span>{{title}}</span>
-			<span class="am-icon-caret-down"></span>
-		</a> 
-	{{/compare}}
-	
-	{{#compare type '===' 'AplhabetDoubleSelectView'}}
-		<a status="0" data-id="{{id}}" data-type="{{type}}" data-url="{{url}}" action-selectview-event>
-			<span>{{title}}</span>
-			<span class="am-icon-caret-down"></span>
-		</a> 
-	{{/compare}}
-</div>
+	<div class="am-u-sm-4 am-text-center">
+		{{#compare type '===' 'Button'}}
+			<div class="am-plugin-actionbar" status="0" data-id="{{id}}" data-type="{{type}}" data-url="{{url}}" action-button-event>
+				{{title}}
+			</div>
+		{{/compare}}
+		
+		{{#compare type '===' 'SelectView'}}
+			<div class="am-plugin-actionbar" status="0" data-id="{{id}}" data-type="{{type}}" data-url="{{url}}" action-selectview-event>
+				{{title}}
+			</div>
+		{{/compare}}
+		
+		{{#compare type '===' 'DoubleSelectView'}}
+			<div class="am-plugin-actionbar" status="0" data-id="{{id}}" data-type="{{type}}" data-url="{{url}}" action-selectview-event>
+				{{title}}
+			</div>
+		{{/compare}}
+		
+		{{#compare type '===' 'AplhabetSelectView'}}
+			<div class="am-plugin-actionbar" status="0" data-id="{{id}}" data-type="{{type}}" data-url="{{url}}" action-selectview-event>
+				{{title}}
+			</div>
+		{{/compare}}
+		
+		{{#compare type '===' 'AplhabetDoubleSelectView'}}
+			<div class="am-plugin-actionbar" status="0" data-id="{{id}}" data-type="{{type}}" data-url="{{url}}" action-selectview-event>
+				{{title}}
+			</div>
+		{{/compare}}
+	</div>
 {{/each}}

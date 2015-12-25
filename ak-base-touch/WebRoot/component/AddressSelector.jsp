@@ -22,17 +22,34 @@
 		</div>
 
 		<h1 class="am-header-title">
-			<a href="#title-link" class=""> Sidebar </a>
+			<a href="#title-link" class=""> AddressSelector </a>
 		</h1>
 
 		<div class="am-header-right am-header-nav">
-			<a href="#right-link" class="" onclick="sidebar1.open();"> <i
+			<a href="#right-link" class="" > <i
 				class="am-header-icon am-icon-bars"></i>
 			</a>
 		</div>
 		
 	</header>
+	
+	
+	
+	<form class="am-form">
+	  <fieldset>
+	    <div class="am-form-group">
+	      <label for="doc-ipt-email-1">城市选择</label>
+	      <input type="text" class="" id="CitySelector" placeholder="点击选择城市">
+	    </div>
+	
+	    <div class="am-form-group">
+	      <label for="doc-ipt-pwd-1">省市区选择</label>
+	      <input type="text" class="" placeholder="点击选择省市区">
+	    </div>
 	 
+	  </fieldset>
+	</form>
+	
 	<script type="text/javascript">
 		 window.mainPath = '${ctx}'; 
 	</script>
@@ -40,56 +57,27 @@
 	<script src="${ctx}/assets/js/lib/require.js"></script>
 	<script src="${ctx}/assets/js/src/config.js"></script>
 	<script type="text/javascript">
-		var sidebar1= sidebar2 = null;
-		require(['jquery', 'amazeui', 'sidebar'], function($, amazeui, Sidebar){
+		 
+		require(['jquery', 'amazeui', 'addressSelector'], function($, amazeui, AddressSelector){
 			 	
-			 	sidebar1 = new Sidebar({
+			 	window.CitySelector = new AddressSelector({
 			 	
-			 		title : '发布活动',
+			 		type : 'City',
 			 		
-			 		returnIcon : 'icon_return',
+			 		result : 'data',
 			 		
-			 		style : {
-			 			zIndex : 200
+			 		city : {
+			 			apiUrl : '${dataCtx}/ak-sw-p2pm/foundCityList.html',
+			 			displayField : 'cityName'
 			 		},
 			 		
-			 		submit : function(){
-			 			alert('sidebar1');
-			 		},
-			 		
-			 		returnAfter : function(){ //当下级 sidebar确认返回时执行
-					 	$('.addAward').click(function(){
-					 		sidebar2.open();
-					 	});
+			 		submit : function(data){
+			 			$('#CitySelector').val(data.city.cityName);
 			 		}
 			 	});
 			 	
- 			 	sidebar2 = new Sidebar({
-			 		
-			 		title : '添加奖品',
-			 		
-			 		returnIcon : 'icon_return',
-			 		
-			 		style : {
-			 			zIndex : 201
-			 		},
-			 		
-			 		submit : function(){
-			 			alert('sidebar2');
-			 			sidebar1.appendHtml("<button class='addAward'>添加奖品2</button>");
-			 		},
-			 		
-			 		returnAfter : function(){ //当下级 sideba 确认返回时执行
-			 		
-			 		},
-			 		
-			 		parentView : sidebar1
-			 	}); 
-			 	
-			 	sidebar1.html("<button class='addAward'>添加奖品1</button>");
-			 	
-			 	$('.addAward').click(function(){
-			 		sidebar2.open();
+			 	$('#CitySelector').bind('touchend', function(){
+			 		window.CitySelector.open();
 			 	});
 			 	
 		});

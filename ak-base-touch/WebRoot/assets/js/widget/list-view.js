@@ -297,7 +297,6 @@
         return this.apiUrl + '?' + queries.join('&');
 	}
 	
-	
 	/**
 	 * 渲染内容
 	 */
@@ -307,7 +306,6 @@
 		return template;
 	}
  
-	
 	/**
 	 * 加载
 	 */
@@ -321,9 +319,7 @@
         }, function() {
             console.log('Error...')
         });
- 
 	}
-	
 	
 	/**
 	 * 重新加载

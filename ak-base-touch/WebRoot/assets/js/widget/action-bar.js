@@ -1330,8 +1330,8 @@
 		},
 		
 		events: {
-			'click a[action-selectview-event]' : 'onSelectView',
-			'click a[action-button-event]'     : 'onButton'
+			'touchend [action-selectview-event]' : 'onSelectView',
+			'touchend [action-button-event]'     : 'onButton'
 		},
 		
 		actionNodes : {
@@ -1660,7 +1660,7 @@
 		onSelectView : function(e){
 			
 			var self = this;
-			var nowActiveItem = $(e.target).parent();
+			var nowActiveItem =$(e.target);
 			var status    	  = $(nowActiveItem).attr('status');
 			var activeStatus  = self.destroyActiveAction(nowActiveItem);
 			if(!activeStatus){
@@ -1682,7 +1682,7 @@
 		onButton : function(e){
 			
 			var self = this;
-			var nowActiveItem = $(e.target).parent();
+			var nowActiveItem = $(e.target);
 			var id = $(nowActiveItem).data('id');
 			var config = self.actionNodes[id].config;
 			config.submit();

@@ -26,7 +26,7 @@
 		</div>
 
 		<h1 class="am-header-title">
-			<a href="#title-link" class=""> Amaze UI </a>
+			<a href="#title-link" class=""> Pivot and Waterfall </a>
 		</h1>
 
 		<div class="am-header-right am-header-nav">

@@ -62,5 +62,11 @@ public class WidgetController extends WebController {
 		setDataCtx(request);
 		return "forward:/component/Sidebar.jsp";
 	}
+	
+	@RequestMapping(value="/AddressSelector.html",  method = RequestMethod.GET)
+	public String AddressSelector(HttpServletResponse response, HttpServletRequest request) throws IOException {
+		setDataCtx(request);
+		return "forward:/component/AddressSelector.jsp";
+	}
 
 }

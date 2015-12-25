@@ -23,7 +23,8 @@
 			'actionBar'		   : 'js/widget/action-bar',
 			'listView'		   : 'js/widget/list-view',
 		    'scrollView'	   : 'js/widget/scroll-view',
-		    'sidebar'	   	   : 'js/widget/sidebar'
+		    'sidebar'	   	   : 'js/widget/sidebar',
+		    'addressSelector'  : 'js/widget/address-selector'
 		},
 		
 		shim: {
@@ -41,6 +42,10 @@
 			
 			'sidebar' : {
 				deps: ['underscore', 'lodash', 'handlebars', 'backbone', 'backbone.view','swipe']
+			},
+			
+			'addressSelector' : {
+				deps: ['underscore', 'lodash', 'handlebars', 'backbone', 'backbone.view','swipe', 'sidebar']
 			}
 		},
 		
