@@ -116,7 +116,7 @@
 	ListView.prototype.initWaterfallMode = function(){
 		
 		this.$warpiscroll = $("<div>", {'id' : 'warp-iscroll'})
-//		$(this.$warpiscroll, parentNode).append(this.pullDownTpl());
+		$(this.$warpiscroll, this.parentNode).append(this.pullDownTpl());
 		$(this.$warpiscroll, this.parentNode).append(this.bodyContext());
 		$(this.$warpiscroll, this.parentNode).append(this.pullUpTpl());
 		this.$warpiscroll.appendTo(this.$main);
@@ -210,6 +210,9 @@
         }
 	}
 	
+	/**
+	 * 向下拽刷新所有内容(后续开发)
+	 */
 	ListView.prototype.handlePullDown = function(){
  
 	}

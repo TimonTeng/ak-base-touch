@@ -22,8 +22,11 @@
 			<li><a href="ListView.html">ListView</a></li>
 			<li><a href="PivotListView.html">PivotListView</a></li>
 			<li><a href="PivotAndWaterfall.html">Pivot And Waterfall</a></li>
+			<li><a href="SideframeView.html">SideframeView</a></li>
 			<li><a href="Sidebar.html">Sidebar</a></li>
 			<li><a href="AddressSelector.html">AddressSelector</a></li>
+			<li><a href="HeaderNavigate.html">HeaderNavigate</a></li>
+			<li><a href="ContextView.html">ContextView</a></li>
 		</ul>
 	  </div>
 	</div>

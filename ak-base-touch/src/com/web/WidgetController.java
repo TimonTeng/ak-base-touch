@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Controller
 public class WidgetController extends WebController {
 	
-	
 	@RequestMapping(value="/index.html",  method = RequestMethod.GET)
 	public String index(HttpServletResponse response, HttpServletRequest request) throws IOException {
 		setDataCtx(request);
@@ -63,10 +62,27 @@ public class WidgetController extends WebController {
 		return "forward:/component/Sidebar.jsp";
 	}
 	
+	@RequestMapping(value="/SideframeView.html",  method = RequestMethod.GET)
+	public String SideframeView(HttpServletResponse response, HttpServletRequest request) throws IOException {
+		setDataCtx(request);
+		return "forward:/component/SideframeView.jsp";
+	}
+	
 	@RequestMapping(value="/AddressSelector.html",  method = RequestMethod.GET)
 	public String AddressSelector(HttpServletResponse response, HttpServletRequest request) throws IOException {
 		setDataCtx(request);
 		return "forward:/component/AddressSelector.jsp";
 	}
-
+	
+	@RequestMapping(value="/HeaderNavigate.html",  method = RequestMethod.GET)
+	public String HeaderNavigate(HttpServletResponse response, HttpServletRequest request) throws IOException {
+		setDataCtx(request);
+		return "forward:/component/HeaderNavigate.jsp";
+	}
+	
+	@RequestMapping(value="/ContextView.html",  method = RequestMethod.GET)
+	public String ContextView(HttpServletResponse response, HttpServletRequest request) throws IOException {
+		setDataCtx(request);
+		return "forward:/component/ContextView.jsp";
+	}
 }

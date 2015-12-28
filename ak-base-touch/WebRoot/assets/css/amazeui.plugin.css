@@ -5,7 +5,7 @@
 html,
 body {
 	background-color: #F3F3F3;
-	font-family: '微软雅黑';
+	font-family: "微软雅黑";
 	margin: 0px;
 	padding:0px;
 	width: 100%;
@@ -71,6 +71,8 @@ input, button {
 
 .am-plugin-actionbar{
 	cursor: pointer;
+	height: 40px;
+	line-height: 40px;
 }
 
 .am-plugin-actionbar-active{
@@ -295,7 +297,7 @@ input, button {
 }
 
 .am-plugin-sidebar {
-   position: absolute;
+   position: fixed;
    overflow: hidden;
    width: 100%;
    bottom : 0;
@@ -374,15 +376,86 @@ input, button {
 	 height: 100%;
 }
 
+.am-plugin-sidebar-header {
+	width: 100%;
+	height: 49px;
+	line-height: 49px;
+	padding: 0px 10px;
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	right: 0px;
+	width: 100%;
+	z-index : 10;
+	background-color: white;
+	border-bottom: 1px solid #ececec;
+}
+
+.am-plugin-header {
+	position: fixed;
+	z-index: 999;
+	width: 100%;
+	height: 49px;
+	line-height: 49px;
+	padding: 0px 10px;
+	top: 0px;
+	left: 0px;
+	right: 0px;
+	width: 100%;
+	background-color: #fff;
+}
+
+.am-plugin-header-title {
+	margin: 0px 20%;
+	font-size: 2rem;
+	font-weight : 400;	
+	text-align: center;
+	display: block;
+	word-wrap: normal;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+}
+
+.am-plugin-header-left {
+	position: absolute;
+	top: 0px;
+	bottom : 0px;
+	left: 5px;
+	width: 50px;
+	cursor: pointer;
+	line-height: 49px;
+}
+
+.am-plugin-header-right {
+	position: absolute;
+	top: 0px;
+	bottom : 0px;
+	right: 5px;
+	width: 50px;
+	cursor: pointer;
+	text-align: center;
+	font-weight: 200;
+	color: red;
+}
+
+.am-plugin-context-view {
+	
+	
+	
+}
+
+
 .icon_return {
+	background-position: 1rem 1.9rem;
+	background-size: 1rem 1.6rem;
+	background-repeat: no-repeat;
 	width :17px;
-	height : 30px;
+    height: 100%;
 	margin: auto; 
 	position : absolute; 
-	top : 0; 
-	left : 0; 
-	bottom : 0; 
-	right : 0;
+	padding-left: 3.5rem;
+	position: relative;
 	background-image: url("http://www.uni020.com/mobile/assets/images/top_return.png");
 }
  

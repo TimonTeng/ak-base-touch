@@ -137,18 +137,24 @@
 	 * 打开
 	 */
 	Sidebar.prototype.open = function(){
+		var self = this;
 		var transform = {
 				'transition-duration' : '.2s',
 				'transition-timing-function' : 'linear',
 				'transform' : 'translate(0px, 0px)'
 		};
-		this.$body.css(transform);
+		this.$body.css('display', 'block');
+		var timeoutId = setTimeout(function() {
+			self.$body.css(transform);
+			clearTimeout(timeoutId);
+		}, 500);
 	}
 	
 	/**
 	 * 关闭
 	 */
 	Sidebar.prototype.close = function(){
+		var self = this;
 		var x = document.body.clientWidth;
 		var transform = { 
 				'transition-duration' : '.2s',
@@ -156,6 +162,10 @@
 				'transform' : 'translate('+x+'px, 0px)'
 		};
 		this.$body.css(transform);
+		var timeoutId = setTimeout(function() {
+			self.$body.css('display', 'none');
+			clearTimeout(timeoutId);
+		}, 300);
 	}
 	
 	
