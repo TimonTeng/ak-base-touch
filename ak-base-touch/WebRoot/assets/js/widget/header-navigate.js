@@ -67,8 +67,9 @@
 			
 			if(this.left.isSideFrameView){
 				var intervalId = setInterval(function() {
-					if(document.parentWindow){
-						document.parentWindow.SideFrameView.bindClose(self.$left);
+					if (document.parentWindow) {
+						document.parentWindow.SideFrameView
+								.bindClose(self.$left);
 						clearInterval(intervalId);
 					}
 				}, 300);
@@ -92,6 +93,10 @@
 					'class' : ''+this.right.iconClass
 				});
 				this.$rightIcon.appendTo(this.$right);
+			}
+			
+			if(this.right.title){
+				this.$right.text(this.right.title);
 			}
 			
 			if(this.right.event){

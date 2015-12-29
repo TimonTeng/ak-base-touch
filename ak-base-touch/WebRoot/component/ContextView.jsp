@@ -30,104 +30,69 @@
 				class="am-header-icon am-icon-bars"></i>
 			</a>
 		</div>
-		
-		
-		<div id="scrollview" class="am-plugin-scrollview">
-			<div>
-				<div id="contextView" class="am-plugin-context-view"></div>
-			</div>
-		</div>
-		
-		
 	</header>
+	
+	<div id="scrollview" class="am-plugin-scrollview">
+		<div>
+			<div id="contextView" class="am-plugin-context-view"></div>
+		</div>
+	</div>
 	 
 	<script type="text/javascript">
 		 window.mainPath = '${ctx}'; 
 	</script>
-	<%-- 
-	<div class="doc-code demo-highlight">
-		<pre>
-			<code class="xml">
-			
-				require(['jquery', 'amazeui', 'contextView'], function($, amazeui, ContextView){
-					 	 
-			 	var contextView = new ContextView({
-			 		parentNode : '#contextView',
-			 		items : [
-			 			{
-			 				id : 'item1',
-			 				template : 'xxxxx.tpl',
-			 				apiUrl : '',
-			 				result : 'form',
-					 		renderAfter : function(contextElement){
-					 		
-					 		}
-			 			},
-			 			{
-			 				id : 'item2',
-			 				template : 'xxxxx.tpl',
-			 				apiUrl : '',
-			 				result : 'data',
-					 		renderAfter : function(contextElement){
-					 		
-					 		}
-			 			},
-			 			{
-			 				id : 'item3',
-			 				template : 'xxxxx.tpl',
-			 				apiUrl : '',
-			 				result : 'form',
-						 	renderAfter : function(contextElement){
-					 		
-					 		}
-			 			}
-			 		],
-			 		
-			 		renderAfter : function(){
-			 		
-			 		},
-			 		
-			 		scrollView : null
-			 	});
-				});
-			
-			</code>		
-		</pre>
-	</div>
-	 --%>
 	<script src="${ctx}/assets/js/lib/require.js"></script>
 	<script src="${ctx}/assets/js/src/config.js"></script>
 	<script type="text/javascript">
 		 
 		require(['jquery', 'amazeui', 'contextView', 'scrollView'], function($, amazeui, ContextView, ScrollView){
 		
-				var ScrollView = new ScrollView({
-					parentNod : 'scrollview',
+				var scrollView = new ScrollView({
+					parentNode : '#scrollview',
 					style : {
 						top : '50px'
 					}
 				});
 		
-			 	 
 			 	var contextView = new ContextView({
+			 	
 			 		parentNode : '#contextView',
+			 		
 			 		items : [
 			 			{
 			 				id : 'item1',
-			 				template : 'assets/template/list-view.tpl',
-			 				apiUrl : 'assets/data/context-view.json',
+			 				template : 'assets/template/list-view.tpl?v='+new Date(),
+			 				apiUrl : 'assets/data/context-view.json?v='+new Date(),
 			 				result : 'data',
-					 		renderAfter : function(contextElement){
+					 		renderAfter : function(contextElement){ //contextElement = item1 Element
+					 		
+					 		}
+			 			},
+			 			{
+			 				id : 'item2',
+			 				template : 'assets/template/list-view.tpl?v='+new Date(),
+			 				apiUrl : 'assets/data/context-view.json?v='+new Date(),
+			 				result : 'data',
+					 		renderAfter : function(contextElement){ //contextElement = item2 Element
+					 		
+					 		}
+			 			},
+			 			{
+			 				id : 'item3',
+			 				template : 'assets/template/list-view.tpl?v='+new Date(),
+			 				apiUrl : 'assets/data/context-view.json?v='+new Date(),
+			 				result : 'data',
+					 		renderAfter : function(contextElement){ //contextElement = item3 Element
 					 		
 					 		}
 			 			}
 			 		],
 			 		
-			 		renderAfter : function(){
-			 		
+			 		loadComplete : function(){ //加载完成
+			 			 
 			 		},
 			 		
-			 		scrollView : null
+			 		scrollView : scrollView
 			 	});
 		});
 	

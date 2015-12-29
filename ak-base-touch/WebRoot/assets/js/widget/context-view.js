@@ -45,7 +45,7 @@
 	
 	function ContextView(){
 		
-		this.items = this.view = this.renderAfter = this.scrollView = null;
+		this.items = this.view = this.loadComplete = this.scrollView = null;
 		
 		this.contextItems = [];
 		
@@ -56,29 +56,28 @@
 	}
 	
 	ContextView.prototype.initConfiguration = function(view){
-		
 		this.view = view;
 		this.scrollView   = view.getAttr('scrollView');
-		this.contextItems = view.getAttr('items');
-		this.renderAfter  = view.getAttr('renderAfter');
+		this.contextItems = view.getAttr('items') || [];
+		this.loadComplete  = view.getAttr('loadComplete');
 		var parentNode    = view.getAttr('parentNode');
 		this.$parentNode  = $(parentNode);
 		
-		if(!this.contextItems || this.contextItems.length = 0){
+		if(this.contextItems.length === 0){
 			 throw Error('ContextView attribute items unspecified');
 			 return;
 		}
-		
-		if($parentNode.length == 0){
+ 
+		if(this.$parentNode.length === 0){
 			 throw Error('ContextView attribute parentNode unspecified');
 			 return;
 		}
-		
-		if(this.scrollView){
-			 throw Error('ContextView attribute ScrollView unspecified');
+ 
+		if(!this.scrollView){
+			 throw Error('ContextView attribute scrollView unspecified');
 			 return;
 		}
-		
+ 
 		this.init();
 	}
 	
@@ -86,11 +85,11 @@
 	 * 初始化
 	 */
 	ContextView.prototype.init = function(){
-		for(var i=0; i < this.contextItems.length; i++) {
-			var config =  this.contextItems[i];
-			this.loadContext(config);
-		}
 		this.renderComplete();
+		for(var i = 0; i < this.contextItems.length; i++) {
+			var config =  this.contextItems[i];
+			this.loadContext(config, i);
+		}
 	}
 	
 	/**
@@ -99,16 +98,16 @@
 	ContextView.prototype.renderComplete = function(){
 		
 		var self = this;
-		if(!this.renderAfter){
+		if(!self.renderAfter){
 			return;
 		}
 		var intervalId =  setInterval(function() {
 			if(self.threads == self.contextItems.length){
-				self.view.renderAfter();
+				self.loadComplete();
 				self.scrollView.refresh();
 				clearInterval(intervalId);
 			}
-		}, 500);
+		}, 1000);
 	}
 	
 	/**
@@ -151,8 +150,9 @@
 		var self = this;
         $.getJSON(config.apiUrl).then(function(data) {
         	var html = self.renderContext(config, data[config.result]);
-    		var $contextElement = this.createContextElement(config, index);
+    		var $contextElement = self.createContextElement(config, index);
     		$contextElement.html(html);
+    		$contextElement.appendTo(self.$parentNode);
     		if(config.renderAfter){
     			config.renderAfter($contextElement);
     		}
@@ -162,7 +162,6 @@
         });
 	}
 	
-
 	var Model = Backbone.Model.extend({
 		idAttribute: '',
 		defaults : {}
