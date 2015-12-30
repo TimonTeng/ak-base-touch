@@ -65,28 +65,42 @@
  
 		setup: function() {
 			
+			
 			var self = this;
-			var parentNode = self.getAttr('parentNode');
-			var style      = self.getAttr('style');
+			var parentNode = this.getAttr('parentNode');
+			var style      = this.getAttr('style');
 			var $main      = $(parentNode);
 			
 	        var iscroll = new $.AMUI.iScroll(parentNode, {
 			      click : true
 		    });
 	        
-	        self.setAttr('iscroll', iscroll);
-	        
-	        $main.css(style);
-	        $main.css('display', 'block');
-	        
-	        self.activate = true;
-	        var activate = self.getAttr('activate');
-	        
+	        this.setAttr('iscroll', iscroll);
+	        if(style){
+	        	$main.css(style);
+	        }
+ 
+	        var activate = this.activate = this.getAttr('activate') || 'true';
+ 
 	        if(activate){
-	        	this.activate = activate;
-	        	self.onActivate(activate);
+	    		switch(activate){
+	    			case 'true'  :  this.setActivateOn(); break;
+	    			case 'false' :  this.setActivateOff(); break;
+	    			default : break;
+	    		}
 	        }
 	        
+	        var formElement = {
+		        	'INPUT'  : 'INPUT',
+		        	'TEXTAREA' : 'TEXTAREA'
+            };
+	 
+	        document.addEventListener('touchend', function(e) {
+	        	if(document.activeElement.tagName in formElement){
+	        		document.activeElement.blur();
+	        	}
+	        }, false);
+ 
 		    document.addEventListener('touchmove', function(e) {
 		        e.preventDefault();
 		    }, false);
@@ -99,28 +113,50 @@
 		},
 		
 		/**
-		 * 是否激活
+		 * 激活
 		 */
+		setActivateOn : function(){
+			 
+			var transform = {
+					'transition-duration' : '.2s',
+					'transition-timing-function' : 'linear',
+					'transform' : 'translate(0px, 0px)'
+			};
+			var parentNode = this.getAttr('parentNode');
+			$(parentNode).css(transform);
+		},
+		
+		/**
+		 * 关闭
+		 */
+		setActivateOff : function(){
+			 
+			var x = document.body.clientWidth;
+			var transform = { 
+					'display' : 'none',
+					'transition-duration' : '0s',
+					'transition-timing-function' : 'linear',
+					'transform' : 'translate('+x+'px, 0px)'
+			};
+			var parentNode = this.getAttr('parentNode');
+			$(parentNode).css(transform);
+		},
+		
 		onActivate : function(activate){
 			var self = this;
-			var parentNode = self.getAttr('parentNode');
-			var x = 0;
-			if(activate == true || activate == 'true'){
-				var transform = {
-						'transition-duration' : '.2s',
-						'transition-timing-function' : 'linear',
-						'transform' : 'translate('+x+'px, 0px)'
-				};
-				$(parentNode).css(transform);
+			if(activate == true){
+				var parentNode = this.getAttr('parentNode');
+				$(parentNode).css('display', 'block');
+				var timeoutId = setTimeout(function() {
+					self.setActivateOn();
+					clearTimeout(timeoutId);
+				}, 100);
+				return;
 			}
-			if(activate == false || activate == 'false'){
-				x = document.body.clientWidth;
-				var transform = { 
-						'transition-duration' : '0s',
-						'transition-timing-function' : 'linear',
-						'transform' : 'translate('+x+'px, 0px)'
-				};
-				$(parentNode).css(transform);
+			
+			if(activate == false){
+				this.setActivateOff();
+				return;
 			}
 		}
 		

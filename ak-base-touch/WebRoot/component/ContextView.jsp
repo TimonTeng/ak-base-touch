@@ -60,6 +60,16 @@
 			 		
 			 		items : [
 			 			{
+			 				id : 'form',
+			 				templateOnly : true,
+			 				template : 'assets/template/list-view.tpl?v='+new Date(),
+			 				apiUrl : 'assets/data/context-view.json?v='+new Date(),
+			 				result : 'data',
+					 		renderAfter : function(contextElement){ //contextElement = item1 Element
+					 		
+					 		}
+			 			},
+			 			{
 			 				id : 'item1',
 			 				template : 'assets/template/list-view.tpl?v='+new Date(),
 			 				apiUrl : 'assets/data/context-view.json?v='+new Date(),

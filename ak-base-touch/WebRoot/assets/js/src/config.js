@@ -25,6 +25,7 @@
 		    'scrollView'	   : 'js/widget/scroll-view',
 		    'sidebar'	   	   : 'js/widget/sidebar',
 		    'sideFrameView'	   : 'js/widget/sideframe-view',
+		    'sideSelectView'   : 'js/widget/sideselect-view',
 		    'contextView'	   : 'js/widget/context-view',
 		    'headerNavigate'   : 'js/widget/header-navigate',
 		    'addressSelector'  : 'js/widget/address-selector'
@@ -42,16 +43,19 @@
 			'listView' : {
 				deps: ['underscore', 'lodash', 'handlebars', 'backbone', 'backbone.view','swipe']
 			},
-			
-			'sideFrameView' : {
-				deps: ['underscore', 'lodash', 'handlebars', 'backbone', 'backbone.view','swipe']
-			},
-			
 			'contextView' : {
 				deps: ['underscore', 'lodash', 'handlebars', 'backbone', 'backbone.view','swipe']
 			},
 			
 			'sidebar' : {
+				deps: ['underscore', 'lodash', 'handlebars', 'backbone', 'backbone.view','swipe']
+			},
+			
+			'sideFrameView' : {
+				deps: ['underscore', 'lodash', 'handlebars', 'backbone', 'backbone.view','swipe']
+			},
+			
+			'sideSelectView' : {
 				deps: ['underscore', 'lodash', 'handlebars', 'backbone', 'backbone.view','swipe']
 			},
 			

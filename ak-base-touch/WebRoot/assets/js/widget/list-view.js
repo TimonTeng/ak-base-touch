@@ -116,7 +116,7 @@
 	ListView.prototype.initWaterfallMode = function(){
 		
 		this.$warpiscroll = $("<div>", {'id' : 'warp-iscroll'})
-		$(this.$warpiscroll, this.parentNode).append(this.pullDownTpl());
+//		$(this.$warpiscroll, this.parentNode).append(this.pullDownTpl());
 		$(this.$warpiscroll, this.parentNode).append(this.bodyContext());
 		$(this.$warpiscroll, this.parentNode).append(this.pullUpTpl());
 		this.$warpiscroll.appendTo(this.$main);
@@ -207,6 +207,7 @@
         	  this.$pullUpLabel.text('已经到最后了');
           }
         } else {
+        	
         }
 	}
 	
@@ -379,37 +380,59 @@
 		this.iScroll.refresh();
 	}
 	
+	/**
+	 * 激活
+	 */
+	ListView.prototype.setActivateOn = function(){
+		var transform = {
+				'transition-duration' : '.2s',
+				'transition-timing-function' : 'linear',
+				'transform' : 'translate(0px, 0px)'
+		};
+		this.$main.css(transform);
+	}
+	
+	/**
+	 * 关闭
+	 */
+	ListView.prototype.setActivateOff = function(){
+		var x = document.body.clientWidth;
+		var transform = { 
+				'display' : 'none',
+				'transition-duration' : '0s',
+				'transition-timing-function' : 'linear',
+				'transform' : 'translate('+x+'px, 0px)'
+		};
+		this.$main.css(transform);
+	}
 	
 	ListView.prototype.onActivate = function(activate){
-		
-		var x = 0;
-		if(activate == true || activate == 'true'){
-			var transform = {
-					'transition-duration' : '.2s',
-					'transition-timing-function' : 'linear',
-					'transform' : 'translate('+x+'px, 0px)'
-			};
-			$(this.parentNode).css(transform);
+		var self = this;
+		if(activate == true){
+			this.$main.css('display', 'block');
+			var timeoutId = setTimeout(function() {
+				self.setActivateOn();
+				clearTimeout(timeoutId);
+			}, 100);
+			return;
 		}
-		if(activate == false || activate == 'false'){
-			x = document.body.clientWidth;
-			var transform = { 
-					'transition-duration' : '0s',
-					'transition-timing-function' : 'linear',
-					'transform' : 'translate('+x+'px, 0px)'
-			};
-			$(this.parentNode).css(transform);
+		
+		if(activate == false){
+			this.setActivateOff();
+			return;
 		}
 	}
 	
 	ListView.prototype.setActivate = function(){
-		var self = this;
-		var activate = self.view.getAttr('activate');
-		if(activate == 'true' || activate == 'false'){
-			self.activate = activate;
-			self.onActivate(activate);
+ 
+		var activate = this.view.getAttr('activate');
+		switch(activate){
+			case 'true'  :  this.setActivateOn(); break;
+			case 'false' :  this.setActivateOff(); break;
+			default : break;
 		}
 	}
+	
 	
 	ListView.prototype.setPage = function(options){
 		var self = this;

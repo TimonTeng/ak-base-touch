@@ -22,7 +22,7 @@
 		</div>
 
 		<h1 class="am-header-title">
-			<a href="#title-link" class=""> Sideframe View </a>
+			<a href="#title-link" class=""> SideFrame View </a>
 		</h1>
 
 		<div class="am-header-right am-header-nav">

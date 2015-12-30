@@ -85,4 +85,10 @@ public class WidgetController extends WebController {
 		setDataCtx(request);
 		return "forward:/component/ContextView.jsp";
 	}
+	
+	@RequestMapping(value="/SideSelectView.html",  method = RequestMethod.GET)
+	public String SideSelectView(HttpServletResponse response, HttpServletRequest request) throws IOException {
+		setDataCtx(request);
+		return "forward:/component/SideSelectView.jsp";
+	}
 }

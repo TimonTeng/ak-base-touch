@@ -87,8 +87,10 @@
 	ContextView.prototype.init = function(){
 		this.renderComplete();
 		for(var i = 0; i < this.contextItems.length; i++) {
-			var config =  this.contextItems[i];
-			this.loadContext(config, i);
+			var config = this.contextItems[i];
+			var $contextElement = this.createContextElement(config, i);
+			var loadMethod = ('templateOnly' in config) ? 'loadTemplateOnly' : 'loadContext' ;
+			this[loadMethod](config, $contextElement);
 		}
 	}
 	
@@ -98,7 +100,7 @@
 	ContextView.prototype.renderComplete = function(){
 		
 		var self = this;
-		if(!self.renderAfter){
+		if(!self.loadComplete){
 			return;
 		}
 		var intervalId =  setInterval(function() {
@@ -107,7 +109,7 @@
 				self.scrollView.refresh();
 				clearInterval(intervalId);
 			}
-		}, 1000);
+		}, 500);
 	}
 	
 	/**
@@ -123,9 +125,9 @@
 	 */
 	ContextView.prototype.createContextElement = function(config, index){
 		var id = config.id || 'am-plugin-context-view'+index;
-		return $('<div>', {
-			id : id
-		});
+		var $contextElement = $('<div>', { id : id });
+		$contextElement.appendTo(this.$parentNode);
+		return $contextElement;
 	}
 	
 	/**
@@ -139,10 +141,34 @@
 	
 	
 	/**
+	 * 把渲染内容添加至父节点
+	 * @param config
+	 * @param index
+	 */
+	ContextView.prototype.appendToParentNode = function(config, html, $contextElement){
+		$contextElement.html(html);
+		if(config.renderAfter){
+			config.renderAfter($contextElement);
+		}
+		this.renderItemComplete();
+	}
+	
+	
+	/**
+	 * 只加载模板
+	 * @param config
+	 * @param index
+	 */
+	ContextView.prototype.loadTemplateOnly = function(config, $contextElement){
+		var html = this.renderContext(config, null);
+		this.appendToParentNode(config, html, $contextElement);
+	}
+	
+	/**
 	 * 加载内容
 	 * @param config
 	 */
-	ContextView.prototype.loadContext = function(config, index){
+	ContextView.prototype.loadContext = function(config, $contextElement){
 		if(!config.result){
 			 throw Error('ContextView.items config.result attribute unspecified');
 			 return;
@@ -150,13 +176,7 @@
 		var self = this;
         $.getJSON(config.apiUrl).then(function(data) {
         	var html = self.renderContext(config, data[config.result]);
-    		var $contextElement = self.createContextElement(config, index);
-    		$contextElement.html(html);
-    		$contextElement.appendTo(self.$parentNode);
-    		if(config.renderAfter){
-    			config.renderAfter($contextElement);
-    		}
-    		self.renderItemComplete();
+        	self.appendToParentNode(config, html, $contextElement);
         }, function() {
             console.log('ContextView.loadContext Error...')
         });
