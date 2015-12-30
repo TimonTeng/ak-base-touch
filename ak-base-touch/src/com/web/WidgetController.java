@@ -91,4 +91,10 @@ public class WidgetController extends WebController {
 		setDataCtx(request);
 		return "forward:/component/SideSelectView.jsp";
 	}
+	
+	@RequestMapping(value="/Toolbar.html",  method = RequestMethod.GET)
+	public String Toolbar(HttpServletResponse response, HttpServletRequest request) throws IOException {
+		setDataCtx(request);
+		return "forward:/component/Toolbar.jsp";
+	}
 }

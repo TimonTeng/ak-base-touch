@@ -28,6 +28,7 @@
 			<li><a href="Sidebar.html">Sidebar</a></li>
 			<li><a href="SideframeView.html">SideFrameView</a></li>
 			<li><a href="SideSelectView.html">SideSelectView</a></li>
+			<li><a href="Toolbar.html">Toolbar</a></li>
 		</ul>
 	  </div>
 	</div>

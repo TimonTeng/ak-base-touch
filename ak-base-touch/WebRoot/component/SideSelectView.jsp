@@ -104,48 +104,48 @@
 			});
 		
 			var sideSelectView = new SideSelectView({
-				 parentNode : 'form',
+				 parentNode : '#form',
 				 columns : [
 				 	{
-				 		id           : 'province',
-				 		type   	     : 'single', //默认：single, type = (single、multiple)
-				 		result 	     : 'data',
-				 		apiUrl       : 'assets/data/side-select-province.json',
-				 		displayField : 'name'
+				 		touchTargetId : 'province',
+				 		type   	      : 'single', //默认：single, type = (single、multiple)
+				 		result 	      : 'data',
+				 		apiUrl        : 'assets/data/side-select-province.json',
+				 		displayField  : 'name'
 				 	},
 				 	{
-				 		id  		 : 'city',
-				 		type   		 : 'single', //默认：single, type = (single、multiple)
-				 		result 		 : 'data',
-				 		apiUrl 		 : 'assets/data/side-select-city.json',
-				 		displayField : 'name',
-				 		join 		 : 'province',
-				 		joinPropertys: [{
+				 		touchTargetId : 'city',
+				 		type   		  : 'single', //默认：single, type = (single、multiple)
+				 		result 		  : 'data',
+				 		apiUrl 		  : 'assets/data/side-select-city.json',
+				 		displayField  : 'name',
+				 		join 		  : 'province',
+				 		joinPropertys : [{
 				 			'id' : 'provinceId'
 				 		}]
 				 	},
 				 	{
-				 		id  		 : 'district',
-				 		type   		 : 'single', //默认：single, type = (single、multiple)
-				 		result 		 : 'data',
-				 		apiUrl 		 : 'assets/data/side-select-district.json',
-				 		displayField : 'name',
-				 		join 		 : 'city',
-				 		joinPropertys: [{
+				 		touchTargetId : 'district',
+				 		type   		  : 'single', //默认：single, type = (single、multiple)
+				 		result 		  : 'data',
+				 		apiUrl 		  : 'assets/data/side-select-district.json',
+				 		displayField  : 'name',
+				 		join 		  : 'city',
+				 		joinPropertys : [{
 				 			'id' : 'cityId'
 				 		}]
 				 	},
 				 	{
-				 		id     		 : 'webSide',
-				 		type   		 : 'multiple', //默认：single, type = (single、multiple)
-				 		result 		 : 'data',
-				 		apiUrl 		 : 'assets/data/website.json',
-				 		displayField : 'name'
+				 		touchTargetId : 'webSide',
+				 		type   		  : 'multiple', //默认：single, type = (single、multiple)
+				 		result 		  : 'data',
+				 		apiUrl 		  : 'assets/data/website.json',
+				 		displayField  : 'name'
 				 	},
 				 	{
-				 		id  : 'birthday',
-				 		type : 'date',
-				 		pattern : 'yyyy-MM-dd'
+				 		touchTargetId : 'birthday',
+				 		type          : 'date',
+				 		pattern       : 'yyyy-MM-dd'
 				 	}
 				 ]
 			});

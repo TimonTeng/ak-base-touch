@@ -13,7 +13,6 @@ body {
 	margin:0px;
 }
 
-
 ul {
 	padding: 0;
 	margin: 0;
@@ -23,7 +22,7 @@ li {
 	list-style: none;
 }
 
-a, s, span, h1, h2, h3, h4, h5, i, b, font, label, p {
+h1, h2, h3, h4, h5, i, b, font, label, p {
 	display: inline-block;
 }
 
@@ -445,6 +444,24 @@ input, button {
 	width: 100%;
 }
 
+.am-plugin-toolbar {
+	position: absolute;
+	bottom:  0;
+	background-color: #fff;
+	cursor: pointer;
+	overflow: hidden;
+}
+
+.am-plugin-toolbar-mesh{
+    height: 100%;
+    display:table-cell;
+    vertical-align:middle; 
+}
+
+.am-plugin-toolbar-mesh input{
+	display: inline-block;
+}
+
 
 .icon_return {
 	background-position: 1rem 1.9rem;
@@ -456,7 +473,7 @@ input, button {
 	position : absolute; 
 	padding-left: 3.5rem;
 	position: relative;
-	background-image: url("http://www.uni020.com/mobile/assets/images/top_return.png");
+	background-image: url("../../images/top_return.png");
 }
  
 

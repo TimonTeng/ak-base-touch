@@ -1,8 +1,8 @@
 /**
- <ZA-Mall Config> JavaScript Document
+ <AK-touch Config> JavaScript Document
  -> Version : 1.0
  -> Require : RequireJS
- -> Copyright © 2015 za-mall. All rights reserved.
+ -> Copyright © 2015 ak-touch. All rights reserved.
  */
 
 	requirejs.config({
@@ -26,6 +26,7 @@
 		    'sidebar'	   	   : 'js/widget/sidebar',
 		    'sideFrameView'	   : 'js/widget/sideframe-view',
 		    'sideSelectView'   : 'js/widget/sideselect-view',
+		    'toolbar'   	   : 'js/widget/toolbar',
 		    'contextView'	   : 'js/widget/context-view',
 		    'headerNavigate'   : 'js/widget/header-navigate',
 		    'addressSelector'  : 'js/widget/address-selector'
