@@ -19,7 +19,6 @@
   		.list li{
   			height: 45px;
   			line-height: 45px;
-  			background-color: silver;
   			margin-top: 10px;
   			text-align: right;
   			padding-right: 20px;
@@ -76,15 +75,14 @@
 					<li>区：<label></label><i class="am-icon-chevron-right" id="webSide"><input type="hidden" name="" /></i></li>
 					<li>我喜欢的网站：<label></label><i class="am-icon-chevron-right" id="city"><input type="hidden" name="" /></i></li>
 					<li>我的生日：<label></label><i class="am-icon-chevron-right" id="birthday"><input type="hidden" name="" /></i></li>
-					<li>姓名：<input type="text" name="" /></li>
-					<li>签名：<textarea rows="1" cols="10"></textarea></li>
+					<li><input type="text" name="" class="am-form-field am-round" placeholder="姓名" /></li>
+					<li><textarea rows="1" cols="10" class="am-form-field am-round" placeholder="签名"></textarea></li>
 					<li>我的开发技能：<label></label><i class="am-icon-chevron-right" ><input type="hidden" name="" /></i></li>
 				</ul>
 			</div>
 		</div>
 	</div>
 	
- 
 	<script type="text/javascript">
 		 window.mainPath = '${ctx}'; 
 	</script>
