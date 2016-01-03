@@ -70,14 +70,14 @@
 		<div>
 			<div id="form" class="list">
 				<ul>
-					<li>省：<label></label><i class="am-icon-chevron-right" id="webSide"><input type="hidden" name="" /></i></li>
-					<li>市：<label></label><i class="am-icon-chevron-right" id="webSide"><input type="hidden" name="" /></i></li>
-					<li>区：<label></label><i class="am-icon-chevron-right" id="webSide"><input type="hidden" name="" /></i></li>
-					<li>我喜欢的网站：<label></label><i class="am-icon-chevron-right" id="city"><input type="hidden" name="" /></i></li>
+					<li>省：<label></label><i class="am-icon-chevron-right" id="province"><input type="hidden" name="" /></i></li>
+					<li>市：<label></label><i class="am-icon-chevron-right" id="city"><input type="hidden" name="" /></i></li>
+					<li>区：<label></label><i class="am-icon-chevron-right" id="district"><input type="hidden" name="" /></i></li>
+					<li>我喜欢的网站：<label></label><i class="am-icon-chevron-right" id="webSide"><input type="hidden" name="" /></i></li>
 					<li>我的生日：<label></label><i class="am-icon-chevron-right" id="birthday"><input type="hidden" name="" /></i></li>
 					<li><input type="text" name="" class="am-form-field am-round" placeholder="姓名" /></li>
 					<li><textarea rows="1" cols="10" class="am-form-field am-round" placeholder="签名"></textarea></li>
-					<li>我的开发技能：<label></label><i class="am-icon-chevron-right" ><input type="hidden" name="" /></i></li>
+					<li>我的开发技能：<label></label><i class="am-icon-chevron-right" id='mySkill'><input type="hidden" name="" /></i></li>
 				</ul>
 			</div>
 		</div>
@@ -103,47 +103,75 @@
 		
 			var sideSelectView = new SideSelectView({
 				 parentNode : '#form',
-				 columns : [
+				 configs : [
 				 	{
+				 		title : '省份选择',
 				 		touchTargetId : 'province',
-				 		type   	      : 'single', //默认：single, type = (single、multiple)
+				 		type   	      : 'single', //默认：single, type = (single、multiple、date、grid)
 				 		result 	      : 'data',
 				 		apiUrl        : 'assets/data/side-select-province.json',
-				 		displayField  : 'name'
+				 		displayField  : 'name',
+				 		onSelect : function(selectObject){
+				 			console.log(selectObject);
+				 		}
 				 	},
 				 	{
+				 		title : '城市选择',
 				 		touchTargetId : 'city',
-				 		type   		  : 'single', //默认：single, type = (single、multiple)
+				 		type   		  : 'single', //默认：single, type = (single、multiple、date、grid)
 				 		result 		  : 'data',
 				 		apiUrl 		  : 'assets/data/side-select-city.json',
 				 		displayField  : 'name',
 				 		join 		  : 'province',
 				 		joinPropertys : [{
 				 			'id' : 'provinceId'
-				 		}]
+				 		}],
+				 		onSelect : function(selectObject){
+				 			console.log(selectObject);
+				 		}
 				 	},
 				 	{
+				 		title : '区县选择',
 				 		touchTargetId : 'district',
-				 		type   		  : 'single', //默认：single, type = (single、multiple)
+				 		type   		  : 'single', //默认：single, type = (single、multiple、date、grid)
 				 		result 		  : 'data',
 				 		apiUrl 		  : 'assets/data/side-select-district.json',
 				 		displayField  : 'name',
 				 		join 		  : 'city',
 				 		joinPropertys : [{
 				 			'id' : 'cityId'
-				 		}]
+				 		}],
+				 		onSelect : function(selectObject){
+				 			console.log(selectObject);
+				 		}
 				 	},
 				 	{
+				 		title : '我喜爱的网站',
 				 		touchTargetId : 'webSide',
-				 		type   		  : 'multiple', //默认：single, type = (single、multiple)
+				 		type   		  : 'multiple', //默认：single, type = (single、multiple、date、grid)
 				 		result 		  : 'data',
 				 		apiUrl 		  : 'assets/data/website.json',
-				 		displayField  : 'name'
+				 		displayField  : 'name',
+				 		onSelect : function(selectObject){
+				 			console.log(selectObject);
+				 		}
 				 	},
 				 	{
+				 		title : '我的生日',
 				 		touchTargetId : 'birthday',
-				 		type          : 'date',
-				 		pattern       : 'yyyy-MM-dd'
+				 		type          : 'date',     //默认：type = (single、multiple、date、grid)
+				 		pattern       : 'yyyy-MM-dd',
+				 		onSelect : function(selectObject){
+				 			console.log(selectObject);
+				 		}
+				 	},
+				 	{
+				 		title : '我的技能',
+				 		touchTargetId : 'mySkill',
+				 		type          : 'grid',     //默认：type = (single、multiple、date、grid)
+				 		onSelect : function(selectObject){
+				 			console.log(selectObject);
+				 		}
 				 	}
 				 ]
 			});

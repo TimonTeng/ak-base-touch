@@ -45,7 +45,8 @@
 	'use strict'
 	
 	function Sidebar(){
-		this.level = this.title = this.returnIcon = null;
+		
+		this.id = this.level = this.title = this.returnIcon = null;
 		this.$body = this.$header = this.$context = this.$left = this.$right = this.$title = null;
 		this.view = this.parentView = null;
 	}
@@ -53,7 +54,7 @@
 	Sidebar.prototype.assembly = function(){
 		
 		var self = this;
-		this.close();
+		this.setActivateOff();
 		this.$header.appendTo(this.$body);
 		this.$context.appendTo(this.$body);
 		this.$body.appendTo(document.body);
@@ -72,6 +73,7 @@
 	
 	Sidebar.prototype.createContext = function(){
 		this.$context = $('<div>', {
+			'id'    : 'am-plugin-sidebar-context'+this.id,
 			'class' : 'am-plugin-sidebar-context'
 		});
 	}
@@ -126,6 +128,7 @@
 		this.returnIcon = view.getAttr('returnIcon');
 		this.style      = view.getAttr('style');
 		this.parentView = view.getAttr('parentView');
+		this.id 		= view.getAttr('id') ? '-'+view.getAttr('id') : '';
 		
 		this.createBody();
 		this.createHeader();
@@ -134,38 +137,48 @@
 	}
 	
 	/**
-	 * 打开
+	 * 激活
 	 */
-	Sidebar.prototype.open = function(){
-		var self = this;
+	Sidebar.prototype.setActivateOn = function(){
 		var transform = {
 				'transition-duration' : '.2s',
 				'transition-timing-function' : 'linear',
 				'transform' : 'translate(0px, 0px)'
 		};
+		this.$body.css(transform);
+	}
+	
+	/**
+	 * 关闭
+	 */
+	Sidebar.prototype.setActivateOff = function(){
+		var x = document.body.clientWidth;
+		var transform = { 
+				'display' : 'none',
+				'transition-duration' : '0s',
+				'transition-timing-function' : 'linear',
+				'transform' : 'translate('+x+'px, 0px)'
+		};
+		this.$body.css(transform);
+	}
+	
+	/**
+	 * 打开
+	 */
+	Sidebar.prototype.open = function(){
+		var self = this;
 		this.$body.css('display', 'block');
 		var timeoutId = setTimeout(function() {
-			self.$body.css(transform);
+			self.setActivateOn();
 			clearTimeout(timeoutId);
-		}, 500);
+		}, 100);
 	}
 	
 	/**
 	 * 关闭
 	 */
 	Sidebar.prototype.close = function(){
-		var self = this;
-		var x = document.body.clientWidth;
-		var transform = { 
-				'transition-duration' : '.2s',
-				'transition-timing-function' : 'linear',
-				'transform' : 'translate('+x+'px, 0px)'
-		};
-		this.$body.css(transform);
-		var timeoutId = setTimeout(function() {
-			self.$body.css('display', 'none');
-			clearTimeout(timeoutId);
-		}, 300);
+		this.setActivateOff();
 	}
 	
 	
