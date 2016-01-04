@@ -9,7 +9,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   	<title>ContextView</title>
   	<link rel="stylesheet" href="${ctx}/assets/css/amazeui.css"/>
-  	<link rel="stylesheet" href="${ctx}/assets/css/amazeui.plugin.css"/>
+  	<link rel="stylesheet" href="${ctx}/assets/css/lib/amazeui.plugin.css"/>
 </head>
 
 <body>

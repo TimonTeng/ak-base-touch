@@ -291,7 +291,7 @@
 	ListView.prototype.getUrl = function(){
 //        var queries = ['callback=?'];
         var queries = [];
-        for (var key in  this.params) {
+        for (var key in this.params) {
           if (this.params[key]) {
             queries.push(key + '=' + this.params[key]);
           }

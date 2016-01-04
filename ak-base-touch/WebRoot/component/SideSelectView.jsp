@@ -9,7 +9,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   	<title>SideSelectView</title>
   	<link rel="stylesheet" href="${ctx}/assets/css/amazeui.css"/>
-  	<link rel="stylesheet" href="${ctx}/assets/css/amazeui.plugin.css"/>
+  	<link rel="stylesheet" href="${ctx}/assets/css/lib/amazeui.plugin.css"/>
   	
   	<style type="text/css">
   		.list{
@@ -31,6 +31,9 @@
 			height: 45px;
 			float: right;
 			margin-right: 50px;
+			text-align: left;
+			line-height: 45px;
+			padding-left: 10px;
   		}
   		
   		.list i{
@@ -70,10 +73,10 @@
 		<div>
 			<div id="form" class="list">
 				<ul>
-					<li>省：<label></label><i class="am-icon-chevron-right" id="province"><input type="hidden" name="" /></i></li>
-					<li>市：<label></label><i class="am-icon-chevron-right" id="city"><input type="hidden" name="" /></i></li>
-					<li>区：<label></label><i class="am-icon-chevron-right" id="district"><input type="hidden" name="" /></i></li>
-					<li>我喜欢的网站：<label></label><i class="am-icon-chevron-right" id="webSide"><input type="hidden" name="" /></i></li>
+					<li>省：<label>空</label><i class="am-icon-chevron-right" id="province"><input type="hidden" name="" /></i></li>
+					<li>市：<label>空</label><i class="am-icon-chevron-right" id="city"><input type="hidden" name="" /></i></li>
+					<li>区：<label>空</label><i class="am-icon-chevron-right" id="district"><input type="hidden" name="" /></i></li>
+					<li>我喜欢的网站：<label>空</label><i class="am-icon-chevron-right" id="webSide"><input type="hidden" name="" /></i></li>
 					<li>我的生日：<label></label><i class="am-icon-chevron-right" id="birthday"><input type="hidden" name="" /></i></li>
 					<li><input type="text" name="" class="am-form-field am-round" placeholder="姓名" /></li>
 					<li><textarea rows="1" cols="10" class="am-form-field am-round" placeholder="签名"></textarea></li>
@@ -112,7 +115,9 @@
 				 		apiUrl        : 'assets/data/side-select-province.json',
 				 		displayField  : 'name',
 				 		onSelect : function(selectObject){
-				 			console.log(selectObject);
+				 			//alert(JSON.stringify(selectObject));
+				 			$('label', $("#province").parent()).text(selectObject.name);
+				 			//console.log($('label', $("#province").parent()).html());
 				 		}
 				 	},
 				 	{
@@ -123,11 +128,11 @@
 				 		apiUrl 		  : 'assets/data/side-select-city.json',
 				 		displayField  : 'name',
 				 		join 		  : 'province',
-				 		joinPropertys : [{
+				 		joinPropertys : {
 				 			'id' : 'provinceId'
-				 		}],
+				 		},
 				 		onSelect : function(selectObject){
-				 			console.log(selectObject);
+				 			$('label', $("#city").parent()).text(selectObject.name);
 				 		}
 				 	},
 				 	{
@@ -138,11 +143,11 @@
 				 		apiUrl 		  : 'assets/data/side-select-district.json',
 				 		displayField  : 'name',
 				 		join 		  : 'city',
-				 		joinPropertys : [{
+				 		joinPropertys : {
 				 			'id' : 'cityId'
-				 		}],
+				 		},
 				 		onSelect : function(selectObject){
-				 			console.log(selectObject);
+				 			$('label', $("#district").parent()).text(selectObject.name);
 				 		}
 				 	},
 				 	{
@@ -150,10 +155,15 @@
 				 		touchTargetId : 'webSide',
 				 		type   		  : 'multiple', //默认：single, type = (single、multiple、date、grid)
 				 		result 		  : 'data',
-				 		apiUrl 		  : 'assets/data/website.json',
+				 		apiUrl 		  : 'assets/data/website.json?123',
 				 		displayField  : 'name',
 				 		onSelect : function(selectObject){
-				 			console.log(selectObject);
+				 			var names = new Array();
+				 			selectObject.forEach(function(elt, i) {
+				 				names.push(elt.name);
+				 			});
+				 			$('label', $("#webSide").parent()).text(names.join(','));
+				 			
 				 		}
 				 	},
 				 	{
@@ -175,6 +185,9 @@
 				 	}
 				 ]
 			});
+ 
+			//sideSelectView.setData('mySkill', [{id : 1},{id :2}]);
+			//sideSelectView.setData('province', {id : 1});
  
 		});
 	
