@@ -223,7 +223,8 @@
 
 				editAction : function(record) {
 					//mySkillFormView.loadForm(record);
-					alert(record.get('title'));
+					
+					//alert(record.get('title'));
 				},
 
 				deleteAction : function(record) {
