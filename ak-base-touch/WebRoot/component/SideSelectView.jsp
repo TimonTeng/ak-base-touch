@@ -9,7 +9,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   	<title>SideSelectView</title>
   	<link rel="stylesheet" href="${ctx}/assets/css/amazeui.css"/>
-  	<link rel="stylesheet" href="${ctx}/assets/css/lib/amazeui.plugin.css"/>
+  	<link rel="stylesheet" href="${ctx}/assets/css/lib/amazeui.plugin.css?321"/>
   	
   	<style type="text/css">
   		.list{
@@ -94,7 +94,7 @@
 	<script src="${ctx}/assets/js/src/config.js"></script>
 	<script type="text/javascript">
 		 
-		require(['jquery', 'amazeui', 'sideSelectView', 'scrollView'], function($, amazeui, SideSelectView, ScrollView){
+		require(['jquery', 'amazeui', 'sideSelectView', 'scrollView', 'sideGridView', 'sideFormView'], function($, amazeui, SideSelectView, ScrollView, SideGridView, SideFormView){
 		
 			var scrollView = new ScrollView({
 				parentNode : '#viewport',
@@ -103,94 +103,223 @@
 					backgroundColor : 'white'
 				}
 			});
-		
-			var sideSelectView = new SideSelectView({
-				 parentNode : '#form',
-				 configs : [
+			
+			//我的技能表单
+			var mySkillFormView = new SideFormView({
+				 title : '添加技能',
+				 parentNode : '',
+				 formId : '',
+				 template : '',
+				 apiUrl   : '',
+				 result : '',
+				 fields : [
 				 	{
-				 		title : '省份选择',
-				 		touchTargetId : 'province',
+				 		title : '技能选择',
+				 		touchTargetId : 'skill',
 				 		type   	      : 'single', //默认：single, type = (single、multiple、date、grid)
 				 		result 	      : 'data',
-				 		apiUrl        : 'assets/data/side-select-province.json',
+				 		apiUrl        : 'assets/data/skill.json',
 				 		displayField  : 'name',
+				 		reload : true,
 				 		onSelect : function(selectObject){
-				 			//alert(JSON.stringify(selectObject));
-				 			$('label', $("#province").parent()).text(selectObject.name);
-				 			//console.log($('label', $("#province").parent()).html());
-				 		}
-				 	},
-				 	{
-				 		title : '城市选择',
-				 		touchTargetId : 'city',
-				 		type   		  : 'single', //默认：single, type = (single、multiple、date、grid)
-				 		result 		  : 'data',
-				 		apiUrl 		  : 'assets/data/side-select-city.json',
-				 		displayField  : 'name',
-				 		join 		  : 'province',
-				 		joinPropertys : {
-				 			'id' : 'provinceId'
-				 		},
-				 		onSelect : function(selectObject){
-				 			$('label', $("#city").parent()).text(selectObject.name);
-				 		}
-				 	},
-				 	{
-				 		title : '区县选择',
-				 		touchTargetId : 'district',
-				 		type   		  : 'single', //默认：single, type = (single、multiple、date、grid)
-				 		result 		  : 'data',
-				 		apiUrl 		  : 'assets/data/side-select-district.json',
-				 		displayField  : 'name',
-				 		join 		  : 'city',
-				 		joinPropertys : {
-				 			'id' : 'cityId'
-				 		},
-				 		onSelect : function(selectObject){
-				 			$('label', $("#district").parent()).text(selectObject.name);
-				 		}
-				 	},
-				 	{
-				 		title : '我喜爱的网站',
-				 		touchTargetId : 'webSide',
-				 		type   		  : 'multiple', //默认：single, type = (single、multiple、date、grid)
-				 		result 		  : 'data',
-				 		apiUrl 		  : 'assets/data/website.json?123',
-				 		displayField  : 'name',
-				 		onSelect : function(selectObject){
-				 			var names = new Array();
-				 			selectObject.forEach(function(elt, i) {
-				 				names.push(elt.name);
-				 			});
-				 			$('label', $("#webSide").parent()).text(names.join(','));
-				 			
-				 		}
-				 	},
-				 	{
-				 		title : '我的生日',
-				 		touchTargetId : 'birthday',
-				 		type          : 'date',     //默认：type = (single、multiple、date、grid)
-				 		pattern       : 'yyyy-MM-dd',
-				 		onSelect : function(selectObject){
-				 			console.log(selectObject);
-				 		}
-				 	},
-				 	{
-				 		title : '我的技能',
-				 		touchTargetId : 'mySkill',
-				 		type          : 'grid',     //默认：type = (single、multiple、date、grid)
-				 		onSelect : function(selectObject){
-				 			console.log(selectObject);
+				 			 
 				 		}
 				 	}
-				 ]
+				 ],
+				 
+				 onloadAfter : function(formObject){ // 渲染表单数据后执行
+				 
+				 },
+				 
+				 onSubmit : function(formObject){ // 提交后执行
+				 	//mySkillGridView.addStore(formObject); //添加记录
+				 	//mySkillGridView.reload();//重新加载数据
+				 	//mySkillFormView.close();//关闭表单
+				 }
 			});
+			
+			//我的技能列表
+			var mySkillGridView = new SideGridView({
  
-			//sideSelectView.setData('mySkill', [{id : 1},{id :2}]);
+	 			title : '我的技能',
+	 			
+	 			touchTargetId : 'mySkill',
+	 			
+	 			plugins : [
+	 				{
+	 					title : '添加技能',
+	 					icon : 'icon_add',
+						touch : function(e){
+							mySkillFormView.openNewForm();
+						}				 					
+	 				}
+	 			],
+	 			
+	 			enabledHeader : false,
+	 			
+	 			columns : [
+					{
+						type : 'string',
+						text : '技能',
+						field : 'title',
+						display : true,
+						digit : 10
+					}, {
+						type : 'number',
+						text : '周期(月)',
+						field : 'month',
+						display : false,
+						digit : 5
+					}, {
+						type : 'boolean',
+						text : '启用',
+						field : 'enabled',
+						display : false,
+						digit : 2
+					}, {
+						type : 'action',
+						text : '编辑',
+						actions : ['edit'],
+						display : true,
+						digit : 2
+					} 
+				],
+				
+				data : [ {
+					id : '1',
+					title : 'java',
+					month : '84',
+					enabled : true
+				}, {
+					id : '2',
+					title : 'swift',
+					month : '84',
+					enabled : true
+				}, {
+					id : '3',
+					title : 'oracle',
+					month : '84',
+					enabled : true
+				}, {
+					id : '4',
+					title : 'javascript',
+					month : '84',
+					enabled : true
+				}, {
+					id : '5',
+					title : 'css',
+					month : '84',
+					enabled : true
+				}, {
+					id : '6',
+					title : 'linux',
+					month : '84',
+					enabled : true
+				} ],
+
+				onloadAfter : function(store) { // 渲染表单数据后执行
+
+				},
+
+				editAction : function(record) {
+					//mySkillFormView.loadForm(record);
+					alert(record.get('title'));
+				},
+
+				deleteAction : function(record) {
+
+				},
+
+				infoAction : function(record) {
+
+				},
+
+				onSubmit : function() { //确认按钮
+
+				}
+
+			});
+
+			//选项视图
+			var sideSelectView = new SideSelectView({
+				parentNode : '#form',
+				configs : [
+						{
+							title : '省份选择',
+							touchTargetId : 'province',
+							type : 'single', //默认：single, type = (single、multiple、date)
+							result : 'data',
+							apiUrl : 'assets/data/side-select-province.json',
+							displayField : 'name',
+							onSelect : function(selectObject) {
+								$('label', $("#province").parent()).text(
+										selectObject.name);
+							}
+						},
+						{
+							title : '城市选择',
+							touchTargetId : 'city',
+							type : 'single', //默认：single, type = (single、multiple、date)
+							result : 'data',
+							apiUrl : 'assets/data/side-select-city.json',
+							displayField : 'name',
+							join : 'province',
+							joinPropertys : {
+								'id' : 'provinceId'
+							},
+							onSelect : function(selectObject) {
+								$('label', $("#city").parent()).text(
+										selectObject.name);
+							}
+						},
+						{
+							title : '区县选择',
+							touchTargetId : 'district',
+							type : 'single', //默认：single, type = (single、multiple、date)
+							result : 'data',
+							apiUrl : 'assets/data/side-select-district.json',
+							displayField : 'name',
+							join : 'city',
+							joinPropertys : {
+								'id' : 'cityId'
+							},
+							onSelect : function(selectObject) {
+								$('label', $("#district").parent()).text(
+										selectObject.name);
+							}
+						},
+						{
+							title : '我喜爱的网站',
+							touchTargetId : 'webSide',
+							type : 'multiple', //默认：single, type = (single、multiple、date)
+							result : 'data',
+							apiUrl : 'assets/data/website.json?123',
+							displayField : 'name',
+							onSelect : function(selectObject) { // selectObject @ Array
+								var names = new Array();
+								selectObject.forEach(function(elt, i) {
+									names.push(elt.name);
+								});
+								$('label', $("#webSide").parent()).text(
+										names.join(','));
+
+							}
+						}, {
+							title : '我的生日',
+							touchTargetId : 'birthday',
+							type : 'date', //默认：type = (single、multiple、date)
+							pattern : 'yyyy-MM-dd',
+							onSelect : function(selectObject) {
+								console.log(selectObject);
+							}
+						} ]
+			});
+
+			//初始参数
 			//sideSelectView.setData('province', {id : 1});
- 
+			//sideSelectView.setData('webSide', [{id : 1}, {id : 2}]);
+			//mySkillGridView.setData([{},{},.,.,.,.]);
 		});
-	
 	</script>
 </body>
 </html>

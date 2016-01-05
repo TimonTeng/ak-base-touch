@@ -26,6 +26,8 @@
 		    'sidebar'	   	   : 'js/widget/sidebar',
 		    'sideFrameView'	   : 'js/widget/sideframe-view',
 		    'sideSelectView'   : 'js/widget/sideselect-view',
+		    'sideGridView'     : 'js/widget/sidegrid-view',
+		    'sideFormView'     : 'js/widget/sideform-view',
 		    'toolbar'   	   : 'js/widget/toolbar',
 		    'contextView'	   : 'js/widget/context-view',
 		    'headerNavigate'   : 'js/widget/header-navigate',

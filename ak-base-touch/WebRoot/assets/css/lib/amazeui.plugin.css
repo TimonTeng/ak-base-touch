@@ -355,7 +355,7 @@ input, button {
 	cursor: pointer;
 	text-align: center;
 	font-weight: 200;
-	color: red;
+	color: #e60112;
 }
 
 .am-plugin-sidebar-context {
@@ -462,6 +462,76 @@ input, button {
 	display: inline-block;
 }
 
+.am-plugins-gridview-tools {
+	background-color: #F3F3F3;
+	width: 100%;
+}
+
+.am-plugins-gridview-tools div{
+	width : 100%;
+	height: 4.5rem;
+	margin-bottom: 1rem;
+	background-color: #FFF;
+	display: inline-block;
+	cursor: pointer;
+}
+
+.am-plugins-gridview-tools i{
+	background-position: 1.25rem 1.25rem;
+	background-size: 1.8rem 1.8rem;
+	background-repeat: no-repeat;
+	width: 4.5rem;
+	margin: 0 0.5rem;
+}
+
+.am-plugins-gridview-tools label{
+	position : absolute;
+	margin : 0 2rem;
+	font-size: 2rem;
+	height: 4.5rem;
+	line-height : 4.5rem;
+	font-weight: 400;
+}
+
+.am-plugins-gridview-storecontext{
+	
+}
+
+.am-plugins-gridview-storecontext .am-g {
+	cursor : pointer;
+	height: 5rem;
+	border-bottom: 1px solid #F3F3F3;
+}
+
+
+.am-plugins-gridview-storecontext .column{
+	height: 4rem;
+	line-height: 4rem;
+	margin: 0.5rem 0;
+	font-weight: 500;
+	font-size: 1.5rem;
+}
+
+.am-plugins-gridview-storecontext .column i{
+	background-position: 1rem 1rem;
+	background-size: 2.25rem 2.25rem;
+	background-repeat: no-repeat;
+	width: 4.5rem;
+	margin: 0 0.5rem;
+}
+
+.am-plugins-gridview-storecontext .column:first-child {
+	padding-left: 4rem;
+	overflow: hidden;
+	word-wrap: normal;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.am-plugins-gridview-storecontext .column:last-child{
+	border-left: 1px solid #F3F3F3;	
+	text-align: center;
+}
 
 .icon_return {
 	background-position: 1rem 1.9rem;
@@ -476,6 +546,45 @@ input, button {
 	background-image: url("../../i/top_return.png");
 }
  
+.icon_add {
+	background-position: 2rem 2rem;
+	background-size: 2rem 2rem;
+	background-repeat: no-repeat;
+	width :17px;
+    height: 100%;
+	margin: auto; 
+	position : absolute; 
+	padding-left: 3.5rem;
+	position: relative;
+	background-image: url("../../i/icon-red-cross.png");
+}
+ 
+.icon_right_arrow{
+	background-position: 2rem 2rem;
+	background-size: 2rem 2rem;
+	background-repeat: no-repeat;
+	width :17px;
+    height: 100%;
+	margin: auto; 
+	position : absolute; 
+	padding-left: 3.5rem;
+	position: relative;
+	background-image: url("../../i/right-arrow@30.png");
+}
+ 
+.icon_edit{
+	background-position: 2rem 2rem;
+	background-size: 2rem 2rem;
+	background-repeat: no-repeat;
+	width :17px;
+    height: 100%;
+	margin: auto; 
+	position : absolute; 
+	padding-left: 3.5rem;
+	position: relative;
+	background-image: url("../../i/xg.png");
+}
+
 
 
 

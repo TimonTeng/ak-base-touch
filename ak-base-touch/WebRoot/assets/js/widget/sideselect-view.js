@@ -12,28 +12,30 @@
 		
 			define(function(require) {
 
-				var $        = require('jquery'),
-				    _        = require('lodash'),
-					Backbone = require('backbone'),
-					View     = require('backbone.view'),
-					Template = require('template'),
-					Sidebar  = require('sidebar');
+				var $        	 = require('jquery'),
+				    _        	 = require('lodash'),
+					Backbone 	 = require('backbone'),
+					View     	 = require('backbone.view'),
+					Template 	 = require('template'),
+					Sidebar  	 = require('sidebar'),
+					SideGridView = require('sideGridView');
 					
-				return factory($, _, Backbone, View, Template, Sidebar);
+				return factory($, _, Backbone, View, Template, Sidebar, SideGridView);
 			});
 		
 		} else if (define.cmd) {
 
 			define(function(require, exports, module) {
 				
-				var $        = require('jquery'),
-				    _        = require('lodash'),
-					Backbone = require('backbone'),
-					View     = require('backbone.view'),
-					Template = require('template'),
-					Sidebar  = require('sidebar');
+				var $        	 = require('jquery'),
+				    _        	 = require('lodash'),
+					Backbone 	 = require('backbone'),
+					View     	 = require('backbone.view'),
+					Template 	 = require('template'),
+					Sidebar  	 = require('sidebar'),
+					SideGridView = require('sideGridView');
 				
-				return factory($, _, Backbone, View, Template, Sidebar);
+				return factory($, _, Backbone, View, Template, Sidebar, SideGridView);
 			});
 		}
 		
@@ -42,7 +44,7 @@
 		root.scrollView = factory(root.scrollView);
 	}
 	
-}(this, function($, _, Backbone, View, Template, Sidebar) {
+}(this, function($, _, Backbone, View, Template, Sidebar, SideGridView) {
 	'use strict'
 
 	var Model = Backbone.Model.extend({
@@ -53,8 +55,7 @@
 	var TYPE = {
 		single : 'single',
 	    multiple : 'multiple',
-	    date : 'date',
-		grid : 'grid'
+	    date : 'date'
 	};
 	
 	function SideSelectConfig(config, sideSelectView){
@@ -83,6 +84,7 @@
 		this.displayField   = this.config.displayField || undefined;
 		this.join           = this.config.join || undefined;
 		this.joinPropertys  = this.config.joinPropertys || undefined;
+		
 	}
 	
 	/**
@@ -93,7 +95,6 @@
 			case TYPE.single   : return {};
 			case TYPE.multiple : return {};
 			case TYPE.date     : return {};
-			case TYPE.grid 	   : return {};
 			default :  return null;
 		}
 	}
@@ -175,7 +176,6 @@
 			case TYPE.single   : this.singleConfigVerify(); break;
 			case TYPE.multiple : this.multipleConfigVerify(); break;
 			case TYPE.date     : this.dateConfigVerify(); break;
-			case TYPE.grid     : this.gridConfigVerify(); break;
 			default : throw new Error('未指定 config.type 参数值'); break;
 		}
 	}
@@ -199,8 +199,8 @@
         		/**
         		 * TODO
         		 * 1. 不是二级关联的组件只加载一次数据；
-        		 * 2. 绑定从业务场景初始化的参数
-        		 * 3. 侧边栏展示 ？ 同步 : 异步， 当前是异步
+        		 * 2. 绑定从业务场景初始化的数据
+        		 * 3. 侧边栏展示 ？ 同步 : 异步； 当前是异步
         		 */
         		var loadFunction = self.assemblyLoadModel();
         		if(loadFunction instanceof Function){
@@ -274,7 +274,6 @@
 			case TYPE.single   : return this.createSingleSiderBar();
 			case TYPE.multiple : return this.createMultipleSiderBar();
 			case TYPE.date     : return null;
-			case TYPE.grid     : return null;
 			default : return null;
 		}
 	}
@@ -318,6 +317,19 @@
 		return siderView;
 	}
 	
+	
+	/**
+	 * 多选视图
+	 * @returns
+	 */
+	SideSelectConfig.prototype.createSiderGridView = function(){
+		if(!this.gridConfig){
+			throw new Error('SiderGridView config undefined');
+		}
+		var siderView = new this.sideSelectView.SideGridView(this.gridConfig);
+		return siderView;
+	}
+	
 	/**
 	 * 选中回调
 	 */
@@ -331,13 +343,26 @@
 	 * 装配加载模型
 	 */
 	SideSelectConfig.prototype.assemblyLoadModel = function(){
-		if(this.isJoin()){
-			return this.onloadEach;
-		}
-		if(this.isLoadOnce){
-			return this.onloadOnce;
+		switch(this.type){
+			case TYPE.single   : return this.LoadModel();
+			case TYPE.multiple : return this.LoadModel();
+			case TYPE.date     : return null;
+			default : return null;
 		}
 		return null;
+	}
+	
+	/**
+	 * 数据加载模型
+	 * @returns
+	 */
+	SideSelectConfig.prototype.LoadModel = function(){
+		if (this.isJoin()) {
+			return this.onloadEach;
+		}
+		if (this.isLoadOnce) {
+			return this.onloadOnce;
+		}
 	}
 	
 	/**
@@ -359,7 +384,6 @@
 	SideSelectConfig.prototype.onloadEach = function(config){
 		config.onLoad();
 	}
-	
 	
 	/**
 	 * 加载
@@ -558,7 +582,7 @@
 	 * 全部取消
 	 */
 	SideSelectConfig.prototype.selectedAllOff = function(){
-		var $sidebar = this.sideView.getAttr('sidebar')
+		var $sidebar = this.sideView.getAttr('sidebar');
 		$('[selected]', $sidebar.$context).css('backgroundColor', '#fff');
 		this.selectData = {};
 	}
@@ -591,6 +615,7 @@
 		 this.sideSelectConfigs = {};
 		 this.$main = null;
 		 this.Sidebar = Sidebar;
+		 this.SideGridView = SideGridView;
 	}
 	
 	

@@ -125,7 +125,6 @@
 	 * 检查网格数量
 	 */
 	ToolBar.prototype.checkMeshSize = function(){
-		console.log(this.meshSize);
 		return (this.meshSize > this.maxMeshSize);
 	}
 	
