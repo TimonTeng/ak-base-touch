@@ -137,6 +137,14 @@
 	}
 	
 	/**
+	 * 标题设置
+	 * @param title
+	 */
+	Sidebar.prototype.setTitle = function(title){
+		this.$title.text(title);
+	}
+	
+	/**
 	 * 激活
 	 */
 	Sidebar.prototype.setActivateOn = function(){
@@ -152,10 +160,10 @@
 	 * 关闭
 	 */
 	Sidebar.prototype.setActivateOff = function(){
+		var self = this;
 		var x = document.body.clientWidth;
 		var transform = { 
-				'display' : 'none',
-				'transition-duration' : '0s',
+				'transition-duration' : '.2s',
 				'transition-timing-function' : 'linear',
 				'transform' : 'translate('+x+'px, 0px)'
 		};
@@ -178,7 +186,11 @@
 	 * 关闭
 	 */
 	Sidebar.prototype.close = function(){
+		var self = this;
 		this.setActivateOff();
+		setTimeout(function() {
+			self.$body.css('display' , 'none');
+		}, 200);
 	}
 	
 	
@@ -268,7 +280,15 @@
 		html : function(html){
 			var sidebar = this.getAttr('sidebar');
 			sidebar.$context.html(html);
-		} 
+		},
+		
+		/**
+		 * 标题设置
+		 */
+		setTitle : function(title){
+			var sidebar = this.getAttr('sidebar');
+			sidebar.setTitle(title);
+		}
 	});
 }));
  

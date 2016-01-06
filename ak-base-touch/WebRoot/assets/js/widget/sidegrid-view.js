@@ -76,6 +76,7 @@
 		this.delegatesEvents.editEvent   = view.getAttr('editAction') || undefined;
 		this.delegatesEvents.deleteEvent = view.getAttr('deleteAction') || undefined;
 		this.delegatesEvents.infoEvent   = view.getAttr('infoAction') || undefined;
+		this.delegatesEvents.onSubmit    = view.getAttr('onSubmit') || undefined;
 		
 		this.initGridView();
 	}
@@ -184,7 +185,9 @@
 	 			zIndex : 3119
 	 		},
 	 		submit : function(){
-	 			 
+	 			if(self.delegatesEvents.onSubmit){
+	 				self.delegatesEvents.onSubmit();
+	 			}
 	 		} 
 		});
 		
@@ -264,6 +267,15 @@
 		this.store.push(record);
 		this.data.push(data);
 	}
+	
+	/**
+	 * 更新记录
+	 * @param data
+	 */
+	SideGridView.prototype.updateStoreRecord = function(data){
+		
+	}
+	
 	
 	/**
 	 * 创建扩展组件

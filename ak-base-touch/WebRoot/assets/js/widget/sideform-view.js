@@ -45,20 +45,32 @@
 }(this, function($, _, Backbone, View, Template, Sidebar) {
 	'use strict'
 	
+	var STATE = {
+		'ADD'  : 'add',
+		'EDIT' : 'edit',
+		'INFO' : 'info'
+	};
+	
 	function SideFormView() {
-		this.touchTargetId = this.view =this.sideView = this.view =  this.data = this.title = null;
-		this.$touchEl = this.$context = null;
+		this.state = this.touchTargetId = this.view =this.sideView = this.view = this.data = this.formObject = this.title = this.template = this.selectFields = null;
+		this.sideSelectView = null;
+		this.$touchEl = this.$context = this.$form = null;
+		this.delegatesEvents = {};
 	}
 	
 	/**
 	 * 初始化视图配置
 	 */
 	SideFormView.prototype.initConfiguration = function(view){
-		this.view = view;
-		this.title   	   = view.getAttr('title') || null;
-		this.data    	   = view.getAttr('data') || [];
-		this.touchTargetId = view.getAttr('touchTargetId') || null;
+		this.view 		    = view;
+		this.title   	    = view.getAttr('title') || null;
+		this.data    	    = view.getAttr('data') || [];
+		this.touchTargetId  = view.getAttr('touchTargetId') || null;
+		this.template       = view.getAttr('template') || null;
+		this.sideSelectView = view.getAttr('sideSelectView') || null;
 		
+		this.delegatesEvents.onSubmit   = view.getAttr('onSubmit') || undefined;
+		this.delegatesEvents.onloadAfter = view.getAttr('onloadAfter') || undefined;
 		this.initFormView();
 	}
 	
@@ -69,27 +81,27 @@
 	SideFormView.prototype.touchEvent = function(origin, range, touch){
 		var guess = range || document.body;
 		var touchStat = false;
-		$(origin, guess).bind('touchstart', function(e){
+		$(origin, guess).unbind('touchstart').bind('touchstart', function(e){
 			touchStat = true;
 			touch.start(e);
 		});
-		$(origin, guess).bind('touchmove', function(e){
+		$(origin, guess).unbind('touchmove').bind('touchmove', function(e){
 			touchStat = false;
 			touch.move(e);
 		});
-		$(origin, guess).bind('touchend', function(e){
+		$(origin, guess).unbind('touchend').bind('touchend', function(e){
 			if(touchStat){
 				touch.end(e);
 			}
 		});
 	}
 	
-	
 	/**
 	 * 
 	 */
 	SideFormView.prototype.initFormView = function(){
 		this.createSiderView();
+		this.createFormEl();
 	}
 	
 	/**
@@ -98,61 +110,90 @@
 	SideFormView.prototype.createSiderView = function(){
 		var self = this;
 		this.sideView = new Sidebar({
-	 		title : self.title,
+	 		title : '',
 	 		returnIcon : 'icon_return',
 	 		style : {
 	 			zIndex : 3129
 	 		},
 	 		submit : function(){
-	 			 
+	 			var formObject = self.serializeForm();
+	 			self.delegatesEvents.onSubmit(formObject);
 	 		} 
 		});
-		
 		var $sidebar = this.sideView.getAttr('sidebar');
-		
 		this.$context = $sidebar.$context;
-	}
-	
-	/**
-	 * 创建列头
-	 */
-	SideFormView.prototype.createGridHeader = function(){
-		
-	}
-	
-	/**
-	 * 创建数据内容
-	 */
-	SideFormView.prototype.createGridColumnContext = function(){
-		
 	}
 	
 	/**
 	 * 
 	 */
-	SideFormView.prototype.onload = function(){
+	SideFormView.prototype.createFormEl = function(){
+		this.$form = $('<form>', {
+			'method' : 'post',
+			'name'   : 'side-form',
+			'id'     : 'side-form'
+		});
+		this.$form.appendTo(this.$context);
+	}
+	
+	
+	/**
+	 * TODO
+	 */
+	SideFormView.prototype.renderForm = function(){
+		var path = this.template;
+		var formObject = this.formObject;
+		var template = Template.compile(path, this.formObject);
+		this.$form.empty();
+		this.$form.append(template);
 		
+		if(this.sideSelectView){
+			this.sideSelectView.initSideSelectConfigs();
+		}
+		
+		if(this.delegatesEvents.onloadAfter){
+			this.delegatesEvents.onloadAfter(formObject);
+		}
 	}
 	
 	/**
-	 * 加载静态数据
+	 * TODO
 	 */
-	SideFormView.prototype.onloadData = function(){
-		
-	}
-	
+	SideFormView.prototype.serializeForm = function(){
+		var serializeFormJson = $(this.$form).serializeJson();
+		var formObject = this.formObject || {};
+		$.extend(formObject, serializeFormJson);
+		return formObject;
+	} 
+ 
 	/**
-	 * 打开侧边栏
+	 * TODO
 	 */
-	SideFormView.prototype.open = function(){
+	SideFormView.prototype.loadForm = function(formObject){
+		this.state = STATE.EDIT;
+		this.formObject = formObject;
+		this.sideView.setTitle(this.title.edit);
+		this.renderForm();
 		this.sideView.open();
 	}
 	
 	/**
-	 * 打开新的表单
+	 * TODO
 	 */
-	SideFormView.prototype.openNewForm = function(){
-		
+	SideFormView.prototype.loadNewForm = function(){
+		this.state = STATE.ADD;
+		this.formObject = {};
+		this.sideView.setTitle(this.title.add);
+		this.renderForm();
+		this.sideView.open();
+	}
+	
+	/**
+	 * 获取表单当前状态
+	 * @returns {String}
+	 */
+	SideFormView.prototype.getState = function(){
+		return this.state || STATE.INFO;
 	}
 	
 
@@ -175,14 +216,19 @@
 			
 		},
 		
-		open : function(closeTarget) {
+		loadForm : function(formObject) {
 			var sideFormView = this.getAttr('sideFormView');
-			sideFormView.open();
+			sideFormView.loadForm(formObject);
 		},
 		
-		openNewForm : function(){
+		loadNewForm : function(){
 			var sideFormView = this.getAttr('sideFormView');
-			sideFormView.open();
+			sideFormView.loadNewForm();
+		},
+		
+		getState : function(){
+			var sideFormView = this.getAttr('sideFormView');
+			return sideFormView.getState();
 		},
 		
 		onload : function(){

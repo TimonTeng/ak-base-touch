@@ -9132,7 +9132,23 @@ jQuery.fn.size = function() {
 jQuery.fn.andSelf = jQuery.fn.addBack;
 
 
-
+jQuery.fn.serializeJson=function(){  
+    var serializeObj={};  
+    var array=this.serializeArray();  
+    var str=this.serialize();  
+    jQuery(array).each(function(){  
+        if(serializeObj[this.name]){  
+            if(jQuery.isArray(serializeObj[this.name])){  
+                serializeObj[this.name].push(this.value);  
+            }else{  
+                serializeObj[this.name]=[serializeObj[this.name],this.value];  
+            }  
+        }else{  
+            serializeObj[this.name]=this.value;   
+        }  
+    });  
+    return serializeObj;  
+};
 
 // Register as a named AMD module, since jQuery can be concatenated with other
 // files that may use define, but not via a proper concatenation script that
