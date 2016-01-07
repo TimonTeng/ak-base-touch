@@ -46,7 +46,6 @@
 	'use strict'
 	
 	function SideGridView() {
-		var test = 'abc';
 		
 		this.enabledHeader = true;
 		this.touchTargetId = this.view =this.sideView = this.view = this.plugins = this.store = this.data = this.columns = this.title = null;
@@ -259,25 +258,6 @@
 	}
 	
 	/**
-	 * TODO
-	 * 记录添加到列表
-	 */
-	SideGridView.prototype.addStoreRecord = function(data){
-		var record = this.convertToStoreRecord(data);
-		this.store.push(record);
-		this.data.push(data);
-	}
-	
-	/**
-	 * 更新记录
-	 * @param data
-	 */
-	SideGridView.prototype.updateStoreRecord = function(data){
-		
-	}
-	
-	
-	/**
 	 * 创建扩展组件
 	 */
 	SideGridView.prototype.createPlugins = function(){
@@ -352,6 +332,7 @@
 	
 	/**
 	 * 创建数据内容装载元素
+	 * TODO
 	 */
 	SideGridView.prototype.createStoreContextEl = function(){
 		//创建扩展组件
@@ -387,28 +368,70 @@
 	 * 重新加载
 	 */
 	SideGridView.prototype.reload = function(){
-		
+		this.render();
 	}
 	
 	/**
 	 * 加载静态数据
 	 */
-	SideGridView.prototype.onloadData = function(){
+	SideGridView.prototype.onloadData = function(data){
 		
 	}
 	
 	/**
 	 * TODO
+	 * 获取源数据
 	 */
 	SideGridView.prototype.getData = function(){
-		
+		return this.data;
 	}
 	
 	/**
 	 * TODO
+	 * 获取展示中的数据
 	 */
 	SideGridView.prototype.getStore = function(){
 		
+	}
+	
+	/**
+	 * data : {Object}
+	 * 添加记录
+	 */
+	SideGridView.prototype.addRecord = function(data){
+		var record = this.convertToStoreRecord(data);
+		this.store.push(record);
+		this.data.push(data);
+	}
+	
+	/**
+	 *  data : {Object}
+	 *  更新记录
+	 */
+	SideGridView.prototype.updateRecord = function(data){
+		var record = this.convertToStoreRecord(data);
+		var _record = this.findBy('id', data.id);
+		if(_record){
+			$.extend(_record, record);
+			$.extend(_record.data, record.data);
+		}else{
+			throw new Errow('updateRecord error');
+		}
+	}
+	
+	/**
+	 * 查找指定参数的对象
+	 */
+	SideGridView.prototype.findBy = function(field, value){
+		var record = null
+		this.store.forEach(function(item, index){
+			var dataValue = item.data[field];
+			if(dataValue == value){
+				record = item;
+				return;
+			}
+		});
+		return record;
 	}
 	
 	/**
@@ -417,11 +440,12 @@
 	SideGridView.prototype.render = function(){
 		var self = this;
 		var store = self.store;
+		self.$storeContextEl.empty();
 		store.forEach(function(record, i) {
 			var $row = self.renderRow(record);
 			self.renderColumn(record, $row);
 			$row.appendTo(self.$storeContextEl);
-		})
+		});
 	}
 	
 	/**
@@ -489,6 +513,22 @@
 		return $column;
 	}
 	
+	/**
+	 * 随机数
+	 */
+	SideGridView.prototype.generateMixed = function(n) {
+	     var res = "";
+	     for(var i = 0; i < n ; i ++) {
+	         var id = Math.ceil(Math.random()*35);
+	         res += this.chars[id];
+	     }
+	     return res;
+	}
+	
+	/**
+	 * 
+	 */
+	SideGridView.prototype.chars = ['0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
 	
 	/**
 	 * 打开侧边栏
@@ -521,8 +561,24 @@
 			sideGridView.open();
 		},
 		
-		onload : function(){
-			
+		addRecord : function(data){
+			var sideGridView = this.getAttr('sideGridView');
+			sideGridView.addRecord(data);
+		},
+		
+		updateRecord : function(data){
+			var sideGridView = this.getAttr('sideGridView');
+			sideGridView.updateRecord(data);
+		},
+		
+		getData : function(){
+			var sideGridView = this.getAttr('sideGridView');
+			return sideGridView.getData();
+		},
+		
+		reload : function(){
+			var sideGridView = this.getAttr('sideGridView');
+			sideGridView.reload();
 		},
  
 		setup: function() {

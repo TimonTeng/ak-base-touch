@@ -186,6 +186,7 @@
 		this.sideView.setTitle(this.title.add);
 		this.renderForm();
 		this.sideView.open();
+		
 	}
 	
 	/**

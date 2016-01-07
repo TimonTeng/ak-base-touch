@@ -181,21 +181,8 @@
         	},
         	
         	end : function(e){
-        		
         		self.sideView = self.sideView || self.createSideView();
         		self.touchDisplay(self);
-        		
-//        		/**
-//        		 * TODO
-//        		 * 1. 不是二级关联的组件只加载一次数据；
-//        		 * 2. 绑定从业务场景初始化的数据
-//        		 * 3. 侧边栏展示 ？ 同步 : 异步； 当前是异步
-//        		 */
-//        		var loadFunction = self.assemblyLoadModel();
-//        		if(loadFunction instanceof Function){
-//        			loadFunction(self);
-//        		}
-//        		self.sideView.open();
         	}
         });
  
@@ -220,17 +207,6 @@
         	}
         });
 	}
-	
-	/**
-	 * 视图初始化时使用selectData 变量赋值
-	 * TODO
-	 */
-//	SideSelectConfig.prototype.initSelectedData = function(store){
-//		if(!this.isJoin()){
-//			return;
-//		}
-//		this.setSelectedValue();
-//	}
 	
 	/**
 	 * 设置选中的值
@@ -269,15 +245,9 @@
 	SideSelectConfig.prototype.convertDataToSelectData = function(data){
 		
 		var self = this;
-		if(data instanceof Object){
-			if(('id' in data) === false){
-				throw new Error('参数未指定 id 字段');
-			}
-			this.selectData[data['id']] = data;
-			return;
-		}
 		
 		if(data instanceof Array){
+			console.log('SideSelectConfig.prototype.convertDataToSelectData 1.1')
 			this.selectData = {};
 			data.forEach(function(item, i) {
 				if(('id' in item) === false){
@@ -287,6 +257,18 @@
 			});
 			return;
 		}
+		
+		if(data instanceof Object){
+			console.log('SideSelectConfig.prototype.convertDataToSelectData 1.2')
+			if(('id' in data) === false){
+				throw new Error('参数未指定 id 字段');
+			}
+			this.selectData[data['id']] = data;
+			
+			console.log(JSON.stringify(this.selectData));
+			return;
+		}
+
 	}
 	
 	/**
@@ -294,14 +276,47 @@
 	 * @param data
 	 */
 	SideSelectConfig.prototype.setSelectOptionData = function(data){
-		 this.convertDataToSelectData(data);
-		 if(this.isJoin() && (this.data == null || this.data.length == 0)){
-			 alert('编辑模式  初始化 加载');
-			 var parentSelectData = this.getParentFirstSelectData();
-			 var apiUrl = this.formatApiUrlByObject(parentSelectData);
-			 this.sideSelectView.onloadRemoteData(apiUrl, this);
+		 console.log('SideSelectConfig.prototype.setSelectOptionData 1');
+		 var self = this;
+		 self.selectData = {};
+		 self.convertDataToSelectData(data);
+		 if(self.isJoin() && (self.data == null || self.data.length == 0)){
+			 console.log('SideSelectConfig.prototype.setSelectOptionData 2.1');
+			 var parentSelectData = self.getParentFirstSelectData();
+			 var apiUrl = self.formatApiUrlByObject(parentSelectData);
+			 self.sideSelectView.onloadRemoteDataByCallback(apiUrl, self, function(){
+				 self.findOptionOnDataAttribute();
+			 });
+		 }else{
+			 var tervalId = setInterval(function() {
+				 if(self.data != null){
+					 console.log(JSON.stringify(self.data));
+					 self.findOptionOnDataAttribute();
+					 clearInterval(tervalId);
+					 console.log('SideSelectConfig.prototype.setSelectOptionData 2.2');
+				 }
+			 }, 100);
 		 }
 	}
+	
+	/**
+	 * 在 SideSelectConfig.data 查找选项
+	 * data 数据集合未优化，构建带索引的数据集合查找性能更优
+	 */
+	SideSelectConfig.prototype.findOptionOnDataAttribute = function(){
+		var self = this;
+		var selectData = self.selectData;
+		var data = this.data;
+		for(var f in selectData){
+			var id = selectData[f]['id'];
+			data.forEach(function(item, i) {
+				if(id === item['id']){
+					selectData[id] = item;
+				}
+			});
+		}
+	} 
+	
 	
 	/**
 	 * 构造侧边栏
@@ -361,70 +376,7 @@
 			this.config.onSelect(this.dataFormat());
 		}
 	}
-	
-	/**
-	 * 装配加载模型
-	 */
-//	SideSelectConfig.prototype.assemblyLoadModel = function(){
-//		switch(this.type){
-//			case TYPE.single   : return this.LoadModel();
-//			case TYPE.multiple : return this.LoadModel();
-//			case TYPE.date     : return null;
-//			default : return null;
-//		}
-//		return null;
-//	}
-	
-	/**
-	 * 数据加载模型
-	 * @returns
-	 */
-//	SideSelectConfig.prototype.LoadModel = function(){
-//		if (this.isJoin()) {
-//			return this.onloadEach;
-//		}
-//		if (this.isLoadOnce) {
-//			return this.onloadOnce;
-//		}
-//	}
-	
-	/**
-	 * 只加载一次
-	 */
-//	SideSelectConfig.prototype.onloadOnce = function(config){
-//		if(config.isLoadOnce){
-//			config.onLoad();
-//			var intervalId = setInterval(function() {
-//				config.isLoadOnce = false;
-//				clearInterval(intervalId);
-//			}, 500);
-//		}
-//	}
-	
-	/**
-	 * 每次重新加载
-	 */
-//	SideSelectConfig.prototype.onloadEach = function(config){
-//		config.onLoad();
-//	}
-	
-	/**
-	 * 加载
-	 */
-//	SideSelectConfig.prototype.onLoad = function(){
-//		var self = this;
-//		var apiUrl = this.apiUrl;
-//		if(this.isJoin()){
-//			apiUrl = this.formatApiUrl();
-//		}
-//		$.getJSON(apiUrl, null, function(data) {
-//			var store  = data[self.result];
-//			self.loadAfterRender(store);
-//			self.initSelectedData(store);
-//		}).error(function() {
-//			console.log('Ajax Request Error!');
-//		});
-//	}
+	 
 	
 	/**
 	 * 格式化 API URL
@@ -461,19 +413,6 @@
 		}
 		return false;
 	}
-	
-	/**
-	 * 只加载一次
-	 */
-//	SideSelectConfig.prototype.isOnloadOnce = function(){
-//		var self = this;
-//		var intervalId = setInterval(function() {
-//			self.isLoadOnce = false;
-//			clearInterval(intervalId);
-//		}, 1000);
-//		return this.isLoadOnce;
-//	}
-	
 	
 	/**
 	 * 添加滚动事件
@@ -569,9 +508,9 @@
 	 * 
 	 */
 	SideSelectConfig.prototype.renderSelectOptionText = function(){
-		
 		if(this.renderText){
-			this.renderText(this.selectData);
+			var selectData = this.dataFormat();
+			this.renderText(selectData);
 		}
 	}
 	
@@ -654,6 +593,7 @@
 		 this.Sidebar = Sidebar;
 		 this.initial = true;
 		 this.$main   = null;
+		 this.block   = 0;  //<=0 时
 	}
 	
 	/**
@@ -688,7 +628,6 @@
 	 */
 	SideSelectView.prototype.onload = function(config){
 		var configuration = this.loadConfiguration(config);
-		console.log(configuration.apiUrl +': load = '+ configuration.flag);
 		if(configuration.flag){
 			this.onloadRemoteData(configuration.apiUrl, config);
 		}
@@ -700,12 +639,35 @@
 	 * @param config
 	 */
 	SideSelectView.prototype.onloadRemoteData = function(apiUrl, config){
+		var self = this;
+		self.onloadStartLock();
 		$.getJSON(apiUrl, null, function(data) {
 			config.data = data[config.result];
 			config.loadComplate = true;
 			if(config.loadComplateCallBack){
 				config.loadComplateCallBack();
 			}
+			self.onloadCompleteUnLock();
+		}).error(function() {
+			console.log('Ajax Request Error!');
+		});
+	}
+	
+	/**
+	 * TODO
+	 * @param apiUrl
+	 * @param config
+	 */
+	SideSelectView.prototype.onloadRemoteDataByCallback = function(apiUrl, config, callback){
+		var self = this;
+		self.onloadStartLock();
+		$.getJSON(apiUrl, null, function(data) {
+			config.data = data[config.result];
+			config.loadComplate = true;
+			if(callback){
+				callback();
+			}
+			self.onloadCompleteUnLock();
 		}).error(function() {
 			console.log('Ajax Request Error!');
 		});
@@ -736,7 +698,6 @@
 		this.initial    = this.convertBool(view.getAttr('initial')) || this.initial;
 		this.$main = $(this.parentNode);
 		this.init = false;
-		
 		if(this.initial == true){
 			this.initSideSelectConfigs();
 		}
@@ -765,7 +726,7 @@
 	}
 	
 	/**
-	 * 判断策略类型
+	 * 判断数据加载策略类型
 	 */
 	SideSelectView.prototype.analyzingPolicy = function(config){
 		var op = 'a';
@@ -807,7 +768,6 @@
 		 * 每次加载
 		 */
 		var onloadEachTouchDisplay = function(config){
-			//console.log('onloadEachTouchDisplay');
 			config.loadComplateCallBack = function(){
 				var html = config.sideSelectView.renderSelectOptionDom(config);
 				config.loadAfterRender(html)
@@ -886,6 +846,7 @@
 	
 	/**
 	 * 设置选中的参数
+	 * 
 	 * @param touchTargetId
 	 * @param value
 	 */
@@ -895,14 +856,41 @@
 	}
 	
 	/**
+	 * 异步加载阻塞检查
+	 */
+	SideSelectView.prototype.isAsyncOnloadBlock = function(){
+		return (this.block > 0);
+	}
+	
+	/**
+	 * 异步加载开始前添加锁
+	 */
+	SideSelectView.prototype.onloadStartLock = function(){
+		this.block = (this.block < 0) ? 0 : (this.block+1); 
+	}
+	
+	/**
+	 * 异步加载完成解锁
+	 */
+	SideSelectView.prototype.onloadCompleteUnLock = function(){
+		--this.block;
+	}
+	
+	/**
 	 * TODO
 	 */
 	SideSelectView.prototype.initSelectDataText = function(){
-		var sideSelectConfigs = this.sideSelectConfigs;
-		for(var touchTargetId in sideSelectConfigs){
-			var config = sideSelectConfigs[touchTargetId];
-			config.renderSelectOptionText();
-		}
+		var self = this;
+		var intervalId = setInterval(function() {
+			if(!self.isAsyncOnloadBlock()){
+				var sideSelectConfigs = self.sideSelectConfigs;
+				for(var touchTargetId in sideSelectConfigs){
+					var config = sideSelectConfigs[touchTargetId];
+					config.renderSelectOptionText();
+				}
+				clearInterval(intervalId);
+			}
+		}, 200);
 	}
 		
 	return View.extend({

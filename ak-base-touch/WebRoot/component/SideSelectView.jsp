@@ -105,6 +105,29 @@
 			});
 			
 			
+			var skillSelectView = new SideSelectView({
+				initial : 'false',
+				configs : [
+				 	{
+				 		title : '技能选择',
+				 		touchTargetId : 'skill',
+				 		type   	      : 'single', //默认：single, type = (single、multiple)
+				 		loadOnce 	  :  true,    //是否每次打开视图都重新加载远程数据 ， true 只会加载1次
+				 		result 	      : 'data',
+				 		apiUrl        : 'assets/data/skill.json',
+				 		displayField  : 'name',
+				 		onSelect : function(selectObject){
+				 			 $('label', $("#skill").parent()).text(selectObject.name);
+				 			 $('input', $("#skill").parent()).val(selectObject.id);
+				 		},
+				 		renderText : function(selectObject){ // 调用 SideFormView.initSelectDataText(); 统一触发
+				 			 $('label', $("#skill").parent()).text(selectObject.name);
+				 		}
+				 	}
+				]
+			});
+			
+			
 			//我的技能表单
 			var mySkillFormView = new SideFormView({
 				 title : {
@@ -115,42 +138,26 @@
 				 template : 'assets/template/demo/skill-form.tpl',
 				 //apiUrl   : '', //异步加载表单，后续开发
 				 //result   : '', //TODO 异步加载表单参数
-				 sideSelectView : new SideSelectView({
-					initial : 'false',
-					configs : [
-					 	{
-					 		title : '技能选择',
-					 		touchTargetId : 'title',
-					 		type   	      : 'single', //默认：single, type = (single、multiple)
-					 		loadOnce 	  :  true,    //是否每次打开视图都重新加载远程数据 ， true 只会加载1次
-					 		result 	      : 'data',
-					 		apiUrl        : 'assets/data/skill.json',
-					 		displayField  : 'name',
-					 		onSelect : function(selectObject){
-					 			 $('label', $("#title").parent()).text(selectObject.name);
-					 		},
-					 		renderText : function(selectObject){ // 调用 SideFormView.initSelectDataText(); 统一触发
-					 		
-					 		}
-					 	}
-					]
-				 }), 
+				 sideSelectView : skillSelectView, 
 				 
 				 onloadAfter : function(formObject){ // 渲染表单数据后执行
 				 	//console.log(JSON.stringify(formObject));
+				 	skillSelectView.setSelectOptionValue('skill', {id : formObject.skillId});
+				 	skillSelectView.initSelectDataText();
+				 	
 				 },
 				 
 				 onSubmit : function(formObject){ // 提交后执行
 				 	console.log(JSON.stringify(formObject));
 				 	if(mySkillFormView.getState() == 'add'){
-				 		//mySkillGridView.addStoreRecord(formObject); //添加记录
+				 		mySkillGridView.addRecord(formObject); //添加记录
 				 	}
 				 	
 				 	if(mySkillFormView.getState() == 'edit'){
-				 		//mySkillGridView.updateStoreRecord(formObject);
+				 		mySkillGridView.updateRecord(formObject);
 				 	}
 				 	
-				 	//mySkillGridView.reload();//重新加载数据
+				 	mySkillGridView.reload();//重新加载数据
 				 }
 			});
 			
@@ -182,6 +189,12 @@
 						digit : 5
 					}, {
 						type : 'number',
+						text : '技能ID',
+						field : 'skillId',
+						display : false,
+						digit : 5
+					}, {
+						type : 'number',
 						text : '周期(月)',
 						field : 'month',
 						display : true,
@@ -201,37 +214,12 @@
 					} 
 				],
 				
-				data : [ {
-					id : '1',
-					title : 'java',
-					month : '84',
-					enabled : true
-				}, {
-					id : '2',
-					title : 'swift',
-					month : '84',
-					enabled : true
-				}, {
-					id : '3',
-					title : 'oracle',
-					month : '84',
-					enabled : true
-				}, {
-					id : '4',
-					title : 'javascript',
-					month : '84',
-					enabled : true
-				}, {
-					id : '5',
-					title : 'css',
-					month : '84',
-					enabled : true
-				}, {
-					id : '6',
-					title : 'linux',
-					month : '84',
-					enabled : true
-				} ],
+				data : [
+					{ id : '1', title : '技能1', skillId : 1, month   : '84', enabled : true },
+					{ id : '2', title : '技能2', skillId : 2, month   : '84', enabled : true },
+					{ id : '3', title : '技能3', skillId : 3, month   : '84', enabled : true },
+					{ id : '4', title : '技能4', skillId : 4, month   : '84', enabled : true },
+				],
 
 				onloadAfter : function(store) { // 渲染表单数据后执行
 
@@ -255,6 +243,7 @@
 
 				onSubmit : function() { //确认按钮
 					console.log('从 Grid View 返回');
+					console.log(JSON.stringify(mySkillGridView.getData()));
 				}
 
 			});
@@ -274,7 +263,8 @@
 								$('label', $("#province").parent()).text(selectObject.name);
 							},
 							renderText : function(selectObject){
-								alert(JSON.stringify(selectObject));
+								$('label', $("#province").parent()).text(selectObject.name);
+								//alert(JSON.stringify(selectObject));
 							}
 						},
 						{
@@ -292,7 +282,7 @@
 								$('label', $("#city").parent()).text(selectObject.name);
 							},
 						    renderText : function(selectObject){
-							
+								$('label', $("#city").parent()).text(selectObject.name);
 							}
 						},
 						{
@@ -310,7 +300,7 @@
 								$('label', $("#district").parent()).text(selectObject.name);
 							},
 						    renderText : function(selectObject){
-								alert(JSON.stringify(selectObject));
+								$('label', $("#district").parent()).text(selectObject.name);
 							}
 						},
 						{
@@ -329,25 +319,20 @@
 								$('label', $("#webSide").parent()).text(names.join(','));
 							},
 						    renderText : function(selectObject){
-							
+								var names = new Array();
+								selectObject.forEach(function(elt, i) {
+									names.push(elt.name);
+								});
+								$('label', $("#webSide").parent()).text(names.join(','));
 							}
-						}
-/* 						, {
-							title : '我的生日',
-							touchTargetId : 'birthday',
-							type : 'date', //默认：type = (single、multiple、date)
-							pattern : 'yyyy-MM-dd',
-							onSelect : function(selectObject) {
-								console.log(selectObject);
-							}
-						} */
-						]
+						}]
 			});
-
-			sideSelectView.setSelectOptionValue('province', {id : 1});
-			sideSelectView.setSelectOptionValue('city', {id : 1});
-			sideSelectView.setSelectOptionValue('district', {id : 1});
 			
+			
+			sideSelectView.setSelectOptionValue('province', {id : 2});
+			sideSelectView.setSelectOptionValue('city', {id : 4});
+			sideSelectView.setSelectOptionValue('district', {id : 2});
+			sideSelectView.setSelectOptionValue('webSide', [{id : 2}, {id : 3}]);
 			sideSelectView.initSelectDataText();
 
 			//初始参数
