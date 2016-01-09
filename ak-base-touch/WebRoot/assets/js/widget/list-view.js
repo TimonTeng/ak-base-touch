@@ -252,7 +252,7 @@
 	
 	ListView.prototype.bindIScroll = function(){
 		var self = this;
-        var iscroll = this.iScroll = new $.AMUI.iScroll(this.parentNode, {
+        var iscroll = this.iScroll = new IScroll(this.parentNode, {
 		      scrollbars: true,
 		      mouseWheel: true,
 		      interactiveScrollbars: true,
@@ -368,7 +368,7 @@
             console.log('Error...')
         }).always(function() {
               self.resetLoading(self.$pullUp);
-             // self.iScroll.scrollTo(0, self.topOffset, 800, $.AMUI.iScroll.utils.circular);
+             //self.iScroll.scrollTo(0, self.topOffset, 800, IScroll.utils.circular);
         });
  
 	}

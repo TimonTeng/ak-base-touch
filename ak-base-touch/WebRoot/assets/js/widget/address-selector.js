@@ -168,7 +168,7 @@
 			
 			renderAfter : function(){
 				
-				 new $.AMUI.iScroll('#city-root', {
+				 new IScroll('#city-root', {
 				      scrollbars: true,
 				      mouseWheel: true,
 				      interactiveScrollbars: true,

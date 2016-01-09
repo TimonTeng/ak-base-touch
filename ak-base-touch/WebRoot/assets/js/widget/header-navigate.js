@@ -48,6 +48,7 @@
 		this.title = this.left = this.right = null;
 		this.$header = this.$left = this.$right = this.$title = null;
 		this.view = null;
+		this.SideFrameView  = null;
 	}
  
 	HeaderNavigate.prototype.createHeader = function(){
@@ -68,8 +69,8 @@
 			if(this.left.isSideFrameView){
 				var intervalId = setInterval(function() {
 					if (document.parentWindow) {
-						document.parentWindow.SideFrameView
-								.bindClose(self.$left);
+						document.parentWindow.SideFrameView.bindClose(self.$left);
+						self.SideFrameView = document.parentWindow.SideFrameView;
 						clearInterval(intervalId);
 					}
 				}, 300);
@@ -134,7 +135,42 @@
 		this.createHeader();
 	}
 	
- 
+	/**
+	 * 注册原生事件
+	 */
+	HeaderNavigate.prototype.registerNative = function(functionName, executeFunction){
+		var self = this;
+		var mainWindow = self.findMainWindow(window);
+		mainWindow[functionName] = executeFunction;
+	}
+	
+	/**
+	 * 查找父窗口
+	 * @param window
+	 * @returns
+	 */
+	HeaderNavigate.prototype.findMainWindow = function(window){
+		var self = this;
+		var doc  = window.document;
+		var parentWindow = doc.parentWindow;
+		var mainWindow = null;
+		if(parentWindow){
+			mainWindow = self.findMainWindow(parentWindow);
+		}else{
+			mainWindow = window;
+		}
+		return mainWindow;
+	}
+	
+	/**
+	 * 关闭Frame
+	 */
+	HeaderNavigate.prototype.closeFrame = function(){
+		var SideFrameView =  this.SideFrameView;
+		if(SideFrameView){
+			SideFrameView.close();
+		}
+	}
 
 	var Model = Backbone.Model.extend({
 		idAttribute: '',
@@ -153,6 +189,16 @@
 		
 		events: {
 			
+		},
+		
+		registerNative : function(functionName, executeFunction){
+			var headerNavigate = this.getAttr('headerNavigate');
+			headerNavigate.registerNative(functionName, executeFunction);
+		},
+		
+		closeFrame : function(){
+			var headerNavigate = this.getAttr('headerNavigate');
+			headerNavigate.closeFrame();
 		},
  
 		setup: function() {

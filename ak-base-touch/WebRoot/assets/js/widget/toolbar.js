@@ -115,7 +115,6 @@
 			self.$MeshItems.push($mesh);
 			var touchend = config.touch || undefined;
 			if(typeof(touchend) == 'function'){
-				console.log('touchend instanceof function');
 				$($mesh).bind('touchend', touchend);
 			}
 		});

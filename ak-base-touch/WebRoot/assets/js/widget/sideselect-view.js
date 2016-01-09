@@ -17,10 +17,9 @@
 					Backbone 	 = require('backbone'),
 					View     	 = require('backbone.view'),
 					Template 	 = require('template'),
-					Sidebar  	 = require('sidebar'),
-					SideGridView = require('sideGridView');
+					Sidebar  	 = require('sidebar');
 					
-				return factory($, _, Backbone, View, Template, Sidebar, SideGridView);
+				return factory($, _, Backbone, View, Template, Sidebar);
 			});
 		
 		} else if (define.cmd) {
@@ -28,14 +27,13 @@
 			define(function(require, exports, module) {
 				
 				var $        	 = require('jquery'),
-				    _        	 = require('lodash'),
-					Backbone 	 = require('backbone'),
-					View     	 = require('backbone.view'),
-					Template 	 = require('template'),
-					Sidebar  	 = require('sidebar'),
-					SideGridView = require('sideGridView');
+			    _        	 = require('lodash'),
+				Backbone 	 = require('backbone'),
+				View     	 = require('backbone.view'),
+				Template 	 = require('template'),
+				Sidebar  	 = require('sidebar');
 				
-				return factory($, _, Backbone, View, Template, Sidebar, SideGridView);
+				return factory($, _, Backbone, View, Template, Sidebar);
 			});
 		}
 		
@@ -44,7 +42,7 @@
 		root.scrollView = factory(root.scrollView);
 	}
 	
-}(this, function($, _, Backbone, View, Template, Sidebar, SideGridView) {
+}(this, function($, _, Backbone, View, Template, Sidebar) {
 	'use strict'
 
 	var Model = Backbone.Model.extend({
@@ -310,7 +308,7 @@
 		for(var f in selectData){
 			var id = selectData[f]['id'];
 			data.forEach(function(item, i) {
-				if(id === item['id']){
+				if(parseInt(id) === parseInt(item['id'])){
 					selectData[id] = item;
 				}
 			});
@@ -322,6 +320,7 @@
 	 * 构造侧边栏
 	 */
 	SideSelectConfig.prototype.createSideView = function(){
+		console.log('SideSelectConfig.prototype.createSideView this.type ='+this.type);
 		switch(this.type){
 			case TYPE.single   : return this.createSingleSiderBar();
 			case TYPE.multiple : return this.createMultipleSiderBar();
@@ -386,7 +385,7 @@
 			return this.apiUrl;
 		}
 		var parentConfig = this.sideSelectView.getSideSelectConfig(this.join);
-		var selectData = parentConfig.selectData;
+		var selectData = parentConfig.dataFormat();
         return this.formatApiUrlByObject(selectData);
 	}
 	
@@ -400,7 +399,10 @@
 				queries.push('&'+this.joinPropertys[key] + '=' + selectData[key]);
 			}
 		}
-		return this.apiUrl + '?' + queries.join('&');
+		
+		var apiUrl = (this.apiUrl.indexOf('?') != -1) ?  this.apiUrl : this.apiUrl + '?' ;
+		
+		return apiUrl + queries.join('&');
 	}
 	
 	/**
@@ -419,7 +421,7 @@
 	 * @param scrollParentNode
 	 */
 	SideSelectConfig.prototype.addScroll = function(scrollParentNode){
-		new $.AMUI.iScroll(scrollParentNode, {
+		new IScroll(scrollParentNode, {
 			scrollbars: true,
 			mouseWheel: true,
 			interactiveScrollbars: true,

@@ -1,6 +1,14 @@
 package com.web;
 
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -96,5 +104,52 @@ public class WidgetController extends WebController {
 	public String Toolbar(HttpServletResponse response, HttpServletRequest request) throws IOException {
 		setDataCtx(request);
 		return "forward:/component/Toolbar.jsp";
+	}
+	
+	
+	
+	public static void main(String[] args) throws Exception{
+		final URL url = new URL("https://javascript-minifier.com/raw");
+
+		// JS File you want to compress
+		byte[] bytes = Files.readAllBytes(Paths.get("C:/workspace_github/ak-base-touch/ak-base-touch/WebRoot/assets/js/widget/action-bar.js"));
+
+		final StringBuilder data = new StringBuilder();
+		data.append(URLEncoder.encode("input", "UTF-8"));
+		data.append('=');
+		data.append(URLEncoder.encode(new String(bytes), "UTF-8"));
+
+		bytes = data.toString().getBytes("UTF-8");
+
+		final HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+		conn.setRequestMethod("POST");
+		conn.setDoOutput(true);
+		conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+		conn.setRequestProperty("charset", "utf-8");
+		conn.setRequestProperty("Content-Length", Integer.toString(bytes.length));
+
+		try (DataOutputStream wr = new DataOutputStream(conn.getOutputStream())) {
+		    wr.write(bytes);
+		}
+
+		final int code = conn.getResponseCode();
+
+		System.out.println("Status: " + code);
+
+		if (code == 200) {
+		    System.out.println("----");
+		    final BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+		    String inputLine;
+
+		    while ((inputLine = in.readLine()) != null) {
+		        System.out.print(inputLine);
+		    }
+		    in.close();
+
+		    System.out.println("\n----");
+		} else {
+		    System.out.println("Oops");
+		}
 	}
 }

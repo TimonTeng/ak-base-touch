@@ -203,7 +203,7 @@
 	SelectView.prototype.renderAfter = function(){
 		
 		  var self = this;
-	      this.rootIScroll = new $.AMUI.iScroll('#'+this.attr.id, {
+	      this.rootIScroll = new IScroll('#'+this.attr.id, {
 		      scrollbars: true,
 		      mouseWheel: true,
 		      interactiveScrollbars: true,
@@ -475,7 +475,7 @@
 	DoubleSelectView.prototype.renderAfter = function(){
 		
 		var self = this;
-		this.rootIScroll = new $.AMUI.iScroll('#'+this.leftSelectView.attr.id, {
+		this.rootIScroll = new IScroll('#'+this.leftSelectView.attr.id, {
 		      scrollbars: true,
 		      mouseWheel: true,
 		      interactiveScrollbars: true,
@@ -523,7 +523,7 @@
 	DoubleSelectView.prototype.renderNodeAfter = function(){
 		
 		var self = this;
-		this.nodeIScroll = new $.AMUI.iScroll('#'+this.rightSelectView.attr.id, {
+		this.nodeIScroll = new IScroll('#'+this.rightSelectView.attr.id, {
 			scrollbars: true,
 			mouseWheel: true,
 			interactiveScrollbars: true,
@@ -915,7 +915,7 @@
 	AplhabetSelectView.prototype.renderAfter = function(){
 		
 		  var self = this;
-	      this.rootIScroll = new $.AMUI.iScroll('#'+this.attr.id, {
+	      this.rootIScroll = new IScroll('#'+this.attr.id, {
 		      scrollbars: true,
 		      mouseWheel: true,
 		      interactiveScrollbars: true,
@@ -1071,7 +1071,7 @@
 		
 		
 		var self = this;
-		this.rootIScroll = new $.AMUI.iScroll('#'+this.leftSelectView.attr.id, {
+		this.rootIScroll = new IScroll('#'+this.leftSelectView.attr.id, {
 		      scrollbars: true,
 		      mouseWheel: true,
 		      interactiveScrollbars: true,
@@ -1121,7 +1121,7 @@
 	AplhabetDoubleSelectView.prototype.renderNodeAfter = function(){
 		
 		var self = this;
-		this.nodeIScroll = new $.AMUI.iScroll('#'+this.rightSelectView.attr.id, {
+		this.nodeIScroll = new IScroll('#'+this.rightSelectView.attr.id, {
 			scrollbars: true,
 			mouseWheel: true,
 			interactiveScrollbars: true,
@@ -1290,9 +1290,7 @@
 		});
 		
 	}
-
-	
-	
+ 
 	/**
 	 * 确认按钮
 	 */
@@ -1318,6 +1316,31 @@
 		});
 	}
 	
+	/**
+	 * 
+	 */
+	function ActionBarView(){
+		this.view = null;
+	}
+	
+	/**
+	 * 初始化配置
+	 * @param view
+	 */
+	ActionBarView.prototype.initConfiguration = function(view){
+		
+	}
+	
+	/**
+	 * 激活设置 true or false
+	 * @param activate
+	 */
+	ActionBarView.prototype.onActivate = function(activate){
+		
+		
+	}
+ 
+	
 	return View.extend({
 		
 		id: 'ActionBarView',
@@ -1325,7 +1348,6 @@
 		model: new Model,
 		
 		attrs: {
-			
 			template: 'assets/template/widget/action-bar.tpl?ver='+  new Date().getTime()
 		},
 		
@@ -1583,9 +1605,7 @@
 			if(actionNode.selectView.config.submit){
 				confirmView.submit(actionNode.selectView.config.submit, actionNode.selectView, self);
 			}
-			
 			confirmView.root.appendTo(parentContainer);
-		 
 		},
  
 		/**
@@ -1683,6 +1703,17 @@
 			
 			var self = this;
 			var nowActiveItem = $(e.target);
+			var status    	  = $(nowActiveItem).attr('status');
+			var activeStatus  = self.destroyActiveAction(nowActiveItem);
+			if(!activeStatus){
+				return;
+			}
+			self.activeActionItem = nowActiveItem;
+			switch(status){
+				case '0' :  $(nowActiveItem).addClass('am-plugin-actionbar-active'); $(nowActiveItem).attr('status', '1'); break;
+				case '1' :  $(nowActiveItem).removeClass('am-plugin-actionbar-active'); $(nowActiveItem).attr('status', '0'); break;
+				default :     break;
+			}
 			var id = $(nowActiveItem).data('id');
 			var config = self.actionNodes[id].config;
 			config.submit();

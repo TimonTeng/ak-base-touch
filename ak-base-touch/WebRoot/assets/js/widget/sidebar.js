@@ -55,6 +55,7 @@
 		
 		var self = this;
 		this.setActivateOff();
+		
 		this.$header.appendTo(this.$body);
 		this.$context.appendTo(this.$body);
 		this.$body.appendTo(document.body);
@@ -82,6 +83,7 @@
 		this.$body = $('<div>', {
 			'class' : 'am-plugin-sidebar'
 		});
+		this.$body.css('display' , 'none');
 	}
 	
 	Sidebar.prototype.createHeader = function(){

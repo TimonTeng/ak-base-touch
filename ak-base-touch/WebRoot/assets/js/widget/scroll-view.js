@@ -71,7 +71,7 @@
 			var style      = this.getAttr('style');
 			var $main      = $(parentNode);
 			
-	        var iscroll = new $.AMUI.iScroll(parentNode, {
+	        var iscroll = new IScroll(parentNode, {
 			      click : true
 		    });
 	        

@@ -39,6 +39,10 @@
 				deps: ['jquery']
 			},
 			
+			'scrollView' : {
+				deps: ['underscore', 'lodash', 'handlebars', 'backbone', 'backbone.view', 'swipe']
+			},
+			
 	        'actionBar' : {
 	        	deps: ['underscore', 'lodash', 'handlebars', 'backbone', 'backbone.view', 'swipe', 'alphabetBar']
 	        },
@@ -55,11 +59,19 @@
 			},
 			
 			'sideFrameView' : {
-				deps: ['underscore', 'lodash', 'handlebars', 'backbone', 'backbone.view','swipe']
+				deps: ['underscore', 'lodash', 'handlebars', 'backbone', 'backbone.view','swipe', 'sidebar']
+			},
+			
+			'sideGridView' : {
+				deps: ['underscore', 'lodash', 'handlebars', 'backbone', 'backbone.view','swipe', 'sidebar']
 			},
 			
 			'sideSelectView' : {
-				deps: ['underscore', 'lodash', 'handlebars', 'backbone', 'backbone.view','swipe']
+				deps: ['underscore', 'lodash', 'handlebars', 'backbone', 'backbone.view','swipe', 'sidebar']
+			},
+			
+			'sideFormView' : {
+				deps: ['underscore', 'lodash', 'handlebars', 'backbone', 'backbone.view','swipe', 'sidebar', 'sideSelectView']
 			},
 			
 			'headerNavigate' : {
@@ -68,6 +80,11 @@
 			
 			'addressSelector' : {
 				deps: ['underscore', 'lodash', 'handlebars', 'backbone', 'backbone.view','swipe', 'sidebar']
+			},
+			
+			'toolbar' : {
+				
+				deps: ['underscore', 'lodash', 'handlebars', 'backbone', 'backbone.view','swipe']
 			}
 		},
 		

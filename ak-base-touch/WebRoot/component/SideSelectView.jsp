@@ -94,7 +94,7 @@
 	<script src="${ctx}/assets/js/src/config.js"></script>
 	<script type="text/javascript">
 		 
-		require(['jquery', 'amazeui', 'sideSelectView', 'scrollView', 'sideGridView', 'sideFormView'], function($, amazeui, SideSelectView, ScrollView, SideGridView, SideFormView){
+		require(['jquery', 'sideSelectView', 'scrollView', 'sideGridView', 'sideFormView'], function($, SideSelectView, ScrollView, SideGridView, SideFormView){
 		
 			var scrollView = new ScrollView({
 				parentNode : '#viewport',
@@ -214,12 +214,12 @@
 					} 
 				],
 				
-				data : [
+/* 				data : [
 					{ id : '1', title : '技能1', skillId : 1, month   : '84', enabled : true },
 					{ id : '2', title : '技能2', skillId : 2, month   : '84', enabled : true },
 					{ id : '3', title : '技能3', skillId : 3, month   : '84', enabled : true },
 					{ id : '4', title : '技能4', skillId : 4, month   : '84', enabled : true },
-				],
+				], */
 
 				onloadAfter : function(store) { // 渲染表单数据后执行
 
@@ -229,7 +229,7 @@
 					//mySkillFormView.loadForm(record);
 					
 					//alert(record.get('title'));
-					
+					console.log(JSON.stringify(record.data));
 					mySkillFormView.loadForm(record.data);
 				},
 

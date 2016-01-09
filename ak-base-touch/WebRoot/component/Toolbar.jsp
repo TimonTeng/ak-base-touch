@@ -21,7 +21,7 @@
 	<script src="${ctx}/assets/js/src/config.js"></script>
 	<script type="text/javascript">
 		 
-		require(['jquery', 'amazeui', 'toolbar'], function($, amazeui, Toolbar){
+		require(['jquery', 'toolbar'], function($, Toolbar){
 			
 			 var toolbar = new Toolbar({ // 一定是固定在底部, 组件使用amaziui等分网格
 				  id     : 'pageToolbar',

@@ -217,7 +217,9 @@
 		var self = this;
 		var data  = self.data || [];
 		var store = self.store || [];
+ 
 		if(data.length == 0){
+			self.store = store;
 			return;
 		}
 		data.forEach(function(element, i) {
@@ -225,6 +227,7 @@
 			store.push(record);
 		})
 		self.store = store;
+		
 	}
 	
 	/**
@@ -470,8 +473,7 @@
 			 $column.appendTo($row);
 		});
 		
-		var self = this;
-		if(this.delegatesEvents.editEvent){
+		if(self.delegatesEvents.editEvent){
 	        this.touchEvent('i', $row.get(0), {
 	        	start : function(e){
 	        	},

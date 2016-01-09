@@ -103,6 +103,13 @@
 					   submit : function(data){
 					   		  
 					   }
+				   },
+				   {
+					   id : 'view2',
+					   title : '按钮',
+					   type : 'Button',
+					   submit : function(data){
+					   }
 				   }
  
 				]
