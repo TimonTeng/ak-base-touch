@@ -260,6 +260,11 @@ input, button {
 	background-color: white;
 	padding-left: 10px;
 	width: 100%;
+	word-wrap: normal;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+	cursor: pointer;
 }
 
 .pull-action {
@@ -533,6 +538,16 @@ input, button {
 	text-align: center;
 }
 
+.am-plugin-zone-body{
+	height: 100%;
+}
+
+.am-plugin-zone-body .zone-data{
+ 	height: 100%;
+ 	border-right: 1px solid #EFEFEF;
+ 	overflow: hidden;
+}
+
 .icon_return {
 	background-position: 1rem 1.9rem;
 	background-size: 1rem 1.6rem;
@@ -584,6 +599,7 @@ input, button {
 	position: relative;
 	background-image: url("../../i/xg.png");
 }
+
 
 
 

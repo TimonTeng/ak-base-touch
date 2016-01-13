@@ -7,7 +7,7 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-  	<title>Sidebar</title>
+  	<title>ZoneSelector</title>
   	<link rel="stylesheet" href="${ctx}/assets/css/amazeui.css"/>
   	<link rel="stylesheet" href="${ctx}/assets/css/lib/amazeui.plugin.css"/>
 </head>
@@ -22,7 +22,7 @@
 		</div>
 
 		<h1 class="am-header-title">
-			<a href="#title-link" class=""> AddressSelector </a>
+			<a href="#title-link" class=""> ZoneSelector </a>
 		</h1>
 
 		<div class="am-header-right am-header-nav">
@@ -58,26 +58,39 @@
 	<script src="${ctx}/assets/js/src/config.js"></script>
 	<script type="text/javascript">
 		 
-		require(['jquery', 'amazeui', 'addressSelector'], function($, amazeui, AddressSelector){
+		require(['jquery', 'amazeui', 'zoneSelector'], function($, amazeui, ZoneSelector){
 			 	
-			 	window.CitySelector = new AddressSelector({
-			 	
-			 		type : 'City',
-			 		
-			 		result : 'data',
+			 	var zoneSelector = new ZoneSelector({
+			 		title : '城市选择',
+			 		type : 'ProvinceCity',  //Province,City,ProvinceCity,ProvinceCityDistrict
+			 		province : {
+			 			apiUrl : '${dataCtx}/ak-sw-p2pm/provinceByAlphabetSeq.html',
+			 			displayField : 'provinceName',
+			 			result : 'data'
+			 		},
 			 		
 			 		city : {
-			 			apiUrl : '${dataCtx}/ak-sw-p2pm/foundCityList.html',
-			 			displayField : 'cityName'
+			 			apiUrl : '${dataCtx}/ak-sw-p2pm/foundProvinceCity.html',
+			 			//apiUrl : '${dataCtx}/ak-sw-p2pm/cityByAlphabetSeq.html',
+			 			displayField : 'cityName',
+			 			result : 'data',
+			 			parentQueryName : 'id'
+			 		},
+			 		
+			 		district : {
+			 			apiUrl : '${dataCtx}/ak-sw-p2pm/foundCityDistrict.html',
+			 			displayField : 'districtName',
+			 			result : 'data',
+			   			parentQueryName : 'id'
 			 		},
 			 		
 			 		submit : function(data){
-			 			$('#CitySelector').val(data.city.cityName);
+			 		 	console.log(JSON.stringify(data));
 			 		}
 			 	});
 			 	
 			 	$('#CitySelector').bind('touchend', function(){
-			 		window.CitySelector.open();
+			 		zoneSelector.open();
 			 	});
 			 	
 		});

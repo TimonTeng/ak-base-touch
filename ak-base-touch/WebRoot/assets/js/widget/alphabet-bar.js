@@ -83,12 +83,10 @@
 		this.alphabetBox.css({height : positionHeight});
 		this.alphabetItemHeight = positionHeight/26;
 		this.alphabetBox.find('li').css({height : this.alphabetItemHeight});
-		
-		
 	}
 	
 	/**
-	 * 绑定选择控件视图
+	 * 绑定视图控件
 	 */
 	AlphabetBarView.prototype.bindSelectView = function(selectView){
 		this.selectView = selectView;
@@ -144,6 +142,7 @@
 		var self = this;
         $('li', self.alphabetBox).unbind('touchstart').bind('touchstart', function(e){
         	 $(self.tip).text($(e.target).text());
+        	 $(self.tip).css('display', 'block');
         	 $(self.tip).addClass('am-plugin-alphabet-nav-tip-active');
         	 $(self.tip).removeClass('am-plugin-alphabet-nav-tip-destroy');
         	 var positionAlphabet = $('#warp_alphabet_'+$(e.target).text());
@@ -160,6 +159,10 @@
         $('li', self.alphabetBox).unbind('touchend').bind('touchend', function(e){
         	$(self.tip).addClass('am-plugin-alphabet-nav-tip-destroy');
         	$(self.tip).removeClass('am-plugin-alphabet-nav-tip-active');
+        	
+	       	setTimeout(function() {
+	    		 $(self.tip).css('display', 'none');
+	    	}, 350);
         });
 	}
 	

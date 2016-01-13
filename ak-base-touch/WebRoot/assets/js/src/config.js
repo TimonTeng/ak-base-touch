@@ -1,8 +1,5 @@
 /**
- <AK-touch Config> JavaScript Document
  -> Version : 1.0
- -> Require : RequireJS
- -> Copyright © 2015 ak-touch. All rights reserved.
  */
 
 	requirejs.config({
@@ -31,7 +28,7 @@
 		    'toolbar'   	   : 'js/widget/toolbar',
 		    'contextView'	   : 'js/widget/context-view',
 		    'headerNavigate'   : 'js/widget/header-navigate',
-		    'addressSelector'  : 'js/widget/address-selector'
+		    'zoneSelector'     : 'js/widget/zone-selector'
 		},
 		
 		shim: {
@@ -77,13 +74,12 @@
 			'headerNavigate' : {
 				deps: ['underscore', 'lodash', 'handlebars', 'backbone', 'backbone.view','swipe']
 			},
-			
-			'addressSelector' : {
-				deps: ['underscore', 'lodash', 'handlebars', 'backbone', 'backbone.view','swipe', 'sidebar']
+ 
+			'zoneSelector' : {
+				deps: ['underscore', 'lodash', 'handlebars', 'backbone', 'backbone.view','swipe', 'sidebar', 'alphabetBar']
 			},
 			
 			'toolbar' : {
-				
 				deps: ['underscore', 'lodash', 'handlebars', 'backbone', 'backbone.view','swipe']
 			}
 		},
