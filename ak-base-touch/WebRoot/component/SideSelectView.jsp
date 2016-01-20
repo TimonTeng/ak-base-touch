@@ -119,6 +119,7 @@
 				 		onSelect : function(selectObject){
 				 			 $('label', $("#skill").parent()).text(selectObject.name);
 				 			 $('input', $("#skill").parent()).val(selectObject.id);
+				 			 mySkillFormView.correctView();
 				 		},
 				 		renderText : function(selectObject){ // 调用 SideFormView.initSelectDataText(); 统一触发
 				 			 $('label', $("#skill").parent()).text(selectObject.name);
@@ -308,7 +309,7 @@
 							touchTargetId : 'webSide',
 							type : 'multiple', //默认：single, type = (single、multiple)
 							result : 'data',
-							apiUrl : 'assets/data/website.json?123',
+							apiUrl : 'assets/data/website.json?1234',
 							loadOnce : true,
 							displayField : 'name',
 							onSelect : function(selectObject) { // selectObject @ Array

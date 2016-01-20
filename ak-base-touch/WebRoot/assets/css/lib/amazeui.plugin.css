@@ -184,6 +184,8 @@ input, button {
 	width: 100%;
 	float : right;
 	display: block;
+	padding: 0;
+	margin: 0;
 }
  
 .am-plugin-alphabet-nav li{
@@ -252,6 +254,16 @@ input, button {
 	font-size : 1.2rem;
 }
 
+.warp_alphabet_mark ul{
+	margin: 0;
+	padding: 0;
+}
+
+.warp_context{
+ 	margin: 0;
+  	padding: 0;
+}
+
 .warp_context li{
 	height: 50px;	
 	line-height : 50px;
@@ -287,7 +299,7 @@ input, button {
 }
 
 .am-plugin-listview {
-     position: absolute;
+     position: fixed;
      overflow: hidden;
      width: 100%;
      top:  0;
@@ -295,7 +307,7 @@ input, button {
 }
 
 .am-plugin-scrollview{
-     position: absolute;
+     position: fixed;
      overflow: hidden;
      width: 100%;
      top:  0;

@@ -180,8 +180,9 @@
 		this.$body.css('display', 'block');
 		var timeoutId = setTimeout(function() {
 			self.setActivateOn();
+			self.correctView();
 			clearTimeout(timeoutId);
-		}, 100);
+		}, 250);
 	}
 	
 	/**
@@ -189,10 +190,12 @@
 	 */
 	Sidebar.prototype.close = function(){
 		var self = this;
-		this.setActivateOff();
-		setTimeout(function() {
+		self.setActivateOff();
+		var timeoutId = setTimeout(function() {
 			self.$body.css('display' , 'none');
-		}, 200);
+			clearTimeout(timeoutId);
+		}, 250);
+		
 	}
 	
 	
@@ -213,12 +216,20 @@
 		this.close();
 	}
 	
-	
+ 
 	/**
-	 * 隐藏
+	 * 纠正视图
 	 */
-	Sidebar.prototype.hide = function(){
-
+	Sidebar.prototype.correctView = function(){
+		var self = this;
+        var size = 5;
+        var zindex = self.$body.css('zIndex');
+        var intervalId = setInterval(function() {
+        	self.$body.css('zIndex', zindex++);
+        	if((--size) === 0){
+        		clearInterval(intervalId);
+        	}
+        }, 100);
 	}
 	
 
@@ -255,8 +266,17 @@
 		    }, false);
 		},
 		
+		correctView : function(){
+			var sidebar = this.getAttr('sidebar');
+			sidebar.correctView();
+		},
+		
 		open : function() {
 			var sidebar = this.getAttr('sidebar');
+			var onOpen = this.getAttr('onOpen') || undefined;
+			if(onOpen){
+				onOpen();
+			}
 			sidebar.open();
 		},
 		

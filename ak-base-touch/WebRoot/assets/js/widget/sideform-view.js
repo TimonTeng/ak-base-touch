@@ -197,6 +197,13 @@
 		return this.state || STATE.INFO;
 	}
 	
+	/**
+	 * 视图纠正
+	 */
+	SideFormView.prototype.correctView = function(){
+		this.sideView.correctView();
+	}
+	
 
 	var Model = Backbone.Model.extend({
 		idAttribute: '',
@@ -225,6 +232,11 @@
 		loadNewForm : function(){
 			var sideFormView = this.getAttr('sideFormView');
 			sideFormView.loadNewForm();
+		},
+		
+		correctView : function(){
+			var sideFormView = this.getAttr('sideFormView');
+			sideFormView.correctView();
 		},
 		
 		getState : function(){

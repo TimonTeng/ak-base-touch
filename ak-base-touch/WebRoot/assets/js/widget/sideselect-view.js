@@ -69,6 +69,7 @@
 		this.touchDisplay = null; //触摸展示接口
 		this.join     = this.joinPropertys = null;
 		this.$touchEl = null;
+		this.$iscroll = null;
 		this.initConfig();
 	}
 	
@@ -249,7 +250,7 @@
 			this.selectData = {};
 			data.forEach(function(item, i) {
 				if(('id' in item) === false){
-					throw new Error('参数未指定 id 字段');
+					throw new Error('参数未指定 id属性');
 				}
 				self.selectData[item['id']] = item;
 			});
@@ -259,7 +260,7 @@
 		if(data instanceof Object){
 			console.log('SideSelectConfig.prototype.convertDataToSelectData 1.2')
 			if(('id' in data) === false){
-				throw new Error('参数未指定 id 字段');
+				throw new Error('参数未指定 id属性');
 			}
 			this.selectData[data['id']] = data;
 			
@@ -340,6 +341,15 @@
 	 		style : {
 	 			zIndex : 3999
 	 		},
+	 		onOpen : function(){
+	 			var size = 5;
+	 	        var intervalId = setInterval(function() {
+	 	        	self.$iscroll.refresh();
+	 	        	if((--size) === 0){
+	 	        		clearInterval(intervalId);
+	 	        	}
+	 	        }, 200);
+	 		},
 	 		submit : function(){
 	 			self.onSelect();
 	 		} 
@@ -359,6 +369,15 @@
 	 		returnIcon : 'icon_return',
 	 		style : {
 	 			zIndex : 3999
+	 		},
+	 		onOpen : function(){
+	 			var size = 5;
+	 	        var intervalId = setInterval(function() {
+	 	        	self.$iscroll.refresh();
+	 	        	if((--size) === 0){
+	 	        		clearInterval(intervalId);
+	 	        	}
+	 	        }, 200);
 	 		},
 	 		submit : function(){
 	 			self.onSelect();
@@ -399,9 +418,7 @@
 				queries.push('&'+this.joinPropertys[key] + '=' + selectData[key]);
 			}
 		}
-		
 		var apiUrl = (this.apiUrl.indexOf('?') != -1) ?  this.apiUrl : this.apiUrl + '?' ;
-		
 		return apiUrl + queries.join('&');
 	}
 	
@@ -421,12 +438,8 @@
 	 * @param scrollParentNode
 	 */
 	SideSelectConfig.prototype.addScroll = function(scrollParentNode){
-		new IScroll(scrollParentNode, {
-			scrollbars: true,
-			mouseWheel: true,
-			interactiveScrollbars: true,
-			shrinkScrollbars: 'scale',
-			fadeScrollbars: true
+		this.$iscroll = new IScroll(scrollParentNode, {
+			 click : true
 		});
 	}
 	
@@ -732,7 +745,7 @@
 	 */
 	SideSelectView.prototype.analyzingPolicy = function(config){
 		var op = 'a';
-		if(config.loadOnce == true){
+		if(config.loadOnce === true){
 			op = 'a'; //非级联 单次加载远程
 		}else{
 			op = 'b'; //非级联 每次远程加载数据
@@ -824,6 +837,8 @@
 			this.init = true;
 		}
 	}
+	
+	
 	
 	/**
 	 * 

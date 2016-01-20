@@ -68,8 +68,8 @@
 			pageSize        : 0, // 每页记录数量
 			pageTotal       : 0, // 总共页数 
 			total     	    : 0, // 总共记录数
-			prev            : 0,    // 前1页码
-			next            : 0,    // 下1页码
+			prev            : 1,    // 前1页码
+			next            : 1,    // 下1页码
 			pageNoField     : '',   // 服务应用接收pageNo 变量名
 			pageSizeField   : '',	// 服务应用接收pageSize 变量名
 			pageTotalField  : ''    // 服务应用返回pageTotal 在json中的属性键值
@@ -114,7 +114,6 @@
 	 * 瀑布流模式初始化
 	 */
 	ListView.prototype.initWaterfallMode = function(){
-		
 		this.$warpiscroll = $("<div>", {'id' : 'warp-iscroll'})
 //		$(this.$warpiscroll, this.parentNode).append(this.pullDownTpl());
 		$(this.$warpiscroll, this.parentNode).append(this.bodyContext());
@@ -165,12 +164,17 @@
 	 */
 	ListView.prototype.renderAfterWaterfallModeHandle = function(){
 		var self = this;
- 
         self.resetLoading(self.$pullUp);
+        
+        self.correctView();
+        
         setTimeout(function() {
           self.iScroll.refresh();
         }, 100);
+        
+        
         var len = $('.am-list-item-desced', self.parentNode).length;
+        
         if(len == 0){
         	self.$pullUp.remove();
         }
@@ -201,7 +205,7 @@
 	ListView.prototype.handlePullUp = function(){
         if (this.page.next < this.page.pageTotal) {
           this.setLoading(this.$pullUp);
-          this.page.next += 1;
+          this.page.pageNo = this.page.next += 1;
           this.loadNextPage();
           if(this.page.next == this.page.pageTotal){
         	  this.$pullUpLabel.text('已经到最后了');
@@ -251,14 +255,11 @@
 	
 	
 	ListView.prototype.bindIScroll = function(){
+		console.log('this.parentNode='+this.parentNode+'   this.type='+this.type);
 		var self = this;
-        var iscroll = this.iScroll = new IScroll(this.parentNode, {
-		      scrollbars: true,
-		      mouseWheel: true,
-		      interactiveScrollbars: true,
-		      shrinkScrollbars: 'scale',
-		      fadeScrollbars: true
-        });
+        var iscroll = self.iScroll = new IScroll(self.parentNode, {
+			click : true
+		});
           
   	    var self = this;
   	    var pullFormTop = false;
@@ -291,11 +292,12 @@
 	ListView.prototype.getUrl = function(){
 //        var queries = ['callback=?'];
         var queries = [];
-        for (var key in this.params) {
+        for (var key in  this.params) {
           if (this.params[key]) {
             queries.push(key + '=' + this.params[key]);
           }
         }
+        this.page.next
         queries.push(this.page.pageNoField + '=' + this.page.pageNo);
         queries.push(this.page.pageSizeField + '=' + this.page.pageSize);
         return this.apiUrl + '?' + queries.join('&');
@@ -320,6 +322,7 @@
             var html = self.renderList(data[self.page.result]);
             self.$list.html(html);
             self.renderAfterHandle();
+            self.correctView();
         }, function() {
             console.log('Error...')
         });
@@ -360,17 +363,31 @@
         	self.page.pageTotal = data[self.page.pageTotalField];
             var html = self.renderList(data[self.page.result]);
             self.$list.append(html);
-            setTimeout(function() {
-              self.iScroll.refresh();
-            }, 100);
-            
+            self.correctView();
         }, function() {
             console.log('Error...')
         }).always(function() {
               self.resetLoading(self.$pullUp);
-             //self.iScroll.scrollTo(0, self.topOffset, 800, IScroll.utils.circular);
+             // self.iScroll.scrollTo(0, self.topOffset, 800, $.AMUI.iScroll.utils.circular);
         });
  
+	}
+	
+	
+	/**
+	 * 纠正视图
+	 */
+	ListView.prototype.correctView = function(){
+		var self = this;
+        document.body.style.position = 'fixed';
+        var size = 5;
+        var intervalId = setInterval(function() {
+        	self.refresh();
+        	if((--size) === 0){
+        		document.body.style.position = '';
+        		clearInterval(intervalId);
+        	}
+        }, 200);
 	}
 	
 	/**
@@ -435,10 +452,9 @@
 	
 	
 	ListView.prototype.setPage = function(options){
-		var self = this;
-		var page = {};
-		$.extend(page, self.page, options);
-		self.page = page
+		var self  = this;
+		self.page =  self.page || {};
+		$.extend(self.page, options);
 	}
 	
 	ListView.prototype.setParams = function(options){

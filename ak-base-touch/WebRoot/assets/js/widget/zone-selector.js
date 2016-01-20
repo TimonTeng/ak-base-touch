@@ -581,6 +581,7 @@
 	ZoneSelector.prototype.touchEvent = function(origin, range, touch){
 		var guess = range || document.body;
 		var touchStat = false;
+		
 		$(origin, guess).unbind('touchstart').bind('touchstart', function(e){
 			touchStat = true;
 			touch.start(e);
