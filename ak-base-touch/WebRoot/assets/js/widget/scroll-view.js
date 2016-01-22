@@ -75,6 +75,13 @@
 			      click : true
 		    });
 	        
+	        iscroll.on('scrollStart',function(){
+	            if(!!document.activeElement){
+	                window.scrollTo(0, 0);
+	                document.activeElement.blur();
+	            }
+	        });
+	        
 	        this.setAttr('iscroll', iscroll);
 	        if(style){
 	        	$main.css(style);

@@ -1558,7 +1558,9 @@
 			  self.actionNodes[id] = null;
 			  
 			var element = {
+				selectView : {
 					config : action
+				}
 			};
 			self.actionNodes[id] = element;
 		},
@@ -1678,31 +1680,33 @@
 		 * 展开下选框
 		 */
 		onSelectView : function(e){
-			
+			this.activeView(e.target);
+		},
+		
+		/**
+		 * 展示指定的Action
+		 */
+		setActive : function(id){
 			var self = this;
-			var nowActiveItem =$(e.target);
-			var status    	  = $(nowActiveItem).attr('status');
-			var activeStatus  = self.destroyActiveAction(nowActiveItem);
-			if(!activeStatus){
-				return;
+			var element = self.actionNodes[id];
+			var el = $('div[data-id='+element.selectView.config.id+']').get(0);
+			if(element.selectView.config.type === 'Button'){
+				self.activeButton(el);
+			}else{
+				self.activeView(el);
 			}
-			
-			self.activeActionItem = nowActiveItem;
-			switch(status){
-				case '0' :  self.activeAction();  break;
-				case '1' :  self.destroyAction(); break;
-				default :     break;
-			}
-			
 		},
 		
 		/**
 		 * 点击按钮组件入口
 		 */
 		onButton : function(e){
-			
+			this.activeButton(e.target);
+		},
+		
+		activeButton : function(el){
 			var self = this;
-			var nowActiveItem = $(e.target);
+			var nowActiveItem = $(el);
 			var status    	  = $(nowActiveItem).attr('status');
 			var activeStatus  = self.destroyActiveAction(nowActiveItem);
 			if(!activeStatus){
@@ -1717,6 +1721,23 @@
 			var id = $(nowActiveItem).data('id');
 			var config = self.actionNodes[id].config;
 			config.submit();
+		},
+		
+		activeView : function(el){
+			var self = this;
+			var nowActiveItem =$(el);
+			var status    	  = $(nowActiveItem).attr('status');
+			var activeStatus  = self.destroyActiveAction(nowActiveItem);
+			if(!activeStatus){
+				return;
+			}
+			
+			self.activeActionItem = nowActiveItem;
+			switch(status){
+				case '0' :  self.activeAction();  break;
+				case '1' :  self.destroyAction(); break;
+				default :     break;
+			}
 		}
 		
 	});

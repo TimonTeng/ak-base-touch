@@ -168,8 +168,9 @@
         
         self.correctView();
         
-        setTimeout(function() {
+        var timeoutId = setTimeout(function() {
           self.iScroll.refresh();
+          clearTimeout(timeoutId);
         }, 100);
         
         
@@ -202,24 +203,36 @@
 		}
 	}
 	
-	ListView.prototype.handlePullUp = function(){
-        if (this.page.next < this.page.pageTotal) {
-          this.setLoading(this.$pullUp);
-          this.page.pageNo = this.page.next += 1;
-          this.loadNextPage();
-          if(this.page.next == this.page.pageTotal){
-        	  this.$pullUpLabel.text('已经到最后了');
-          }
-        } else {
-        	
-        }
+	/**
+	 * 向上拽
+	 */
+	ListView.prototype.handleSwipeUp = function(){
+		var iscroll = this.iScroll;
+		var maxScrollY = iscroll.maxScrollY;
+		var startY     = iscroll.startY;
+		var offsetY    = 200;
+		var nextPage   = (startY < (maxScrollY+offsetY)) ? true : false;
+		if(nextPage){
+	        if (this.page.next < this.page.pageTotal) {
+		          this.setLoading(this.$pullUp);
+		          this.page.pageNo = this.page.next += 1;
+		          this.loadNextPage();
+		          if(this.page.next == this.page.pageTotal){
+		        	  this.$pullUpLabel.text('已经到最后了');
+		          }
+	        } 
+		}
 	}
 	
 	/**
-	 * 向下拽刷新所有内容(后续开发)
+	 * 向下拽刷新所有内容
 	 */
-	ListView.prototype.handlePullDown = function(){
- 
+	ListView.prototype.handleSwipeDown = function(){
+		var iscroll = this.iScroll;
+		var startY  = iscroll.startY;
+		if(startY > 0){
+			this.reload();
+		}
 	}
 	
 	ListView.prototype.pullDownTpl = function(){
@@ -253,35 +266,25 @@
         $el.removeClass('loading');
 	};
 	
-	
+	/**
+	 * console.log("scrollStart y:{%s} startY:{%s} maxScrollY:{%s} absStartY:{%s} distY:{%s} directionY:{%s} pointY:{%s}", this.y,this.startY,this.maxScrollY,this.absStartY,this.distY,this.directionY,this.pointY);
+	 */
 	ListView.prototype.bindIScroll = function(){
-		console.log('this.parentNode='+this.parentNode+'   this.type='+this.type);
 		var self = this;
         var iscroll = self.iScroll = new IScroll(self.parentNode, {
 			click : true
 		});
           
   	    var self = this;
-  	    var pullFormTop = false;
-  	    var pullStart;
-  	    
-  	    iscroll.on('scrollStart', function() {
-              if (this.y >= self.topOffset) {
-                pullFormTop = true;
-              }
-
-              pullStart = this.y;
-        });
-
   	    iscroll.on('scrollEnd', function() {
-              if (pullFormTop && this.directionY === -1) {
-              	//self.handlePullDown();
-              }
-              pullFormTop = false;
-
-              if (pullStart === this.y && (this.directionY === 1)) {
-              	self.handlePullUp();
-              }
+    	    //pull down
+    		if(this.directionY === -1){
+    			self.handleSwipeDown();
+    		}
+    		//pull up
+    		if(this.directionY === 1){
+    			self.handleSwipeUp();
+    		}
         });
 	}
 	
@@ -290,14 +293,12 @@
 	 * 组装URL
 	 */
 	ListView.prototype.getUrl = function(){
-//        var queries = ['callback=?'];
         var queries = [];
         for (var key in  this.params) {
           if (this.params[key]) {
             queries.push(key + '=' + this.params[key]);
           }
         }
-        this.page.next
         queries.push(this.page.pageNoField + '=' + this.page.pageNo);
         queries.push(this.page.pageSizeField + '=' + this.page.pageSize);
         return this.apiUrl + '?' + queries.join('&');
@@ -363,12 +364,12 @@
         	self.page.pageTotal = data[self.page.pageTotalField];
             var html = self.renderList(data[self.page.result]);
             self.$list.append(html);
+            self.renderAfterHandle();
             self.correctView();
         }, function() {
             console.log('Error...')
         }).always(function() {
               self.resetLoading(self.$pullUp);
-             // self.iScroll.scrollTo(0, self.topOffset, 800, $.AMUI.iScroll.utils.circular);
         });
  
 	}
@@ -378,23 +379,25 @@
 	 * 纠正视图
 	 */
 	ListView.prototype.correctView = function(){
+		if(this.type === ViewAttributes.Type.Pivot){
+			return;
+		}
 		var self = this;
         document.body.style.position = 'fixed';
         var size = 5;
         var intervalId = setInterval(function() {
-        	self.refresh();
-        	if((--size) === 0){
-        		document.body.style.position = '';
+			self.refresh();
+        	if((--size) <= 0){
         		clearInterval(intervalId);
         	}
-        }, 200);
+        }, 250);
 	}
 	
 	/**
 	 * 刷新iScroll触摸效果
 	 */
 	ListView.prototype.refresh = function(){
-		this.iScroll.refresh();
+		//this.iScroll.refresh();
 	}
 	
 	/**
@@ -493,7 +496,6 @@
 				pageTotalField  : 'lastPageNumber'    // 服务应用返回pageTotal 在json中的属性键值
 			},
 			params : { //加载列表数据的查询条件
-				
 			}
 		},
 		

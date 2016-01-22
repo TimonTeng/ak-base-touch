@@ -114,6 +114,8 @@
  
 				]
 			}).render();
+			
+			actionBar.setActive('view1');
 			 
 		});
 	

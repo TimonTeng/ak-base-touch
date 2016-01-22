@@ -31,7 +31,6 @@
 		</div>
 	</header>
 	
-	
 	<div id="action-bar" class="nav am-g"></div>
 	
 	
