@@ -26,13 +26,13 @@
 			
 			var headerNavigate = new HeaderNavigate({
 			
-				title : '品牌U记'
-				
+				title : '品牌U记' 
 				, style : {
 					backgroundColor : '#fff'
 				}
 				
 				, left : {
+					isSideFrameView : true,
 					iconClass : 'icon_return',
 					event : {
 						'touchend' : function(){

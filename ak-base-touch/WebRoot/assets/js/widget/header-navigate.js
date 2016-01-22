@@ -66,7 +66,7 @@
 				this.$leftIcon.appendTo(this.$left);
 			}
 			
-			if(this.left.isSideFrameView){
+			if(this.left.isSideFrameView === true){
 				var intervalId = setInterval(function() {
 					if (document.parentWindow) {
 						document.parentWindow.SideFrameView.bindClose(self.$left);
@@ -168,6 +168,7 @@
 	HeaderNavigate.prototype.closeFrame = function(){
 		var SideFrameView =  this.SideFrameView;
 		if(SideFrameView){
+			SideFrameView.executeTrigger();
 			SideFrameView.close();
 		}
 	}

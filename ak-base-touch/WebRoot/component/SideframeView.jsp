@@ -26,15 +26,12 @@
 		</h1>
 
 		<div class="am-header-right am-header-nav">
-			<a href="#right-link" class="" onclick="sideFrameView.openUrl('/ak-sw-p2pm/brandAssignment.html', '.app-nav-logo');"> <i
+			<a href="#right-link" class="" onclick="sideFrameView.openUrl('HeaderNavigate.html', 'B');"> <i
 				class="am-header-icon am-icon-bars"></i>
 			</a>
 		</div>
 		
 	</header>
-	 
-	 <iframe width="100%" height="100%" src="http://www.uni020.com/mobile/" scrolling="no"></iframe>
-	 
 	 
 	 
 	<script type="text/javascript">
@@ -46,9 +43,21 @@
 	<script type="text/javascript">
 		var sideFrameView = null;
 		require(['jquery', 'amazeui', 'sideFrameView'], function($, amazeui, SideFrameView){
+		
 		 	sideFrameView = new SideFrameView({
 		 		url : '${ctx}/SideframeView.html' 
 		 	});
+		 	
+		 	
+		 	sideFrameView.registerCallback('A', function(){
+		 		alert('A');
+		 	});
+ 
+		 	sideFrameView.registerCallback('B', function(){
+		 		alert('B');
+		 	});
+		 	
+		 	
 		});
 	
 	</script>

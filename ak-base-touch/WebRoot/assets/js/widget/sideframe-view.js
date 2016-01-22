@@ -47,6 +47,8 @@
 	function SideFrameView(){
 		this.url = this.view =null;
 		this.$title = this.$body = this.$frame = null;
+		this.callbackObject = {};
+		this.triggerCallbackObject = null;
 	}
 	
 	SideFrameView.prototype.assembly = function(){
@@ -60,10 +62,6 @@
 			this.$body.css(this.style);
 		}
  
-	}
-	
-	SideFrameView.prototype.createTitle = function(){
-		
 	}
 	
 	SideFrameView.prototype.createBody = function(){
@@ -100,7 +98,7 @@
 	/**
 	 * 打开url
 	 */
-	SideFrameView.prototype.openUrl = function(url, closeTarget){
+	SideFrameView.prototype.openUrl = function(url){
 		var self = this;
 		var url = url || this.url;
 		this.$frame.get(0).onload = function(){
@@ -113,7 +111,7 @@
 				}
 			}, 500);
 		}
-		url = (url.indexOf('?') != -1)  ? url+'&v='+new Date() : url+'?v='+new Date(); 
+		url = (url.indexOf('?') != -1)  ? url + '&v='+ Math.random() : url+'?v=' + Math.random(); 
 		this.$frame.attr('src', url);
 	}
 	
@@ -123,6 +121,7 @@
 	SideFrameView.prototype.bindClose = function(returnElement){
 		var self = this;
 		$(returnElement).bind('touchend', function(){
+			self.executeTrigger();
 			self.close();
 		});
 	}
@@ -165,6 +164,33 @@
 			clearTimeout(timeoutId);
 		}, 500);
 	}
+	
+	/**
+	 * 注册回调触发事件
+	 * @param callbackName
+	 * @param callbackFunction
+	 */
+	SideFrameView.prototype.registerCallback = function(callbackName, callbackFunction){
+		this.callbackObject[callbackName] = callbackFunction;
+		console.log('SideFrameView.prototype.registerCallback');
+	}
+	
+	/**
+	 * 触发的回调事件
+	 */
+	SideFrameView.prototype.triggerCallback = function(callbackName){
+		this.triggerCallbackObject = this.callbackObject[callbackName];
+	}
+	
+	/**
+	 * HeaderNavigate 组件关闭时执行
+	 */
+	SideFrameView.prototype.executeTrigger = function(){
+		if(this.triggerCallbackObject){
+			this.triggerCallbackObject();
+		}
+	}
+	
 
 	var Model = Backbone.Model.extend({
 		idAttribute: '',
@@ -195,15 +221,23 @@
 		    }, false);
 		},
 		
-		open : function(closeTarget) {
+		registerCallback : function(callbackName, callbackFunction){
 			var sideFrameView = this.getAttr('sideFrameView');
-			sideFrameView.openUrl(null, closeTarget);
+			sideFrameView.registerCallback(callbackName, callbackFunction);
 		},
 		
-		openUrl : function(url, closeTarget){
+		triggerCallback : function(callbackName){
 			var sideFrameView = this.getAttr('sideFrameView');
-			sideFrameView.openUrl(url, closeTarget);
-		}
+			sideFrameView.triggerCallback(callbackName);
+		},
+		
+		openUrl : function(url, callbackName){
+			var sideFrameView = this.getAttr('sideFrameView');
+			sideFrameView.openUrl(url);
+			if(callbackName){
+				sideFrameView.triggerCallback(callbackName);
+			}
+		} 
 		
 	});
 }));
