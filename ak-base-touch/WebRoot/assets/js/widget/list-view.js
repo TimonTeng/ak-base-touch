@@ -388,6 +388,7 @@
         var intervalId = setInterval(function() {
 			self.refresh();
         	if((--size) <= 0){
+        		document.body.style.position = '';
         		clearInterval(intervalId);
         	}
         }, 250);
@@ -397,7 +398,7 @@
 	 * 刷新iScroll触摸效果
 	 */
 	ListView.prototype.refresh = function(){
-		//this.iScroll.refresh();
+		this.iScroll.refresh();
 	}
 	
 	/**

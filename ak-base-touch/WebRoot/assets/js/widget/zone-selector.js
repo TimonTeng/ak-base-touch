@@ -193,6 +193,9 @@
 		$.extend(JsonReader.province, config.province, self.provinceJsonReaderOptions());
 		$.extend(JsonReader.city, config.city, self.cityJsonReaderOptions());
 		
+		self.scrollTigger(JsonReader.province);
+		self.scrollTigger(JsonReader.city);
+		
 		self.initload = function(){
 			self.load(JsonReader.province);
 		}
@@ -229,6 +232,25 @@
 		self.initload = function(){
 			self.load(JsonReader.province);
 		}
+	}
+	
+	/**
+	 * 
+	 * @param iscroll
+	 */
+	ZoneSelector.prototype.scrollTigger = function(zone){
+		var self    = this;
+		var iscroll = zone.scroll;
+		
+		iscroll.on('scrollStart', function() {
+			console.log('scrollStart');
+			$('.am-plugin-sidebar-header-title').text('s='+this.directionY);
+		});
+		
+		iscroll.on('scrollEnd', function() {
+			console.log('scrollEnd');
+			$('.am-plugin-sidebar-header-title').text('e='+this.directionY);
+		});
 	}
 	
 	/**
@@ -284,7 +306,6 @@
 		        	start : function(e){
 		        		self.selectedAllOff($dataContext, 'province');
 		        		self.selectedOn(e.target, 'province');
-		        		
 		        		if(self.$cityBody){
 		        			$('.zone-data-context', self.$cityBody).empty();
 		        		}
@@ -469,7 +490,7 @@
 	 		returnIcon : 'icon_return',
 	 		
 	 		style : {
-	 			zIndex : 200
+	 			zIndex : 2013
 	 		},
 	 		
 	 		submit : function(){
@@ -581,7 +602,6 @@
 	ZoneSelector.prototype.touchEvent = function(origin, range, touch){
 		var guess = range || document.body;
 		var touchStat = false;
-		
 		$(origin, guess).unbind('touchstart').bind('touchstart', function(e){
 			touchStat = true;
 			touch.start(e);
