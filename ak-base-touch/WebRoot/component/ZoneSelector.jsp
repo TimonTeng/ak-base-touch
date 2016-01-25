@@ -10,6 +10,18 @@
   	<title>ZoneSelector</title>
   	<link rel="stylesheet" href="${ctx}/assets/css/amazeui.css"/>
   	<link rel="stylesheet" href="${ctx}/assets/css/lib/amazeui.plugin.css"/>
+  	<style type="text/css">
+  		.console {
+  			z-index: 9999;
+  			width: 100%;
+  			height: 35px;
+  			position: fixed;
+  			bottom : 0;
+  			background-color: black;
+  			color: lime;
+  		}
+  	
+  	</style>
 </head>
 
 <body>
@@ -32,21 +44,20 @@
 		</div>
 		
 	</header>
-	
+	<div class="console"></div>
 	
 	
 	<form class="am-form">
 	  <fieldset>
 	    <div class="am-form-group">
-	      <label for="doc-ipt-email-1">城市选择</label>
-	      <input type="text" class="" id="CitySelector" placeholder="点击选择城市">
+	      <label for="doc-ipt-email-1" id="CitySelector">城市选择</label>
 	    </div>
-	
+<!-- 	
 	    <div class="am-form-group">
 	      <label for="doc-ipt-pwd-1">省市区选择</label>
 	      <input type="text" class="" placeholder="点击选择省市区">
 	    </div>
-	 
+	  -->
 	  </fieldset>
 	</form>
 	
@@ -68,7 +79,7 @@
 			 			displayField : 'provinceName',
 			 			result : 'data'
 			 		},
-			 		
+			 	 
 			 		city : {
 			 			apiUrl : '${dataCtx}/ak-sw-p2pm/foundProvinceCity.html',
 			 			//apiUrl : '${dataCtx}/ak-sw-p2pm/cityByAlphabetSeq.html',

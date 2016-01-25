@@ -47,7 +47,8 @@
 	var ViewAttributes = {
 		Type : {
 			'Waterfall' : 'waterfall',
-			'Pivot'	    : 'pivot'
+			'Pivot'	    : 'pivot',
+			'Alphabet'  : 'alphabet'
 		} 
     };
 	
@@ -75,6 +76,10 @@
 			pageTotalField  : ''    // 服务应用返回pageTotal 在json中的属性键值
 		 };
 		 
+		 this.doLoad = true;
+		 
+		 this.delegatesEvents = {};
+		 
 		 this.renderAfter = null;
 	}
 	
@@ -92,6 +97,7 @@
 		var type  	     = view.getAttr('type');
 		this.$main	     = $(this.parentNode);
 		this.renderAfter = view.getAttr('renderAfter');
+		this.doLoad      = new Boolean(view.getAttr('doLoad') || this.doLoad);
 		
 		if(this.style){
 			this.$main.css(this.style);
@@ -104,6 +110,7 @@
 		switch(this.type){
 			case ViewAttributes.Type.Waterfall :  this.initWaterfallMode(); break;
 			case ViewAttributes.Type.Pivot 	   :  this.initPivotMode(); break;
+			case ViewAttributes.Type.Alphabet  :  this.initAlphabetMode(); break;
 			default : break;
 		}
 
@@ -136,7 +143,7 @@
 	 * 枢模式初始化
 	 */
 	ListView.prototype.initPivotMode = function(){
-		this.$warpiscroll = $("<div>", {'id' : 'warp-iscroll'})
+		this.$warpiscroll = $("<div>", {'id' : 'warp-iscroll'});
 		$(this.$warpiscroll, this.parentNode).append(this.bodyContext());
 		this.$warpiscroll.appendTo(this.$main);
 		this.$list      = this.$main.find('#events-list');
@@ -146,14 +153,27 @@
 	}
 	
 	/**
+	 * 字母导航模式初始化
+	 * 不存在分页功能
+	 */
+	ListView.prototype.initAlphabetMode = function(){
+		this.$warpiscroll = $("<div>", {'id' : 'warp-iscroll'});
+		$(this.$warpiscroll, this.parentNode).append(this.bodyContext());
+		this.$warpiscroll.appendTo(this.$main);
+		this.$list      = this.$main.find('#events-list');
+		this.scrollView = this.view.getAttr('scrollView');
+		this.setActivate();
+	}
+	
+	/**
 	 * 渲染Dom之后处理入口
 	 */
 	ListView.prototype.renderAfterHandle = function(){
 		var self = this;
-		
 		switch(this.type){
-			case ViewAttributes.Type.Waterfall :  this.renderAfterWaterfallModeHandle(); break;
-			case ViewAttributes.Type.Pivot 	   :  this.renderAfterPivotModeHandle(); break;
+			case ViewAttributes.Type.Waterfall : this.renderAfterWaterfallModeHandle(); break;
+			case ViewAttributes.Type.Pivot 	   : this.renderAfterPivotModeHandle(); break;
+			case ViewAttributes.Type.Alphabet  : this.renderAfterAlphabetModeHandle(); break;
 			default : break;
 		}
 	}
@@ -165,17 +185,8 @@
 	ListView.prototype.renderAfterWaterfallModeHandle = function(){
 		var self = this;
         self.resetLoading(self.$pullUp);
-        
         self.correctView();
-        
-        var timeoutId = setTimeout(function() {
-          self.iScroll.refresh();
-          clearTimeout(timeoutId);
-        }, 100);
-        
-        
         var len = $('.am-list-item-desced', self.parentNode).length;
-        
         if(len == 0){
         	self.$pullUp.remove();
         }
@@ -202,6 +213,14 @@
 			this.renderAfter();
 		}
 	}
+	
+	/**
+	 * 字母导航模式渲染Dom之后执行
+	 */
+	ListView.prototype.renderAfterAlphabetModeHandle = function(){
+
+	}
+	
 	
 	/**
 	 * 向上拽
@@ -285,6 +304,7 @@
     		if(this.directionY === 1){
     			self.handleSwipeUp();
     		}
+    		
         });
 	}
 	
@@ -312,6 +332,29 @@
 		var template = Template.compile(path, data);
 		return template;
 	}
+	
+	/**
+	 * 创建数据加载模型
+	 */
+	ListView.prototype.createLoadDataMode = function(){
+		var self = this;
+		switch(this.type){
+			case ViewAttributes.Type.Waterfall : (function(){
+				
+				
+			})();
+			case ViewAttributes.Type.Pivot : (function(){
+				
+				
+			})();
+			case ViewAttributes.Type.Alphabet : (function(){
+				
+				
+			})();
+			default : return null;
+		}
+	}
+ 
  
 	/**
 	 * 加载

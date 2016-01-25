@@ -194,6 +194,7 @@
 		$.extend(JsonReader.city, config.city, self.cityJsonReaderOptions());
 		
 		self.scrollTigger(JsonReader.province);
+		
 		self.scrollTigger(JsonReader.city);
 		
 		self.initload = function(){
@@ -244,12 +245,12 @@
 		
 		iscroll.on('scrollStart', function() {
 			console.log('scrollStart');
-			$('.am-plugin-sidebar-header-title').text('s='+this.directionY);
+			$('.console').text('e='+this.distY);
 		});
-		
+//		
 		iscroll.on('scrollEnd', function() {
 			console.log('scrollEnd');
-			$('.am-plugin-sidebar-header-title').text('e='+this.directionY);
+			$('.console').text('e='+this.distY);
 		});
 	}
 	

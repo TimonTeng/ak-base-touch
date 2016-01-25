@@ -64,6 +64,12 @@ public class WidgetController extends WebController {
 		return "forward:/component/PivotListView.jsp";
 	}
 	
+	@RequestMapping(value="/AlphabetListView.html",  method = RequestMethod.GET)
+	public String AlphabetListView(HttpServletResponse response, HttpServletRequest request) throws IOException {
+		setDataCtx(request);
+		return "forward:/component/AlphabetListView.jsp";
+	}
+	
 	@RequestMapping(value="/Sidebar.html",  method = RequestMethod.GET)
 	public String Sidebar(HttpServletResponse response, HttpServletRequest request) throws IOException {
 		setDataCtx(request);
