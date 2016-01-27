@@ -10143,7 +10143,51 @@ if ( typeof module != 'undefined' && module.exports ) {
 }
 
 })(window, document, Math);
-
+/*
+ * 2016-1-26 处理touch事件
+ * $.touchEvent('目标Dom', 'Dom范围', {
+ * 	   start : function(e){},
+ * 	   move  : function(e){},
+ *     end   : function(e){}
+ * });
+ */
+jQuery.extend({
+	
+	touchEvent : function(origin, range, touch){
+		var guess = range || document.body;
+		var touchStat = false;
+		var touchmoveTimeout = null;
+		
+		$(origin, guess).unbind('touchstart').bind('touchstart', function(e){
+			touchStat = true;
+			touch.start(e);
+		});
+		
+		$(origin, guess).unbind('touchmove').bind('touchmove', function(e){
+			if(touchmoveTimeout == null){
+				touchmoveTimeout = setTimeout(function() {
+					touchStat = false;
+					touch.move(e);
+					var _touchmoveTimeout = touchmoveTimeout+'';
+					touchmoveTimeout = null;
+					clearTimeout(_touchmoveTimeout);
+				}, 250);
+			}
+		});
+		
+		$(origin, guess).unbind('touchend').bind('touchend', function(e){
+			if(touchStat){
+				if(touchmoveTimeout != null){
+					clearTimeout(touchmoveTimeout);
+					touchmoveTimeout = null;
+				}
+				touch.end(e);
+			}
+		});
+	}
+	
+});
+ 
 
 return jQuery;
 

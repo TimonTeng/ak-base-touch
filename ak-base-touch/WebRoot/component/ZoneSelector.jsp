@@ -14,7 +14,7 @@
   		.console {
   			z-index: 9999;
   			width: 100%;
-  			height: 35px;
+  			height: 65px;
   			position: fixed;
   			bottom : 0;
   			background-color: black;

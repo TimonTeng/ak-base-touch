@@ -79,21 +79,7 @@
 	 * 
 	 */
 	SideFormView.prototype.touchEvent = function(origin, range, touch){
-		var guess = range || document.body;
-		var touchStat = false;
-		$(origin, guess).unbind('touchstart').bind('touchstart', function(e){
-			touchStat = true;
-			touch.start(e);
-		});
-		$(origin, guess).unbind('touchmove').bind('touchmove', function(e){
-			touchStat = false;
-			touch.move(e);
-		});
-		$(origin, guess).unbind('touchend').bind('touchend', function(e){
-			if(touchStat){
-				touch.end(e);
-			}
-		});
+		$.touchEvent(origin, range, touch);
 	}
 	
 	/**

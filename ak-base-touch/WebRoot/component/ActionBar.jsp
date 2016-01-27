@@ -86,12 +86,7 @@
 					   		}
 					   },
 					   submit : function(data){
-					   		 data = {rootValue : {id :'' , name : ''}, nodeValue : {}}
-					   
-					   
-					   		 lisView.reload({
-					   		 	'id' : data.rootValue.id
-					   		 });
+
 					   }
 				   },
  				   {

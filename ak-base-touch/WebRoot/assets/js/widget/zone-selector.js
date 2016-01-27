@@ -243,14 +243,24 @@
 		var self    = this;
 		var iscroll = zone.scroll;
 		
+		var interval = null; 
+		var mill = 0;
 		iscroll.on('scrollStart', function() {
-			console.log('scrollStart');
-			$('.console').text('e='+this.distY);
+			//console.log('scrollStart');
+			//$('.console').text('s='+this.distY);
+//			mill = 0;
+//			interval = setInterval(function() {
+//				++mill;
+//				$('.console').text(" mill = "+ mill);
+//			}, 1);
+			//$('.console').text("Interval = "+ interval);
 		});
 //		
 		iscroll.on('scrollEnd', function() {
-			console.log('scrollEnd');
-			$('.console').text('e='+this.distY);
+//			clearInterval(interval);
+			//console.log('scrollEnd');
+			//$('.console').text('e='+this.distY);
+//			$('.console').text(" directionY = "+this.directionY+ " distY = "+ this.distY + "<br> e directionY=" +this.directionY + " se distY = "+ this.distY);
 		});
 	}
 	
@@ -601,21 +611,7 @@
 	 * 
 	 */
 	ZoneSelector.prototype.touchEvent = function(origin, range, touch){
-		var guess = range || document.body;
-		var touchStat = false;
-		$(origin, guess).unbind('touchstart').bind('touchstart', function(e){
-			touchStat = true;
-			touch.start(e);
-		});
-		$(origin, guess).unbind('touchmove').bind('touchmove', function(e){
-			touchStat = false;
-			touch.move(e);
-		});
-		$(origin, guess).unbind('touchend').bind('touchend', function(e){
-			if(touchStat){
-				touch.end(e);
-			}
-		});
+		$.touchEvent(origin, range, touch);
 	}
 	
 	var Model = Backbone.Model.extend({

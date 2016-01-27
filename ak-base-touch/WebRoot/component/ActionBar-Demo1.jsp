@@ -79,7 +79,7 @@
 					   displayField : 'labelText',
 					   url 		    : 'assets/data/compose.json',
 					   submit       : function(data){
-					   		  
+					  		console.log(JSON.stringify(data));
 					   }
 					   
 				   }
@@ -91,7 +91,7 @@
 					   store        : store,
 					   displayField : 'labelText',
 					   submit       : function(data){
-					   		  
+					   		console.log(JSON.stringify(data));
 					   }
 					   
 				   }
@@ -105,7 +105,7 @@
 					   store 		: store,
 					   url 		    : 'assets/data/compose.json',
 					   submit 	    : function(data){
-					   		 
+					   		console.log(JSON.stringify(data));
 					   }
 				   }
  

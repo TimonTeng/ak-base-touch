@@ -145,6 +145,8 @@
         	 $(self.tip).css('display', 'block');
         	 $(self.tip).addClass('am-plugin-alphabet-nav-tip-active');
         	 $(self.tip).removeClass('am-plugin-alphabet-nav-tip-destroy');
+        	 $('li', self.root).css('color','#AAA');
+        	 $(e.target).css('color', '#E60012');
         	 var positionAlphabet = $('#warp_alphabet_'+$(e.target).text());
         	 self.selectView.rootIScroll.scrollToElement($(positionAlphabet).get(0), 10, 0, -5);
         });
