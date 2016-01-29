@@ -193,10 +193,6 @@
 		$.extend(JsonReader.province, config.province, self.provinceJsonReaderOptions());
 		$.extend(JsonReader.city, config.city, self.cityJsonReaderOptions());
 		
-		self.scrollTigger(JsonReader.province);
-		
-		self.scrollTigger(JsonReader.city);
-		
 		self.initload = function(){
 			self.load(JsonReader.province);
 		}
@@ -233,35 +229,6 @@
 		self.initload = function(){
 			self.load(JsonReader.province);
 		}
-	}
-	
-	/**
-	 * 
-	 * @param iscroll
-	 */
-	ZoneSelector.prototype.scrollTigger = function(zone){
-		var self    = this;
-		var iscroll = zone.scroll;
-		
-		var interval = null; 
-		var mill = 0;
-		iscroll.on('scrollStart', function() {
-			//console.log('scrollStart');
-			//$('.console').text('s='+this.distY);
-//			mill = 0;
-//			interval = setInterval(function() {
-//				++mill;
-//				$('.console').text(" mill = "+ mill);
-//			}, 1);
-			//$('.console').text("Interval = "+ interval);
-		});
-//		
-		iscroll.on('scrollEnd', function() {
-//			clearInterval(interval);
-			//console.log('scrollEnd');
-			//$('.console').text('e='+this.distY);
-//			$('.console').text(" directionY = "+this.directionY+ " distY = "+ this.distY + "<br> e directionY=" +this.directionY + " se distY = "+ this.distY);
-		});
 	}
 	
 	/**

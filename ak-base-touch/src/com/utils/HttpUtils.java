@@ -153,7 +153,7 @@ public class HttpUtils {
 			  String script = HttpUtils.post("http://javascript-minifier.com/raw", params);
 			  System.out.println(script);
 			  
-			  String minJsName = fileName.replace(".js", ".min.js");
+			  String minJsName = fileName;
 			  
 			  writeJSFile("C:\\workspace_github\\ak-base-touch\\ak-base-touch\\WebRoot\\assets\\js\\widget-min\\", minJsName, script);
 		}

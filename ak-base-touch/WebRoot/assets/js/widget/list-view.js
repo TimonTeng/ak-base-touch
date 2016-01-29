@@ -81,6 +81,7 @@
 		 this.delegatesEvents = {};
 		 
 		 this.renderAfter = null;
+		 this.loadedHtml = '';
 	}
 	
 	/**
@@ -198,6 +199,9 @@
 		if(this.renderAfter){
 			this.renderAfter();
 		}
+		
+		this.listenerImageOnload();
+		this.imageLazyLoad();
 	}
 	
 	/**
@@ -212,6 +216,9 @@
 		if(this.renderAfter){
 			this.renderAfter();
 		}
+		
+		this.listenerImageOnload();
+		this.imageLazyLoad();
 	}
 	
 	/**
@@ -221,6 +228,25 @@
 
 	}
 	
+	/**
+	 * 监听图片加载完成事件, 刷新滚动条长度
+	 */
+	ListView.prototype.listenerImageOnload = function(){
+		var self = this;
+		$('img', this.$main).unbind('load').bind('load', function(e){
+			self.refresh();
+		});
+	}
+	
+	/**
+	 * list中的图片延迟加载设置
+	 */
+	ListView.prototype.imageLazyLoad = function(){
+		$('img', this.loadedHtml).lazyload({
+			effect : 'fadeIn',
+			threshold : 350
+		});
+	}
 	
 	/**
 	 * 向上拽
@@ -289,12 +315,12 @@
 	 * console.log("scrollStart y:{%s} startY:{%s} maxScrollY:{%s} absStartY:{%s} distY:{%s} directionY:{%s} pointY:{%s}", this.y,this.startY,this.maxScrollY,this.absStartY,this.distY,this.directionY,this.pointY);
 	 */
 	ListView.prototype.bindIScroll = function(){
+		
 		var self = this;
         var iscroll = self.iScroll = new IScroll(self.parentNode, {
-			click : true
+        	click : true
 		});
-          
-  	    var self = this;
+  	    
   	    iscroll.on('scrollEnd', function() {
     	    //pull down
     		if(this.directionY === -1){
@@ -305,7 +331,10 @@
     			self.handleSwipeUp();
     		}
     		
+    		$(self.parentNode).trigger('scroll');
+    		
         });
+ 
 	}
 	
 	
@@ -399,14 +428,22 @@
 	
 	
 	/**
+	 * 
+	 */
+	ListView.prototype.createLoadedPageHtmlBox = function(){
+		this.loadedHtml = $('<div>', {});
+	}
+	
+	/**
 	 * 加载
 	 */
 	ListView.prototype.loadNextPage = function(){
 		var self = this;
         $.getJSON(self.getUrl()).then(function(data) {
         	self.page.pageTotal = data[self.page.pageTotalField];
-            var html = self.renderList(data[self.page.result]);
-            self.$list.append(html);
+        	self.createLoadedPageHtmlBox();
+        	self.loadedHtml.html(self.renderList(data[self.page.result]));
+            self.loadedHtml.appendTo(self.$list);
             self.renderAfterHandle();
             self.correctView();
         }, function() {

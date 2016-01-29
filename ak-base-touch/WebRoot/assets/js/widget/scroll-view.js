@@ -48,6 +48,36 @@
 		idAttribute: '',
 		defaults : {}
 	});
+	
+	var ScrollView = function(){
+		this.parentNode = this.style = null;
+		this.$main = null;
+	}
+	
+	ScrollView.prototype.initConfiguration = function(view){
+		
+	}
+	
+	ScrollView.prototype.refresh = function(){
+		
+	}
+	
+	ScrollView.prototype.setActivateOn = function(){
+		
+	}
+	
+	ScrollView.prototype.setActivateOff = function(){
+		
+	}
+	
+	ScrollView.prototype.onActivate = function(){
+		
+	}
+	
+	ScrollView.createScroll = function(){
+		
+	}
+	
 		
 	return View.extend({
 		
@@ -64,7 +94,6 @@
 		},
  
 		setup: function() {
-			
 			
 			var self = this;
 			var parentNode = this.getAttr('parentNode');
