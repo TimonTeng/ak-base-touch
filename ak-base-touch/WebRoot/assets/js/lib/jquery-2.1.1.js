@@ -10176,7 +10176,7 @@ jQuery.extend({
 		
 		$(origin, guess).unbind('touchend').bind('touchend', function(e){
 			var changeScreenY = Math.abs(startScreenY-moveScreenY);
-			if(end && changeScreenY < 10){
+			if(end && changeScreenY < 5){
 				end(e);
 			}
 		});
