@@ -53,16 +53,18 @@
 		
 		this.threads = 0;
 		
+		this.lazyload = true;
+		
 	}
 	
 	ContextView.prototype.initConfiguration = function(view){
 		this.view = view;
 		this.scrollView   = view.getAttr('scrollView');
 		this.contextItems = view.getAttr('items') || [];
-		this.loadComplete  = view.getAttr('loadComplete');
+		this.loadComplete = view.getAttr('loadComplete');
 		var parentNode    = view.getAttr('parentNode');
 		this.$parentNode  = $(parentNode);
-		
+		this.lazyload     = new Boolean(view.getAttr('lazyload') || true);
 		if(this.contextItems.length === 0){
 			 throw Error('ContextView attribute items unspecified');
 			 return;
@@ -105,6 +107,7 @@
 		}
 		var intervalId =  setInterval(function() {
 			if(self.threads == self.contextItems.length){
+				self.isLazyLoad();
 				self.loadComplete();
 				self.scrollView.refresh();
 				clearInterval(intervalId);
@@ -180,6 +183,36 @@
         }, function() {
             console.log('ContextView.loadContext Error...')
         });
+	}
+	
+	/**
+	 * 判断是否处理延迟加载数据
+	 */
+	ContextView.prototype.isLazyLoad = function(){
+		if(this.lazyload == true){
+			this.listenerImageOnload();
+			this.imageLazyLoad();
+		}
+	}
+	
+	/**
+	 * 监听图片加载完成事件, 刷新滚动条长度
+	 */
+	ContextView.prototype.listenerImageOnload = function(){
+		var self = this;
+		$('img', self.$parentNode).unbind('load').bind('load', function(e){
+			self.scrollView.refresh();
+		});
+	}
+	
+	/**
+	 * list中的图片延迟加载设置
+	 */
+	ContextView.prototype.imageLazyLoad = function(){
+		$('img', this.$parentNode).lazyload({
+			effect : 'fadeIn',
+			threshold : 350
+		});
 	}
 	
 	var Model = Backbone.Model.extend({
