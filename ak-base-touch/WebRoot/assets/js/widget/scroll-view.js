@@ -64,6 +64,11 @@
         	this.$main.css(this.style);
         }
         this.createScroll();
+		switch(this.activate){
+			case 'true'  :  this.setActivateOn(); break;
+			case 'false' :  this.setActivateOff(); break;
+			default : break;
+		}
 	}
 	
 	ScrollView.prototype.refresh = function(){
@@ -114,14 +119,7 @@
 		self.iscroll = new IScroll(this.parentNode, {
 		      click : true
 	    });
-		
-        self.iscroll.on('scrollStart',function(){
-            if(!!document.activeElement){
-                window.scrollTo(0, 0);
-                document.activeElement.blur();
-            }
-        });
-        
+ 
         self.iscroll.on('scrollEnd', function() {
     	    //pull down
     		if(this.directionY === -1){
@@ -161,6 +159,7 @@
 			}
 		}
 	}
+	
 	
 	/**
 	 * 纠正视图
@@ -223,6 +222,16 @@
 		        	'INPUT'  : 'INPUT',
 		        	'TEXTAREA' : 'TEXTAREA'
             };
+	        
+	        $(window).unbind('resize').bind('resize', function(){
+	        	if(document.activeElement.tagName in formElement){
+	        		setTimeout(function() {
+	               		var $dom =  $(document.activeElement);
+		        		var height = $dom.offset().top;
+		        		scrollView.refresh();
+	        		}, 250);
+	        	}
+	        });
 	 
 	        document.addEventListener('touchend', function(e) {
 	        	if(document.activeElement.tagName in formElement){
