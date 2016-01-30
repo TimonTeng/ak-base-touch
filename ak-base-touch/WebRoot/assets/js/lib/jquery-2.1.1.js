@@ -10155,33 +10155,29 @@ jQuery.extend({
 	
 	touchEvent : function(origin, range, touch){
 		var guess = range || document.body;
-		var touchStat = false;
-		var touchmoveTimeout = null;
-		
+		var startScreenY = 0;
+		var moveScreenY  = 0;
+		var start = touch.start || null;
+		var move  = touch.move || null;
+		var end   = touch.end || null;
 		$(origin, guess).unbind('touchstart').bind('touchstart', function(e){
-			touchStat = true;
-			touch.start(e);
+			startScreenY = moveScreenY = e.originalEvent.changedTouches[0].screenY;
+			if(start){
+				start(e);
+			}
 		});
 		
 		$(origin, guess).unbind('touchmove').bind('touchmove', function(e){
-			if(touchmoveTimeout == null){
-				touchmoveTimeout = setTimeout(function() {
-					touchStat = false;
-					touch.move(e);
-					var _touchmoveTimeout = touchmoveTimeout+'';
-					touchmoveTimeout = null;
-					clearTimeout(_touchmoveTimeout);
-				}, 250);
+			moveScreenY = e.originalEvent.changedTouches[0].screenY;
+			if(move){
+				move(e);
 			}
 		});
 		
 		$(origin, guess).unbind('touchend').bind('touchend', function(e){
-			if(touchStat){
-				if(touchmoveTimeout != null){
-					clearTimeout(touchmoveTimeout);
-					touchmoveTimeout = null;
-				}
-				touch.end(e);
+			var changeScreenY = Math.abs(startScreenY-moveScreenY);
+			if(end && changeScreenY < 10){
+				end(e);
 			}
 		});
 	}

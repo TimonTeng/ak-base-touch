@@ -46,10 +46,6 @@
 		</div>
 	</div>
 	
-	<div id="wrapper-listview1" class="am-plugin-listview"></div>
-	
-	<div id="wrapper-listview2" class="am-plugin-listview"></div>
-	
 	<script type="text/javascript">
 		 window.mainPath = '${ctx}'; 
 	</script>
@@ -114,17 +110,14 @@
  			var pivolist1 = new ListView({
 			 	parentNode : '#pivolist1',
 			 	type : 'pivot',
-			 	template : 'assets/template/list-view.tpl?v='+new Date(),
-			 	apiUrl : '${dataCtx}/ak-sw-p2pm/appClubHotestListMessage.html',
-			 	params : {
-				
-			 	},
+			 	template : 'assets/template/demo/assignment-list.tpl?v='+new Date(),
+			 	apiUrl : 'http://test.uni020.com/mobile/appHomeworkListMessage.html',
 				page : {
 					result          : 'form',   // 服务应用返回列表集合 在json属性键值 , set load data collection in json field
 					pageNo          : 1,    // 开始页码
 					pageSize        : 20, // 每页记录数量
-					pageNoField     : 'pageNum',   // 服务应用接收pageNo 变量名
-					pageSizeField   : 'pageSize',	// 服务应用接收pageSize 变量名
+					pageNoField     : 'paramForm.pageNum',   // 服务应用接收pageNo 变量名
+					pageSizeField   : 'paramForm.pageSize',	// 服务应用接收pageSize 变量名
 					pageTotalField  : 'lastPageNumber'    // 服务应用返回pageTotal 在json中的属性键值
 				},
 				scrollView : scrollView
@@ -134,24 +127,30 @@
 			var pivolist2 = new ListView({
 			 	parentNode : '#pivolist2',
 			 	type : 'pivot',
-			 	template : 'assets/template/list-view.tpl?v='+new Date(),
-			 	apiUrl : '${dataCtx}/ak-sw-p2pm/appClubHotestListMessage.html',
-			 	params : {
-				
-			 	},
+			 	template : 'assets/template/demo/assignment-list.tpl?v='+new Date(),
+			 	apiUrl : 'http://test.uni020.com/mobile/appHomeworkListMessage.html',
 				page : {
 					result          : 'form',   // 服务应用返回列表集合 在json属性键值 , set load data collection in json field
 					pageNo          : 1,    // 开始页码
 					pageSize        : 20, // 每页记录数量
-					pageNoField     : 'pageNum',   // 服务应用接收pageNo 变量名
-					pageSizeField   : 'pageSize',	// 服务应用接收pageSize 变量名
+					pageNoField     : 'paramForm.pageNum',   // 服务应用接收pageNo 变量名
+					pageSizeField   : 'paramForm.pageSize',	// 服务应用接收pageSize 变量名
 					pageTotalField  : 'lastPageNumber'    // 服务应用返回pageTotal 在json中的属性键值
 				},
 				scrollView : scrollView
 			});
+			
+			scrollView.on('scrollTop', function(){
+				pivolist1.reload();
+				pivolist2.reload();
+			});
+			
+			scrollView.on('scrollBottom', function(){
+				pivolist2.getNextPage();
+			});
 			 
 			 
-			var listview1 = new ListView({
+/* 			var listview1 = new ListView({
 			 	parentNode : '#wrapper-listview1',
 			 	template : 'assets/template/list-view.tpl',
 			 	apiUrl : '${dataCtx}/ak-sw-p2pm/appClubHotestListMessage.html',
@@ -167,7 +166,7 @@
 					pageSizeField   : 'pageSize',	// 服务应用接收pageSize 变量名
 					pageTotalField  : 'lastPageNumber'    // 服务应用返回pageTotal 在json中的属性键值
 				}
-			});
+			}); */
 /* 			
   			var listview2 = new ListView({
 			 	parentNode : '#wrapper-listview2',

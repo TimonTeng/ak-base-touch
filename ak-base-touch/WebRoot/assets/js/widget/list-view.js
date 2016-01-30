@@ -258,14 +258,7 @@
 		var offsetY    = 200;
 		var nextPage   = (startY < (maxScrollY+offsetY)) ? true : false;
 		if(nextPage){
-	        if (this.page.next < this.page.pageTotal) {
-		          this.setLoading(this.$pullUp);
-		          this.page.pageNo = this.page.next += 1;
-		          this.loadNextPage();
-		          if(this.page.next == this.page.pageTotal){
-		        	  this.$pullUpLabel.text('已经到最后了');
-		          }
-	        } 
+			this.getNextPage();
 		}
 	}
 	
@@ -303,21 +296,26 @@
 	}
 	
 	ListView.prototype.setLoading = function($el) {
-        $el.addClass('loading');
+		if($el)
+			$el.addClass('loading');
 	};
 	
 
 	ListView.prototype.resetLoading = function($el) {
-        $el.removeClass('loading');
+		if($el)
+			$el.removeClass('loading');
 	};
 	
 	/**
 	 * console.log("scrollStart y:{%s} startY:{%s} maxScrollY:{%s} absStartY:{%s} distY:{%s} directionY:{%s} pointY:{%s}", this.y,this.startY,this.maxScrollY,this.absStartY,this.distY,this.directionY,this.pointY);
 	 */
 	ListView.prototype.bindIScroll = function(){
+		if(this.isPivotMode()){
+			return;
+		}
 		
 		var self = this;
-        var iscroll = self.iScroll = new IScroll(self.parentNode, {
+        var iscroll = this.iScroll = new IScroll(self.parentNode, {
         	click : true
 		});
   	    
@@ -456,10 +454,27 @@
 	
 	
 	/**
+	 * 获取下一页数据
+	 */
+	ListView.prototype.getNextPage = function(){
+		
+		if (this.page.next < this.page.pageTotal) {
+	          this.setLoading(this.$pullUp);
+	          this.page.pageNo = this.page.next += 1;
+	          this.loadNextPage();
+	          if(this.page.next == this.page.pageTotal){
+	        	  this.$pullUpLabel.text('已经到最后了');
+	          }
+		} 
+	}
+	
+	
+	/**
 	 * 纠正视图
 	 */
 	ListView.prototype.correctView = function(){
-		if(this.type === ViewAttributes.Type.Pivot){
+		if(this.isPivotMode()){
+			this.scrollView.refresh();
 			return;
 		}
 		var self = this;
@@ -475,9 +490,24 @@
 	}
 	
 	/**
+	 * 
+	 */
+	ListView.prototype.isPivotMode = function(){
+		if(this.type === ViewAttributes.Type.Pivot){
+			return true;
+		}
+		return false;
+	}
+	
+	
+	/**
 	 * 刷新iScroll触摸效果
 	 */
 	ListView.prototype.refresh = function(){
+		if(this.isPivotMode()){
+			this.scrollView.refresh();
+			return;
+		}
 		this.iScroll.refresh();
 	}
 	
@@ -646,6 +676,14 @@
 		onActivate : function(activate){
 			var listView = this.getAttr('listView');
 			listView.onActivate(activate);
+		},
+		
+		/**
+		 * 加载下一页内容
+		 */
+		getNextPage : function(){
+			var listView = this.getAttr('listView');
+			listView.getNextPage();
 		}
 		
 	});
