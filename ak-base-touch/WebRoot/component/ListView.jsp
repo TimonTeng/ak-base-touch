@@ -13,7 +13,23 @@
 </head>
 
 <body>
-	
+	<header data-am-widget="header" class="am-header am-header-default">
+		<div class="am-header-left am-header-nav">
+			<a href="#left-link" class="">
+				<i class="am-header-icon am-icon-home"></i>
+			</a>
+		</div>
+
+		<h1 class="am-header-title">
+			<a href="#title-link" class=""> ActionBar </a>
+		</h1>
+
+		<div class="am-header-right am-header-nav">
+			<a href="#right-link" class="" onclick="listView.load();"> <i
+				class="am-header-icon am-icon-bars"></i>
+			</a>
+		</div>
+	</header>
 	<div id="wrapper" class="am-plugin-listview"></div>
 	<script type="text/javascript">
 		 window.mainPath = '${ctx}'; 
@@ -22,12 +38,18 @@
 	<script src="${ctx}/assets/js/src/config.js"></script>
 	<script type="text/javascript">
 		
+		var listView = null;
+		
 		require(['jquery', 'amazeui', 'listView'], function($, amazeui, ListView){
 		
-			var listView = new ListView({
+			listView = new ListView({
 			 	parentNode : '#wrapper',
+			 	style : {
+			 		top : '50px'
+			 	},
 			 	template : 'assets/template/demo/assignment-list.tpl?v='+new Date(),
 			 	apiUrl : 'http://test.uni020.com/mobile/appHomeworkListMessage.html',
+			 	doLoad : 'false',
 				page : {
 					result          : 'form',   // 服务应用返回列表集合 在json属性键值 , set load data collection in json field
 					pageNo          : 1,    // 开始页码

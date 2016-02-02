@@ -43,7 +43,7 @@
 }(this, function($, _, Backbone, View, Template) {
 	'use strict'
 	
-	function ContextView(){
+	var ContextView = function(){
 		
 		this.items = this.view = this.loadComplete = this.scrollView = null;
 		

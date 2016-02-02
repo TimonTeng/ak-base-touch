@@ -98,7 +98,7 @@
 		var type  	     = view.getAttr('type');
 		this.$main	     = $(this.parentNode);
 		this.renderAfter = view.getAttr('renderAfter');
-		this.doLoad      = new Boolean(view.getAttr('doLoad') || this.doLoad);
+		this.doLoad      = view.getAttr('doLoad') === 'false' ? false : true; //开始是否加载数据 true = 加载 , false 不加载
 		
 		if(this.style){
 			this.$main.css(this.style);
@@ -108,13 +108,14 @@
 			this.type = type;
 		}
 		
-		switch(this.type){
+		if(this.doLoad){
+			switch(this.type){
 			case ViewAttributes.Type.Waterfall :  this.initWaterfallMode(); break;
 			case ViewAttributes.Type.Pivot 	   :  this.initPivotMode(); break;
 			case ViewAttributes.Type.Alphabet  :  this.initAlphabetMode(); break;
 			default : break;
+			}
 		}
-
 	}
 	
 	
@@ -134,7 +135,6 @@
 		this.$pullUp        = this.$main.find('#pull-up');
 		this.$pullUpLabel   = this.$main.find('#pull-up-label');
 		this.topOffset      = -this.$pullDown.outerHeight();
-		
 		this.bindIScroll();
 		this.setActivate();
 		this.load();
@@ -149,8 +149,11 @@
 		this.$warpiscroll.appendTo(this.$main);
 		this.$list      = this.$main.find('#events-list');
 		this.scrollView = this.view.getAttr('scrollView');
-		this.setActivate();
-	    this.load();
+		
+		if(this.doLoad){
+			this.setActivate();
+			this.load();
+		}
 	}
 	
 	/**
@@ -656,6 +659,13 @@
 		 * 
 		 */
 		reload : function(params){
+			this.getAttr('listView').reload(params);
+		},
+		
+		/**
+		 * 加载数据
+		 */
+		load : function(params){
 			this.getAttr('listView').reload(params);
 		},
 		
