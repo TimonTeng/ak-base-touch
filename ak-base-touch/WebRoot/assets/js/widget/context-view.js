@@ -49,6 +49,8 @@
 		
 		this.contextItems = [];
 		
+		this.contextObject = {};
+		
 	    this.$parentNode = null;
 		
 		this.threads = 0;
@@ -88,11 +90,13 @@
 	 */
 	ContextView.prototype.init = function(){
 		this.renderComplete();
+		var contextObject = this.contextObject;
 		for(var i = 0; i < this.contextItems.length; i++) {
 			var config = this.contextItems[i];
 			var $contextElement = this.createContextElement(config, i);
 			var loadMethod = ('templateOnly' in config) ? 'loadTemplateOnly' : 'loadContext' ;
 			this[loadMethod](config, $contextElement);
+			contextObject[config.id] = config;
 		}
 	}
 	
@@ -100,7 +104,6 @@
 	 * 渲染完成后执行
 	 */
 	ContextView.prototype.renderComplete = function(){
-		
 		var self = this;
 		if(!self.loadComplete){
 			return;
@@ -186,6 +189,29 @@
 	}
 	
 	/**
+	 * 刷新
+	 */
+	ContextView.prototype.reload = function(id){
+		var self = this;
+		var config = self.contextObject[id];
+		var $contextElement = $('#'+id);
+		var loadMethod = ('templateOnly' in config) ? 'loadTemplateOnly' : 'loadContext' ;
+		this[loadMethod](config, $contextElement);
+	}
+	
+	/**
+	 * 全部刷新
+	 */
+	ContextView.prototype.reloadAll = function(){
+		var self = this;
+		self.threads = 0;
+		self.renderComplete();
+		for (var id in self.contextObject) {
+			self.reload(id);
+		}
+	}
+	
+	/**
 	 * 判断是否处理延迟加载数据
 	 */
 	ContextView.prototype.isLazyLoad = function(){
@@ -240,6 +266,16 @@
 		    document.addEventListener('touchmove', function(e) {
 		        e.preventDefault();
 		    }, false);
+		},
+		
+		reload : function(id){
+			var contextView = this.getAttr('contextView');
+			contextView.reload(id);
+		},
+		
+		reloadAll : function(){
+			var contextView = this.getAttr('contextView');
+			contextView.reloadAll();
 		}
 	});
 }));

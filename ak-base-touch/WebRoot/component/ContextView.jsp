@@ -26,7 +26,7 @@
 		</h1>
 
 		<div class="am-header-right am-header-nav">
-			<a href="#right-link" class="" onclick=""> <i
+			<a href="#right-link" class="" onclick="contextView.reloadAll();"> <i
 				class="am-header-icon am-icon-bars"></i>
 			</a>
 		</div>
@@ -44,6 +44,8 @@
 	<script src="${ctx}/assets/js/lib/require.js"></script>
 	<script src="${ctx}/assets/js/src/config.js"></script>
 	<script type="text/javascript">
+	
+		var contextView = null;
 		 
 		require(['jquery', 'amazeui', 'contextView', 'scrollView'], function($, amazeui, ContextView, ScrollView){
 		
@@ -54,7 +56,7 @@
 					}
 				});
 		
-			 	var contextView = new ContextView({
+			 	contextView = new ContextView({
 			 	
 			 		parentNode : '#contextView',
 			 		
@@ -99,7 +101,7 @@
 			 		],
 			 		
 			 		loadComplete : function(){ //加载完成
-			 			 
+  						
 			 		},
 			 		
 			 		scrollView : scrollView
