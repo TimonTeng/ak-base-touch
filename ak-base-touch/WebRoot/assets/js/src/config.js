@@ -17,7 +17,7 @@
 			'backbone.view'    : 'js/lib/backbone.view',
 			'amazeui'		   : 'js/lib/amazeui.min',
 			'alphabetBar' 	   : 'js/widget/alphabet-bar',
-			'actionBar'		   : 'js/widget/action-bar',
+			'actionBar'		   : 'js/widget/action-bar-2.0',
 			'listView'		   : 'js/widget/list-view',
 		    'scrollView'	   : 'js/widget/scroll-view',
 		    'sidebar'	   	   : 'js/widget/sidebar',

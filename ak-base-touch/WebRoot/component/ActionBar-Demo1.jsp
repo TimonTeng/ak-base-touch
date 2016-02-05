@@ -13,26 +13,8 @@
 </head>
 
 <body>
-	<header data-am-widget="header" class="am-header am-header-default">
-		<div class="am-header-left am-header-nav">
-			<a href="#left-link" class="">
-				<i class="am-header-icon am-icon-home"></i>
-			</a>
-		</div>
-
-		<h1 class="am-header-title">
-			<a href="#title-link" class="">ActionBar Demo1</a>
-		</h1>
-
-		<div class="am-header-right am-header-nav">
-			<a href="#right-link" class=""> <i
-				class="am-header-icon am-icon-bars"></i>
-			</a>
-		</div>
-	</header>
-	
-	<div id="action-bar" class="nav am-g"></div>
-	
+ 
+	<div id="action-bar" class="am-plugin-actionbar"></div>
 	
 	<div data-am-widget="navbar" class="am-navbar am-cf am-navbar-default " id="">
 	      <ul class="am-navbar-nav am-cf am-avg-sm-4">
@@ -67,7 +49,6 @@
 				{id : 'mostactive', labelText : '最活跃'}
 			];
 		
-		
 			var actionBar = new ActionBar({
 				parentNode : '#action-bar',
 				actions : [
@@ -95,8 +76,20 @@
 					   }
 					   
 				   }
+				   ,{
+					   id 	        : 'view3',
+					   title        : '筛选B',
+					   type         : 'SelectView',
+					   dataType     : 'local',
+					   store        : store,
+					   displayField : 'labelText',
+					   submit       : function(data){
+					   		console.log(JSON.stringify(data));
+					   }
+					   
+				   }
  				   ,{
-					   id 	  		: 'view3',
+					   id 	  		: 'view4',
 					   title 	    : '品牌',
 					   type 		: 'SelectView',
 					   result		: 'data',
@@ -110,7 +103,7 @@
 				   }
  
 				]
-			}).render();
+			});
 			 
 		});
 	

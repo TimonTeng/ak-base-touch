@@ -72,7 +72,23 @@ input, button {
 	cursor: pointer;
 	height: 40px;
 	line-height: 40px;
+	overflow: hidden;
+	width: 100%;
+	position : absolute;
 }
+
+.am-plugin-actionbar-element{
+	text-align: center;
+}
+
+.am-plugin-padding0{
+	padding: 0px;
+}
+
+.am-plugin-margin0{
+	margin: 0px;
+}
+
 
 .am-plugin-actionbar-active{
 	color: #ff0000;

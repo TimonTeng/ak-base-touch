@@ -39,7 +39,6 @@
 	<script type="text/javascript">
 		
 		var listView = null;
-		
 		require(['jquery', 'amazeui', 'listView'], function($, amazeui, ListView){
 		
 			listView = new ListView({
@@ -49,7 +48,7 @@
 			 	},
 			 	template : 'assets/template/demo/assignment-list.tpl?v='+new Date(),
 			 	apiUrl : 'http://test.uni020.com/mobile/appHomeworkListMessage.html',
-			 	doLoad : 'false',
+			 	doLoad : 'false', //初始化ListView 时是否加载数据 ,默认为true, true：加载， false:不加载 
 				page : {
 					result          : 'form',   // 服务应用返回列表集合 在json属性键值 , set load data collection in json field
 					pageNo          : 1,    // 开始页码
