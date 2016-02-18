@@ -45,7 +45,7 @@
 	<script type="text/javascript">
 	
 		
-		require(['jquery', 'amazeui', 'actionBar', 'listView'], function($, amazeui, ActionBar, ListView){
+		require(['jquery', 'amazeui', 'actionBar1', 'listView'], function($, amazeui, ActionBar, ListView){
 		
 			var actionBar = new ActionBar({
 				parentNode : '#action-bar',

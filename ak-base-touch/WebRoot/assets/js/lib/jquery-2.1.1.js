@@ -10155,12 +10155,15 @@ jQuery.extend({
 	
 	touchEvent : function(origin, range, touch){
 		var guess = range || document.body;
+		var startScreenX = 0;
 		var startScreenY = 0;
+		var moveScreenX  = 0;
 		var moveScreenY  = 0;
 		var start = touch.start || null;
 		var move  = touch.move || null;
 		var end   = touch.end || null;
 		$(origin, guess).unbind('touchstart').bind('touchstart', function(e){
+			startScreenX = moveScreenX = e.originalEvent.changedTouches[0].screenX;
 			startScreenY = moveScreenY = e.originalEvent.changedTouches[0].screenY;
 			if(start){
 				start(e);
@@ -10168,15 +10171,19 @@ jQuery.extend({
 		});
 		
 		$(origin, guess).unbind('touchmove').bind('touchmove', function(e){
+			moveScreenX = e.originalEvent.changedTouches[0].screenX;
 			moveScreenY = e.originalEvent.changedTouches[0].screenY;
-			if(move){
+			var changeScreenX = Math.abs(startScreenX-moveScreenX);
+			var changeScreenY = Math.abs(startScreenY-moveScreenY);
+			if(move && (changeScreenX > 5 || changeScreenY > 5)){
 				move(e);
 			}
 		});
 		
 		$(origin, guess).unbind('touchend').bind('touchend', function(e){
+			var changeScreenX = Math.abs(startScreenX-moveScreenX);
 			var changeScreenY = Math.abs(startScreenY-moveScreenY);
-			if(end && changeScreenY < 5){
+			if(end && changeScreenX < 5 && changeScreenY < 5){
 				end(e);
 			}
 		});

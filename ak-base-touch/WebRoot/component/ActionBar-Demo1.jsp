@@ -40,7 +40,7 @@
 	<script type="text/javascript">
 	
 		
-		require(['jquery', 'amazeui', 'actionBar'], function($, amazeui, ActionBar){
+		require(['jquery', 'amazeui', 'actionBar1'], function($, amazeui, ActionBar){
 		
 		
 			var store = [

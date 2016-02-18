@@ -800,7 +800,6 @@
 	}
 	
 	AplhabetSelectView.prototype.displaySetting = function(parentContainer){
-		
 		var ht = $(parentContainer).height() - this.attr.offset;
 		this.root.css({height : ht});
 		var alphabetBarView = this.aplhabetBar.alphabetBarView;

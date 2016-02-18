@@ -60,6 +60,10 @@
 		 */
 		this.selectView = null;
 		
+		this.tractionScroll = null;
+		
+		this.$dataView = null;
+		
 	}
 	
 	/**
@@ -91,6 +95,18 @@
 	AlphabetBarView.prototype.bindSelectView = function(selectView){
 		this.selectView = selectView;
 	}
+	
+	/**
+	 * 
+	 */
+	AlphabetBarView.prototype.bindTractionScroll = function(scroll){
+		this.tractionScroll = scroll;
+	}
+	
+	AlphabetBarView.prototype.bind$DataView = function($dataView){
+		this.$dataView = $dataView;
+	}
+	
 	
 	/**
 	 * 定位字母在屏幕Y轴坐标位置
@@ -147,8 +163,8 @@
         	 $(self.tip).removeClass('am-plugin-alphabet-nav-tip-destroy');
         	 $('li', self.root).css('color','#AAA');
         	 $(e.target).css('color', '#E60012');
-        	 var positionAlphabet = $('#warp_alphabet_'+$(e.target).text());
-        	 self.selectView.rootIScroll.scrollToElement($(positionAlphabet).get(0), 10, 0, -5);
+        	 var positionAlphabet = $('#warp_alphabet_'+$(e.target).text(), self.$dataView);
+        	 self.tractionScroll.scrollToElement($(positionAlphabet).get(0), 10, 0, -5);
         });
  
 	}
@@ -180,7 +196,7 @@
 
            swipeStatus : function(event, phase, direction, distance, duration, fingers) {
         	   
-               var pageY = parseInt(event.touches[0].pageY)-20;
+               var pageY = parseInt(event.touches[0].pageY);
 	           var alphabet = $('li[data-position^='+pageY+']', self.alphabetBox);
 	           if(!alphabet || pageY < alphabetNavBarOffsetTop || alphabet.text() == ''){
 	           		return;
@@ -193,8 +209,8 @@
                     $('li', self.root).css('color','#AAA');
                     $(alphabet).css('color', '#E60012');
                     self.tip.text(alphabetText);
-                    var positionAlphabet = $('#warp_alphabet_'+self.alphabetText);
-                    self.selectView.rootIScroll.scrollToElement($(positionAlphabet).get(0), 10, 0, -5);
+                    var positionAlphabet = $('#warp_alphabet_'+self.alphabetText, self.$dataView);
+                    self.tractionScroll.scrollToElement($(positionAlphabet).get(0), 10, 0, -5);
                }
                
            },
@@ -231,14 +247,11 @@
 		alphabet : ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'],
 		
 		/**
-		 * 导航条
-		 */
-		alphabetBarView : null,
-		
-		/**
 		 * 字母提示内容
 		 */
 		alphabetText : '#',
+		
+		alphabetBarView : null,
  
 		setup: function() {
 			
@@ -247,21 +260,37 @@
 			var parentNode = self.getAttr('parentNode'),
 			    type       = self.getAttr('type'),
 				data       = self.getAttr('data');
-			
 			self.structure();
 		},
 		
 		structure : function(){
 			
 			var self = this;
-			self.alphabetBarView = new AlphabetBarView();
+			var alphabetBarView = new AlphabetBarView();
 			for(var i = 0; i < self.alphabet.length; i++){
-				self.alphabetBarView.putAlphabet(self.alphabet[i]);
+				alphabetBarView.putAlphabet(self.alphabet[i]);
 			}
-			
 			self.alphabetTip = $("<div>", {'class' : 'am-plugin-alphabet-nav-tip'});
 			self.alphabetTip.text('#');
+			self.setAttr('alphabetBarView', alphabetBarView);
+			self.alphabetBarView = alphabetBarView;
+		},
+		
+		renderTo : function(element, positionHeight){
+			var alphabetBarView = this.getAttr('alphabetBarView');
+			alphabetBarView.renderTo(element, positionHeight);
+		},
+		
+		bindTractionScroll : function(scroll){
+			var alphabetBarView = this.getAttr('alphabetBarView');
+			alphabetBarView.bindTractionScroll(scroll);
+		},
+		
+		bind$DataView : function($dataView){
+			var alphabetBarView = this.getAttr('alphabetBarView');
+			alphabetBarView.bind$DataView($dataView);
 		}
+		
 		
 	});
 	

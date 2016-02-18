@@ -70,8 +70,6 @@ input, button {
 
 .am-plugin-actionbar{
 	cursor: pointer;
-	height: 40px;
-	line-height: 40px;
 	overflow: hidden;
 	width: 100%;
 	position : absolute;
@@ -79,6 +77,18 @@ input, button {
 
 .am-plugin-actionbar-element{
 	text-align: center;
+	float: left;
+	position: relative;
+}
+
+.am-plugin-actionbar-cursor{
+	
+	width: 50px;
+	height: 3px;
+	bottom: 0px;
+	background-color: green;
+	position: inherit;
+	
 }
 
 .am-plugin-padding0{
@@ -97,7 +107,6 @@ input, button {
 .am-plugin-actionbar-container{
 	position : fixed;
 	width: 100%;
-	height : 100%;
 	background-color: white;
 	z-index: 1110;
 	top : 0;
@@ -106,28 +115,41 @@ input, button {
 	right : 0;
 	border-top : 1px solid #d2d2d2;
 	
-	animation-name : am-plugin-actionbar;
+/* 	animation-name : am-plugin-actionbar;
 	animation-duration: 0.3s;
 	
-	/* Safari and Chrome */
+	Safari and Chrome
 	-webkit-animation-name : am-plugin-actionbar;
-	-webkit-animation-duration:  0.3s;
+	-webkit-animation-duration:  0.3s; */
 	
-	margin-top : 86px;
-	
+}
+
+.am-plugin-actionbar-fadein{
+	top : 0;
+  	bottom: 0;
+  	left: 0;
+	right : 0;
+	-webkit-transition-timing-function : cubic-bezier(1,0.3,0.7,0.7); 
+	-webkit-animation-name : am-plugin-actionbar;
+	-webkit-animation-duration:  0.5s;
+	transition-timing-function : cubic-bezier(1,0.3,0.7,0.7); 
+	animation-name : am-plugin-actionbar;
+	animation-duration: 0.5s;
 }
 
 .am-plugin-actionbar-container-full{
 	width: 100%;
+	height : 100%;
 	position : absolute;
 	left : 0;
 	top : 0;
-	border-right: 1px solid #EFEFEF;
-	/* background-color: #EFEFEF; */
-	background-color: #e5e5e5;
+	bottom : 0;
+	background-color: white;
 	overflow: hidden;
 	-webkit-overflow-scrolling: touch;
 	cursor: pointer;
+	-webkit-touch-callout: none;
+    -webkit-user-select: none;
 }
 
 .am-plugin-actionbar-container-l{
@@ -135,11 +157,14 @@ input, button {
 	position : absolute;
 	left : 0;
 	top : 0;
+	bottom : 0;
 	border-right: 1px solid #EFEFEF;
 /* 	background-color: #EFEFEF; */
 	overflow: hidden;
 	-webkit-overflow-scrolling: touch;
 	cursor: pointer;
+	-webkit-touch-callout: none;
+    -webkit-user-select: none;
 }
 
 .am-plugin-actionbar-container-l li{
@@ -156,12 +181,15 @@ input, button {
 	position : absolute;
 	top : 0;
 	right : 0;
+	bottom : 0;
 	border-right: 1px solid #EFEFEF;
 	background-color: white;
 	overflow: hidden;
 	-webkit-overflow-scrolling: touch;
 	cursor: pointer;
 	clear: both;
+	-webkit-touch-callout: none;
+    -webkit-user-select: none;
 }
 
 .am-plugin-actionbar-container-b{
@@ -180,6 +208,8 @@ input, button {
 	right: 0;
 	top: 5px;
 	width: 60px;
+	-webkit-touch-callout: none;
+    -webkit-user-select: none;
 }
 
 .am-plugin-alphabet-nav-bg{
@@ -235,6 +265,8 @@ input, button {
 	font-size: 5em;
 	text-align : center;
 	margin:auto;
+	-webkit-touch-callout: none;
+    -webkit-user-select: none;
 }
 
 .am-plugin-alphabet-nav-tip-active{
@@ -638,28 +670,19 @@ input, button {
 
 
 @keyframes am-plugin-actionbar{
-	
-0%   {opacity: .2;}
-100% {opacity: 1;}
-  
-  from {top:-30px;}
-  to {top:0px;}
+  from { transform : translate(0px, 500px)}
+  to {transform : translate(0px,0px)}
 }
 
 @-webkit-keyframes am-plugin-actionbar {
-	
-0%   {opacity: .2;}
-100% {opacity: 1;}
-
-  from {top:-30px;}
-  to {top:0px;}
+  from {-webkit-transform : translate(0px, 500px)}
+  to {-webkit-transform : translate(0px,0px)}
 }
 
 
 @keyframes am-plugin-actionbar-tip-active{
 	0%   {opacity: 0;}
 	100% {opacity: .6;}
- 
 }
 
 @-webkit-keyframes am-plugin-actionbar-tip-active {

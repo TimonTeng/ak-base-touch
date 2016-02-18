@@ -7,7 +7,7 @@
 		baseUrl: window.mainPath+'/assets/',
 		
 		paths: {
-			'jquery'           : 'js/lib/jquery.min',
+			'jquery'           : 'js/lib/jquery-2.1.1',
 			'swipe'  		   : 'js/lib/jquery.touchSwipe',
 			'underscore' 	   : 'js/lib/underscore',
 			'lodash'           : 'js/lib/lodash',
@@ -17,7 +17,8 @@
 			'backbone.view'    : 'js/lib/backbone.view',
 			'amazeui'		   : 'js/lib/amazeui.min',
 			'alphabetBar' 	   : 'js/widget/alphabet-bar',
-			'actionBar'		   : 'js/widget/action-bar-2.0',
+			'actionBar1'	   : 'js/widget/action-bar-1.0',
+			'actionBar2'	   : 'js/widget/action-bar-2.0',
 			'listView'		   : 'js/widget/list-view',
 		    'scrollView'	   : 'js/widget/scroll-view',
 		    'sidebar'	   	   : 'js/widget/sidebar',
@@ -40,7 +41,7 @@
 				deps: ['underscore', 'lodash', 'handlebars', 'backbone', 'backbone.view', 'swipe']
 			},
 			
-	        'actionBar' : {
+	        'actionBar2' : {
 	        	deps: ['underscore', 'lodash', 'handlebars', 'backbone', 'backbone.view', 'swipe', 'alphabetBar']
 	        },
 	        

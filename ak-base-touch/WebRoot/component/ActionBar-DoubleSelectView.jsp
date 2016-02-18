@@ -59,7 +59,7 @@
 	<script type="text/javascript">
 	
 		
-		require(['jquery', 'amazeui', 'actionBar'], function($, amazeui, ActionBar){
+		require(['jquery', 'amazeui', 'actionBar1'], function($, amazeui, ActionBar){
  
 			var store = [
 				{id : 'all', labelText : '全部'},

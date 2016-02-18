@@ -105,7 +105,7 @@
 		
 		if(self.alphabet){
 			self.alphabetBar = new AlphabetBar();
-			self.alphabetBar.alphabetBarView.bindSelectView(self);
+			//self.alphabetBar.alphabetBarView.bindSelectView(self);
 		}
 		
 		if(self.validationConfiguration()){
@@ -531,7 +531,9 @@
 	ZoneSelector.prototype.renderViewMode = function(){
 		var self = this;
 		var offsetHeight = self.$body.height() - 20;
-		self.alphabetBar.alphabetBarView.renderTo(self.$body, offsetHeight);
+		self.alphabetBar.bindTractionScroll(self.JsonReader.province.scroll);
+		self.alphabetBar.bind$DataView(self.$provinceBody);
+		self.alphabetBar.renderTo(self.$body, offsetHeight);
 	}
 	
 	ZoneSelector.prototype.submit = function(){
