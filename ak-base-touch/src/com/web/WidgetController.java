@@ -28,11 +28,19 @@ public class WidgetController extends WebController {
 		return "forward:/component/index.jsp";
 	}
 	
-	@RequestMapping(value="/ActionBarV2.html",  method = RequestMethod.GET)
-	public String ActionBarV2(HttpServletResponse response, HttpServletRequest request) throws IOException {
+	@RequestMapping(value="/ActionBarFix.html",  method = RequestMethod.GET)
+	public String ActionBarFix(HttpServletResponse response, HttpServletRequest request) throws IOException {
 		setDataCtx(request);
-		return "forward:/component/ActionBar2.jsp";
+		return "forward:/component/ActionBarFix.jsp";
 	}
+	
+	
+	@RequestMapping(value="/ActionBarAliquots.html",  method = RequestMethod.GET)
+	public String ActionBarAliquots(HttpServletResponse response, HttpServletRequest request) throws IOException {
+		setDataCtx(request);
+		return "forward:/component/ActionBarAliquots.jsp";
+	}
+	
 	
 	@RequestMapping(value="/ActionBar.html",  method = RequestMethod.GET)
 	public String ActionBar(HttpServletResponse response, HttpServletRequest request) throws IOException {

@@ -203,6 +203,9 @@
 				if(el.render){
 					el.render();
 				}
+				setTimeout(function() {
+					self.scrollToTargetActionElement(el);
+				}, 250);
 			}
 		});
 	}
@@ -233,6 +236,16 @@
 		var el = this.actionElements[id];
 		return el;
 	}
+	
+	/**
+	 * 滚动至目标action元素
+	 */
+	ActionView.prototype.scrollToTargetActionElement = function(el){
+		var mainWidthBipartite = this.$main.width()/2;
+		var widthBipartite     = el.$context.width()/2;
+		this.iscroll.scrollToElement(el.$context.get(0), 600, -(mainWidthBipartite-widthBipartite), 0);
+	}
+	
 	
 	/**
 	 * 创建ActionBar容器
@@ -490,7 +503,7 @@
 	}
 	
 	/**
-	 * 
+	 * 布局容器素材
 	 */
 	ActionView.prototype.createViewContainer = function(type, target){
 		switch(type){
@@ -501,6 +514,11 @@
 		}
 	}
 	
+	/**
+	 * 创建滚动组件
+	 * @param scrollId
+	 * @returns {IScroll}
+	 */
 	ActionView.prototype.createScroll = function(scrollId){
 		return new IScroll(scrollId, {
 			click : true
@@ -543,7 +561,7 @@
 	}
 	
 	/**
-	 * 
+	 * 主节点展示数据项
 	 */
 	ActionView.prototype.setRootDisplayField = function(){
 		var activeElement = this.activeElement;
@@ -579,7 +597,6 @@
 		if(!actionElement.icon){
 			return;
 		}
-		console.log('ActionView.prototype.setRecordElementIcon');
 		var formate    = actionElement.icon.formate;
 		var imageField = actionElement.icon.imageField;
 		var basePath   = actionElement.icon.basePath;
@@ -838,11 +855,9 @@
 	 * 加载子节点
 	 */
 	ActionView.prototype.loadNode = function(){
-		console.log('ActionView.prototype.loadNode');
 		var self = this;
 		var activeElement = this.activeElement;
 		var rootData = activeElement.selectData.root;
-		console.log(rootData.dataType);
 		if(rootData.dataType === ViewData.form.Remote){
 			self.loadNodeRemoteData();
 		}else{
@@ -854,12 +869,20 @@
 	 * 加载远程数据
 	 */
 	ActionView.prototype.loadNodeRemoteData = function(){
-		console.log('ActionView.prototype.loadNodeRemoteData');
 		var self = this;
 		var activeElement = this.activeElement;
 		var apiUrl = self.getNodeUrl();
+		
+		var nodeStore = activeElement.touchRootEl.data('nodes');
+		if(nodeStore){
+			activeElement.nodeStore = nodeStore;
+			self.renderNodeStore();
+			return;
+		}
+		
 		$.getJSON(apiUrl, null, function(data) {
 			activeElement.nodeStore = data[activeElement.nodeResult];
+			activeElement.touchRootEl.attr('data-nodes', JSON.stringify(activeElement.nodeStore));
 			self.renderNodeStore();
 		}).error(function() {
 			console.log('Ajax Request Error!');

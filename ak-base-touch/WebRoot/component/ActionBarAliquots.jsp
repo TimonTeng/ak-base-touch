@@ -54,126 +54,24 @@
 		
 			var actionBar = new ActionBar({
 				parentNode : '#action-bar',
-				layout : 'fix', //可选值 ： aliquots(等分网格)/fix(固定值)
+				layout : 'aliquots', //可选值 ： aliquots(等分网格)/fix(固定值)
 				defaults : {
 					width : 100
 				},
 				style : {
-					backgroundColor : '#009a61',
+					backgroundColor : '#686765',
 					color : '#FFF' 
 				},
 				activeColor : '#fde393',
 				actions : [
-				   {
-					   id 	        : 'demo1',
-					   title        : 'SV_R',
-					   type         : 'SelectView',
-					   result		: 'data',
-					   displayField : 'labelText',
-					   url 		    : 'assets/data/compose.json',
-					   submit       : function(data){
-					  		console.log(JSON.stringify(data));
-					   }
-				   }
-				   ,{
-					   id 	        : 'demo2',
-					   title        : 'SV_L',
-					   type         : 'SelectView',
-					   dataType     : 'local',
-					   store        : store,
-					   displayField : 'labelText',
-					   submit       : function(data){
-					   		console.log(JSON.stringify(data));
-					   }
-				   }
-				   ,{
-					   id 	        : 'demo3',
-					   title        : 'SV_C',
-					   type         : 'SelectView',
-					   result		: 'data',
-					   displayField : 'labelText',
-					   dataType 	: 'compose',
-					   store 		: store,
-					   url 		    : 'assets/data/compose.json',
-					   submit 	    : function(data){
-					   		console.log(JSON.stringify(data));
-					   }
-				   }
- 				   ,{
-					   id 	  		: 'demo4',
-					   title 	    : 'DSV_R',
-					   type 		: 'DoubleSelectView',
-					   url 			: {
-					   		root : {
-					   			displayField : 'labelText',
-					   			result : 'data',
-					   			apiUrl : '${dataCtx}/ak-sw-p2pm/appHomeworkLabelFirstLevelList.html'
-					   		},
-					   		node : {
-					   			displayField : '',
-					   			result : 'data',
-					   			apiUrl : '${dataCtx}/ak-sw-p2pm/appHomeworkLabelSecondLevelList.html',
-					   			rootPropertys : [
-					   				{'labelId' : 'id'}
-					   			]
-					   		}
-					   },
-					   submit 	    : function(data){
-					   		console.log(JSON.stringify(data));
-					   }
-				   }
- 				   ,{
-					   id 	  		: 'demo5',
-					   title 	    : 'DSV_L',
-					   type 		: 'DoubleSelectView',
-					   dataType     : 'local',
-					   store        : doubleStore,
-					   url 		    : {
-					   		root : {
-					   			nodesField   : 'nodes',
-					   			displayField : 'labelText'
-					   		},
-					   		node : {
-					   			displayField : 'name'
-					   		}
-					   },
-					   submit 	    : function(data){
-					   		console.log(JSON.stringify(data));
-					   }
-				   }
- 				   ,{
-					   id 	  		: 'demo6',
-					   title 	    : 'DSV_C',
-					   type 		: 'DoubleSelectView',
-					   dataType     : 'compose',
-					   store        : doubleStore,
-					   url 		    : {
-					   		root : {
-					   			nodesField   : 'nodes',
-					   			displayField : 'labelText',
-					   			result : 'data',
-					   			apiUrl : '${dataCtx}/ak-sw-p2pm/appHomeworkLabelFirstLevelList.html'
-					   		},
-					   		node : {
-					   			displayField : 'name',
-							   	result : 'data',
-					   			apiUrl : '${dataCtx}/ak-sw-p2pm/appHomeworkLabelSecondLevelList.html',
-					   			rootPropertys : [
-					   				{'labelId' : 'id'}
-					   			]
-					   		}
-					   },
-					   submit 	    : function(data){
-					   		console.log(JSON.stringify(data));
-					   }
-				   }
- 				   ,{
+ 				   {
 					   id     		: 'demo7',
 					   title  	    : 'ASV',
 					   type   	    : 'AplhabetSelectView',
 					   result       : 'data',
 					   displayField : 'provinceName',
 					   url          : '${dataCtx}/ak-sw-p2pm/provinceByAlphabetSeq.html',
+					   digit        : 3,
 					   submit 	    : function(data){
 					   		console.log(JSON.stringify(data));
 					   }
@@ -197,6 +95,15 @@
 					   			]
 					   		}
 					   },
+					   icon         : {
+					   		basePath   : 'http://car0.autoimg.cn',
+					   		imageField : 'image',
+							formate    : function(path){
+								path = '/logo/brand/50/130131578038733348.jpg';
+								return path;
+							}					   		
+					   },
+					   digit        : 3,
 					   submit 	    : function(data){
 					   		console.log(JSON.stringify(data));
 					   }
@@ -208,6 +115,7 @@
 					   result       : 'data',
 					   displayField : 'provinceName',
 					   url          : '${dataCtx}/ak-sw-p2pm/provinceByAlphabetSeq.html',
+					   digit        : 3,
 					   submit 	    : function(data){
 					   		console.log(JSON.stringify(data));
 					   },
@@ -224,6 +132,7 @@
 					   id 	  		: 'demo10',
 					   title 	    : 'Button',
 					   type 		: 'Button',
+					   digit        : 3,
 					   submit 	    : function(){
 					   		console.log('is button');
 					   }

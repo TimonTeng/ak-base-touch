@@ -73,6 +73,8 @@ input, button {
 	overflow: hidden;
 	width: 100%;
 	position : absolute;
+	-webkit-touch-callout: none;
+    -webkit-user-select: none;
 }
 
 .am-plugin-actionbar-element{
@@ -153,7 +155,7 @@ input, button {
 }
 
 .am-plugin-actionbar-container-l{
-	width: 40%;
+	width: 45%;
 	position : absolute;
 	left : 0;
 	top : 0;
@@ -177,7 +179,7 @@ input, button {
 }
 
 .am-plugin-actionbar-container-r{
-	width: 60%;
+	width: 55%;
 	position : absolute;
 	top : 0;
 	right : 0;
@@ -525,6 +527,24 @@ input, button {
 
 .am-plugin-toolbar-mesh input{
 	display: inline-block;
+}
+
+
+.am-plugin-toolbar-meshview{
+	position: absolute;
+	cursor: pointer;
+	right: 0px;
+	height: 100%;
+}
+
+.am-plugin-toolbar-retract{
+	position: absolute;
+	top: 0px;
+	bottom : 0px;
+	left: 5px;
+	width: 50px;
+	cursor: pointer;
+	line-height: 49px;
 }
 
 .am-plugins-gridview-tools {

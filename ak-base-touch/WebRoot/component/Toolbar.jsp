@@ -27,9 +27,8 @@
 				  id     : 'pageToolbar',
 				  width  : '100%',
 				  height : '49px',
-/* 				  style  : {
-				  	 backgroundColor : 'red'
-				  }, */
+ 				  retract : 'true',
+ 				  retractIcon : 'icon_return',
 				  items : [
 				  	{
 				  		id : 'reply1',

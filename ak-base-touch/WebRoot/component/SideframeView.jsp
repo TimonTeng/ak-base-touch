@@ -26,7 +26,7 @@
 		</h1>
 
 		<div class="am-header-right am-header-nav">
-			<a href="#right-link" class="" onclick="sideFrameView.openUrl('HeaderNavigate.html', 'B');"> <i
+			<a href="#right-link" class="" onclick="sideFrameView.openUrl('Toolbar.html', 'B');"> <i
 				class="am-header-icon am-icon-bars"></i>
 			</a>
 		</div>

@@ -45,10 +45,20 @@
 	
 	function ToolBar(){
 		this.id = this.style = this.items = this.width = this.height = this.view = null;
-		this.$body = null;
+		this.$body     = null;
+		this.$return   = null;
+		this.$meshView = null;
 		this.$MeshItems = [];
 		this.meshSize    = 0;
 		this.maxMeshSize = 12;
+		this.doCreateMeshItem = null;
+		
+		/**
+		 * 支持返回前个page 功能
+		 */
+		this.retract     = false;
+		this.retractIcon = null;
+		this.SideFrameView = null;
 	}
 	
 	ToolBar.prototype.initConfiguration = function(view){
@@ -56,10 +66,13 @@
 		this.id         = view.getAttr('id');
 		this.items		= view.getAttr('items');
 		this.style		= view.getAttr('style');
+		this.retract    = view.getAttr('retract');
+		this.retractIcon = view.getAttr('retractIcon');
 		this.init();
 	}
 	
 	ToolBar.prototype.init = function(){
+		this.createMeshPolicy();
 		this.collectDigitSize();
 		if(this.checkMeshSize()){
 			throw Error('items.digit 累计不能 > 12');
@@ -67,6 +80,33 @@
 		}
 		this.render();
 	}
+	
+	/**
+	 * 
+	 */
+	ToolBar.prototype.createMeshPolicy = function(){
+		if(this.retract == true || this.retract == 'true'){
+			this.createRetractMeshItem();
+			this.bindSideFrameView();
+		}else{
+			this.createMeshItem();
+		}
+	}
+	
+	/**
+	 * 
+	 */
+	ToolBar.prototype.bindSideFrameView = function(){
+		var self = this;
+		var intervalId = setInterval(function() {
+			if (document.parentWindow) {
+				document.parentWindow.SideFrameView.bindClose(self.$return);
+				self.SideFrameView = document.parentWindow.SideFrameView;
+				clearInterval(intervalId);
+			}
+		}, 300);
+	}
+	
 	
 	/**
 	 * 收集网格数量
@@ -97,28 +137,77 @@
 		this.$body.css(css);
 	}
 	
+	/**
+	 * 
+	 */
 	ToolBar.prototype.createMeshItem = function(){
-		
 		var self = this;
-		
-		this.items.forEach(function(config, i) {
-			var meshClass = self.defineMeshClass(config.digit);
-			var cssClass = config.cssClass|| '';
-			var meshAttribute = {
-				'id' : config.id + '',
-				'class' : meshClass + ' ' +cssClass + ' am-plugin-toolbar-mesh'
-			};
-			var $mesh = $('<div>', meshAttribute);
-			var html = config.html || '';
-			$mesh.append(html);
-			$mesh.appendTo(self.$body);
-			self.$MeshItems.push($mesh);
-			var touchend = config.touch || undefined;
-			if(typeof(touchend) == 'function'){
-				$($mesh).bind('touchend', touchend);
-			}
-		});
+		self.doCreateMeshItem = function(){
+			self.items.forEach(function(config, i) {
+				var meshClass = self.defineMeshClass(config.digit);
+				var cssClass = config.cssClass|| '';
+				var meshAttribute = {
+						'id' : config.id + '',
+						'class' : meshClass + ' ' +cssClass + ' am-plugin-toolbar-mesh'
+				};
+				var $mesh = $('<div>', meshAttribute);
+				var html = config.html || '';
+				$mesh.append(html);
+				$mesh.appendTo(self.$body);
+				self.$MeshItems.push($mesh);
+				var touchend = config.touch || undefined;
+				if(typeof(touchend) == 'function'){
+					$($mesh).bind('touchend', touchend);
+				}
+			});
+		}
 	}
+	
+	/**
+	 * 带回退功能功能元素创建
+	 */
+	ToolBar.prototype.createRetractMeshItem = function(){
+		var self = this;
+		self.doCreateMeshItem = function(){
+			self.$return = $('<div>', {'class' : 'am-plugin-toolbar-retract'});
+			var $icon = $('<i>', { 'class' : self.retractIcon });
+			$icon.appendTo(self.$return);
+			self.$return.appendTo(self.$body);
+			
+			var fixWidth = 55;
+			var bodyWidth = self.$body.width();
+			var meshViewWidth = bodyWidth-fixWidth;
+			
+			self.$meshView = $('<div>', {'class' : 'am-plugin-toolbar-meshview',style : 'width : '+meshViewWidth+'px;'});
+			self.$meshView.appendTo(self.$body);
+			
+			self.items.forEach(function(config, i) {
+				var meshClass = self.defineMeshClass(config.digit);
+				var cssClass = config.cssClass|| '';
+				var meshAttribute = {
+						'id' : config.id + '',
+						'class' : meshClass + ' ' +cssClass + ' am-plugin-toolbar-mesh'
+				};
+				var $mesh = $('<div>', meshAttribute);
+				var html = config.html || '';
+				$mesh.append(html);
+				$mesh.appendTo(self.$meshView);
+				self.$MeshItems.push($mesh);
+				var touchend = config.touch || undefined;
+				if(typeof(touchend) == 'function'){
+					$($mesh).bind('touchend', touchend);
+				}
+			});
+			
+			$.touchEvent(self.$return, self.$body, {
+				end : function(event){
+					self.closeFrame();
+				}
+			});
+			
+		}
+	}
+	
 	
 	/**
 	 * 检查网格数量
@@ -151,8 +240,46 @@
  
 	ToolBar.prototype.render = function(){
 		this.createBody();
-		this.createMeshItem();
 		this.$body.appendTo(document.body);
+		this.doCreateMeshItem();
+	}
+	
+	/**
+	 * 注册原生事件
+	 */
+	ToolBar.prototype.registerNative = function(functionName, executeFunction){
+		var self = this;
+		var mainWindow = self.findMainWindow(window);
+		mainWindow[functionName] = executeFunction;
+	}
+	
+	/**
+	 * 查找父窗口
+	 * @param window
+	 * @returns
+	 */
+	ToolBar.prototype.findMainWindow = function(window){
+		var self = this;
+		var doc  = window.document;
+		var parentWindow = doc.parentWindow;
+		var mainWindow = null;
+		if(parentWindow){
+			mainWindow = self.findMainWindow(parentWindow);
+		}else{
+			mainWindow = window;
+		}
+		return mainWindow;
+	}
+	
+	/**
+	 * 关闭Frame
+	 */
+	ToolBar.prototype.closeFrame = function(){
+		var SideFrameView =  this.SideFrameView;
+		if(SideFrameView){
+			SideFrameView.executeTrigger();
+			SideFrameView.close();
+		}
 	}
 
 	var Model = Backbone.Model.extend({
@@ -173,6 +300,17 @@
 		events: {
 			
 		},
+		
+		registerNative : function(functionName, executeFunction){
+			var toolBar = this.getAttr('toolBar');
+			toolBar.registerNative(functionName, executeFunction);
+		},
+		
+		closeFrame : function(){
+			var toolBar = this.getAttr('toolBar');
+			toolBar.closeFrame();
+		},
+		
  
 		setup: function() {
 			var self = this;
