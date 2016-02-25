@@ -11439,9 +11439,9 @@ jQuery.extend({
 			killExeculteId : false,
 			
 			/**
-			 * 按住时长参数（毫秒）, 1500 毫秒后执行
+			 * 按住时长参数（毫秒）, 5 秒后执行
 			 */
-			executeTime : 500,
+			executeTime : 300,
 			
 			/**
 			 * 计时器
@@ -11466,22 +11466,12 @@ jQuery.extend({
 			executeTimer : function(){
 				var _this = this;
 				_this.timer = 0;
- 
-				//100毫秒执行一次
-				var executeTime = 100;
+  
 				_this.execulteId = setInterval(function(){
 					console.log(_this.timer + '_this.execulteStop = %s _this.killExeculteId = %s ', _this.execulteStop, _this.killExeculteId);
 					_this.timer = _this.timer + 1;
 					
-//					if(_this.execulteStop){
-//						_this.execulteStop   = false;
-//						_this.killExeculteId = false;
-//						_this.isExecutePress = false;
-//						clearInterval(_this.execulteId);
-//					}
-					
 					if(_this.killExeculteId || _this.execulteStop){
-//						_this.isExecutePress = false;
 						clearInterval(_this.execulteId);
 					}
 					
@@ -11491,9 +11481,6 @@ jQuery.extend({
 					}
 					
 				}, 1);
-				
-				//_this.killExeculteId = true;
-				
 			},
 			
 			/**

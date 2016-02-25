@@ -610,7 +610,7 @@
 		}, {
 			execulteStart : true,
 			
-			executeTime : 250,
+			executeTime : 200,
 			
 			press : function(e){
 				self.popupMenu.show(e.target);
