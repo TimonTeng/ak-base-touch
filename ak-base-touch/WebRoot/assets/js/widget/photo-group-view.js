@@ -568,6 +568,9 @@
 	 * 
 	 */
 	PhotoGroupView.prototype.setPaginationSize = function(number){
+		if(number > this.getSize()){
+			number = this.getSize();
+		}
 		$('div', this.$pagination).text(number+'/'+this.getSize());
 	}
 	
