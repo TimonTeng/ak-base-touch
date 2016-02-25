@@ -697,11 +697,11 @@ input, button {
 	background: #fafcfd;
 	background : rgba(250,252,253,0.9);
 	width: 100%;
-	height: 60px;
-	line-height : 60px;
+	height: 45px;
+	line-height : 45px;
 	text-align: center;
 	font-weight: 400;
-	font-size: 2rem;
+	font-size: 1.8rem;
 	margin-bottom: 1px;
 	-webkit-touch-callout: none;
     -webkit-user-select: none;

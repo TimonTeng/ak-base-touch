@@ -8,7 +8,7 @@
 		
 		paths: {
 			
-			'jquery'           : 'js/lib/jquery-2.1.1',
+			'jquery'           : 'js/lib/jquery.min',
 			'swipe'  		   : 'js/lib/jquery.touchSwipe',
 			'underscore' 	   : 'js/lib/underscore',
 			'lodash'           : 'js/lib/lodash',

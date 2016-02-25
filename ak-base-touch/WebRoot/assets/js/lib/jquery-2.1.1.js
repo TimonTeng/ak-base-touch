@@ -11403,7 +11403,13 @@ if ( typeof module != 'undefined' && module.exports ) {
  * });
  */
 jQuery.extend({
- 
+	
+	/**
+	 * origin : element/class/id
+	 * range  : element/class/id
+	 * touch  : Function
+	 * press  : Object
+	 */
 	touchEvent : function(origin, range, touch, press){
 		var guess = range || document.body;
 		var startScreenX = 0;
@@ -11468,7 +11474,6 @@ jQuery.extend({
 				_this.timer = 0;
   
 				_this.execulteId = setInterval(function(){
-					console.log(_this.timer + '_this.execulteStop = %s _this.killExeculteId = %s ', _this.execulteStop, _this.killExeculteId);
 					_this.timer = _this.timer + 1;
 					
 					if(_this.killExeculteId || _this.execulteStop){
@@ -11476,7 +11481,6 @@ jQuery.extend({
 					}
 					
 					if(_this.timer >= _this.executeTime){
-						console.log(_this.timer >= _this.executeTime);
 						_this.executePress();
 					}
 					

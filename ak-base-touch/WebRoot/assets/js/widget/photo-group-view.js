@@ -90,7 +90,6 @@
 		});
 		menuUl.append(this.createCancelMenuItem());
 		menuUl.appendTo(this.$body);
-		console.log(JSON.stringify(this.menuElement));
 	}
 	
 	PopupMenu.prototype.createMenuItem = function(item, index){
@@ -124,13 +123,13 @@
 		
 		var style = {
 			width : '100%',
-			height : 310,
+			height : 240,
 			background : 'rgba(0,0,0,0.3)',
 			position : 'fixed',
 			zIndex : 9999,
 			transitionDuration : '0.2s',
 			transitionTimingFunction : 'linear',
-			transform : 'translate(0px, 310px)',
+			transform : 'translate(0px, 240px)',
 			bottom : 0
 		};
 
@@ -227,9 +226,6 @@
 			});
 		}
 		
-		
-		
-		this.display();
 	}
 	
 	
@@ -323,7 +319,6 @@
 		});
 		
 		zoomScroller.on('zoomStart', function() {
-			console.log('PhotoGroupView.prototype.createZoomScroller');
 			self.pageScroller.options.scrollX = false;
 		});
 		
