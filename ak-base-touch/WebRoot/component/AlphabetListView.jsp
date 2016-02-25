@@ -46,12 +46,16 @@
 	<script type="text/javascript">
 		
 		require(['jquery', 'amazeui', 'listView'], function($, amazeui, ListView){
- 	
+		
 			var listView = new ListView({
 			 	parentNode : '#AlphabetListView',
+			 	style : {
+			 		top : '50px'
+			 	},
 			 	type : 'alphabet',
-			 	template : 'assets/template/list-view.tpl?',
-			 	apiUrl : '${dataCtx}/ak-sw-p2pm/appClubScreenOutList.html',
+			 	//template : 'assets/template/list-view.tpl?',
+			 	displayField : 'provinceName',
+			 	apiUrl : 'http://test.uni020.com/mobile/provinceByAlphabetSeq.html',
 				page : {
 					result          : 'data',   // 服务应用返回列表集合 在json属性键值 , set load data collection in json field
 					pageNo          : 1,    // 开始页码
@@ -59,6 +63,9 @@
 					pageNoField     : 'pageNum',   // 服务应用接收pageNo 变量名
 					pageSizeField   : 'pageSize',	// 服务应用接收pageSize 变量名
 					pageTotalField  : 'lastPageNumber'    // 服务应用返回pageTotal 在json中的属性键值
+				},
+				renderAfter : function(){
+					console.log('listview renderAfter');
 				}
 			 });
 			  

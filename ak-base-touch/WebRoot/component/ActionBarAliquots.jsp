@@ -55,14 +55,11 @@
 			var actionBar = new ActionBar({
 				parentNode : '#action-bar',
 				layout : 'aliquots', //可选值 ： aliquots(等分网格)/fix(固定值)
-				defaults : {
-					width : 100
-				},
 				style : {
-					backgroundColor : '#686765',
-					color : '#FFF' 
+					backgroundColor : '#686765', //组件背景颜色
+					color : '#FFF' 				 //字体颜色
 				},
-				activeColor : '#fde393',
+				activeColor : '#fde393', //激活action显示的颜色
 				actions : [
  				   {
 					   id     		: 'demo7',
@@ -70,7 +67,7 @@
 					   type   	    : 'AplhabetSelectView',
 					   result       : 'data',
 					   displayField : 'provinceName',
-					   url          : '${dataCtx}/ak-sw-p2pm/provinceByAlphabetSeq.html',
+					   url          : 'http://test.uni020.com/mobile/provinceByAlphabetSeq.html',
 					   digit        : 3,
 					   submit 	    : function(data){
 					   		console.log(JSON.stringify(data));
@@ -84,26 +81,26 @@
 					   		root : {
 					   			displayField : 'provinceName',
 					   			result : 'data',
-					   			apiUrl : '${dataCtx}/ak-sw-p2pm/provinceByAlphabetSeq.html'
+					   			apiUrl : 'http://test.uni020.com/mobile/provinceByAlphabetSeq.html'
 					   		},
 					   		node : {
 					   			displayField : 'cityName',
 					   			result : 'data',
-					   			apiUrl : '${dataCtx}/ak-sw-p2pm/foundProvinceCity.html',
+					   			apiUrl : 'http://test.uni020.com/mobile/foundProvinceCity.html',
 					   			rootPropertys : [
 					   				{'id' : 'id'}
 					   			]
 					   		}
 					   },
-					   icon         : {
-					   		basePath   : 'http://car0.autoimg.cn',
-					   		imageField : 'image',
-							formate    : function(path){
+					   icon         : {                            //icon属性                             [非必填]
+					   		basePath   : 'http://car0.autoimg.cn', //图片域名url        [非必填]
+					   		imageField : 'image',                  //图片url在记录中的属性    [必填]
+							formate    : function(path){           //格式化url 处理函数,  [非必填]
 								path = '/logo/brand/50/130131578038733348.jpg';
 								return path;
 							}					   		
 					   },
-					   digit        : 3,
+					   digit        : 3,                           //网格大小， 【共12个网格】
 					   submit 	    : function(data){
 					   		console.log(JSON.stringify(data));
 					   }
@@ -114,7 +111,7 @@
 					   type   	    : 'AplhabetSelectView',
 					   result       : 'data',
 					   displayField : 'provinceName',
-					   url          : '${dataCtx}/ak-sw-p2pm/provinceByAlphabetSeq.html',
+					   url          : 'http://test.uni020.com/mobile/provinceByAlphabetSeq.html',
 					   digit        : 3,
 					   submit 	    : function(data){
 					   		console.log(JSON.stringify(data));

@@ -126,6 +126,11 @@ public class WidgetController extends WebController {
 		return "forward:/component/Toolbar.jsp";
 	}
 	
+	@RequestMapping(value="/PhotoGroupView.html",  method = RequestMethod.GET)
+	public String PhotoGroupView(HttpServletResponse response, HttpServletRequest request) throws IOException {
+		setDataCtx(request);
+		return "forward:/component/PhotoGroupView.jsp";
+	}
 	
 	
 	public static void main(String[] args) throws Exception{

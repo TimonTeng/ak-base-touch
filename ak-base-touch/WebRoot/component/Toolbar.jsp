@@ -27,8 +27,8 @@
 				  id     : 'pageToolbar',
 				  width  : '100%',
 				  height : '49px',
- 				  retract : 'true',
- 				  retractIcon : 'icon_return',
+ 				  retract : 'true',            //开启返回按钮
+ 				  retractIcon : 'icon_return', //返回按钮icon
 				  items : [
 				  	{
 				  		id : 'reply1',

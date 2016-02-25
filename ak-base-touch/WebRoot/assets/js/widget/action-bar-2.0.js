@@ -599,8 +599,8 @@
 		}
 		var formate    = actionElement.icon.formate;
 		var imageField = actionElement.icon.imageField;
-		var basePath   = actionElement.icon.basePath;
-		var path = dataItem[imageField];
+		var basePath   = actionElement.icon.basePath || '';
+		var path 	   = dataItem[imageField];
 		if(formate){
 			path = basePath+formate(path);
 		}

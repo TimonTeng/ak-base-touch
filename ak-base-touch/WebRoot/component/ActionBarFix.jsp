@@ -107,12 +107,12 @@
 					   		root : {
 					   			displayField : 'labelText',
 					   			result : 'data',
-					   			apiUrl : '${dataCtx}/ak-sw-p2pm/appHomeworkLabelFirstLevelList.html'
+					   			apiUrl : 'http://test.uni020.com/mobile/appHomeworkLabelFirstLevelList.html'
 					   		},
 					   		node : {
 					   			displayField : '',
 					   			result : 'data',
-					   			apiUrl : '${dataCtx}/ak-sw-p2pm/appHomeworkLabelSecondLevelList.html',
+					   			apiUrl : 'http://test.uni020.com/mobile/appHomeworkLabelSecondLevelList.html',
 					   			rootPropertys : [
 					   				{'labelId' : 'id'}
 					   			]
@@ -152,12 +152,12 @@
 					   			nodesField   : 'nodes',
 					   			displayField : 'labelText',
 					   			result : 'data',
-					   			apiUrl : '${dataCtx}/ak-sw-p2pm/appHomeworkLabelFirstLevelList.html'
+					   			apiUrl : 'http://test.uni020.com/mobile/appHomeworkLabelFirstLevelList.html'
 					   		},
 					   		node : {
 					   			displayField : 'name',
 							   	result : 'data',
-					   			apiUrl : '${dataCtx}/ak-sw-p2pm/appHomeworkLabelSecondLevelList.html',
+					   			apiUrl : 'http://test.uni020.com/mobile/appHomeworkLabelSecondLevelList.html',
 					   			rootPropertys : [
 					   				{'labelId' : 'id'}
 					   			]
@@ -173,7 +173,7 @@
 					   type   	    : 'AplhabetSelectView',
 					   result       : 'data',
 					   displayField : 'provinceName',
-					   url          : '${dataCtx}/ak-sw-p2pm/provinceByAlphabetSeq.html',
+					   url          : 'http://test.uni020.com/mobile/provinceByAlphabetSeq.html',
 					   submit 	    : function(data){
 					   		console.log(JSON.stringify(data));
 					   }
@@ -186,12 +186,12 @@
 					   		root : {
 					   			displayField : 'provinceName',
 					   			result : 'data',
-					   			apiUrl : '${dataCtx}/ak-sw-p2pm/provinceByAlphabetSeq.html'
+					   			apiUrl : 'http://test.uni020.com/mobile/provinceByAlphabetSeq.html'
 					   		},
 					   		node : {
 					   			displayField : 'cityName',
 					   			result : 'data',
-					   			apiUrl : '${dataCtx}/ak-sw-p2pm/foundProvinceCity.html',
+					   			apiUrl : 'http://test.uni020.com/mobile/foundProvinceCity.html',
 					   			rootPropertys : [
 					   				{'id' : 'id'}
 					   			]
@@ -215,7 +215,7 @@
 					   type   	    : 'AplhabetSelectView',
 					   result       : 'data',
 					   displayField : 'provinceName',
-					   url          : '${dataCtx}/ak-sw-p2pm/provinceByAlphabetSeq.html',
+					   url          : 'http://test.uni020.com/mobile/provinceByAlphabetSeq.html',
 					   submit 	    : function(data){
 					   		console.log(JSON.stringify(data));
 					   },

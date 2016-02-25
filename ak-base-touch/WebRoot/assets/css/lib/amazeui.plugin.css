@@ -681,7 +681,39 @@ input, button {
 }
 
 
+.photo-scale{
+	-webkit-animation-name : photo-scale;
+	-webkit-animation-duration:  0.5s;
+	animation-name : photo-scale;
+	animation-duration: 0.5s;
+}
 
+.popupmenu-body ul{
+	width: 100%;
+	height: 100%;
+}
+
+.popupmenu-body li{
+	background: #fafcfd;
+	background : rgba(250,252,253,0.9);
+	width: 100%;
+	height: 60px;
+	line-height : 60px;
+	text-align: center;
+	font-weight: 400;
+	font-size: 2rem;
+	margin-bottom: 1px;
+	-webkit-touch-callout: none;
+    -webkit-user-select: none;
+}
+
+.popupmenu-cancel {
+	background : rgba(232,232,233, 0.9);
+	position: absolute;
+	bottom: 0;
+	margin-bottom: 0px;
+}
+ 
 
 
 /* Keyframes
@@ -720,4 +752,14 @@ input, button {
 @-webkit-keyframes am-plugin-actionbar-tip-destroy {
 	0%   {opacity: .6;}
 	100% {opacity: 0;}
+}
+
+@keyframes photo-scale{
+  from { transform : scale(0.01)}
+  to {transform : scale(1)}
+}
+
+@-webkit-keyframes photo-scale {
+  from {-webkit-transform : scale(0.01)}
+  to {-webkit-transform : scale(1)}
 }

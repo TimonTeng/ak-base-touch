@@ -34,6 +34,7 @@
 			<li><a href="SideframeView.html">SideFrameView</a></li>
 			<li><a href="SideSelectView.html">SideSelectView</a></li>
 			<li><a href="Toolbar.html">Toolbar</a></li>
+			<li><a href="PhotoGroupView.html">PhotoGroupView</a></li>
 		</ul>
 	  </div>
 	</div>

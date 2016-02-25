@@ -16,7 +16,7 @@
 	</div>
 	<ul class="am-avg-sm-3 am-thumbnails" data-link="assignmentDetail.html?homeworkId={{id}}">
 	  {{#each mediaList}}
-		  <li><img data-original="http://img.uni020.com/{{this}}" src="http://img.uni020.com" class="am-img-responsive" data-link="assignmentDetail.html?homeworkId={{../id}}" /></li>
+		  <li><img data-original="{{this}}" src="http://img.uni020.com" class="am-img-responsive" data-link="assignmentDetail.html?homeworkId={{../id}}" /></li>
 	  {{/each}}	
 	</ul>
 </div>

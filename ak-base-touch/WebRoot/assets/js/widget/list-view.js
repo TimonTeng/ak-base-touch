@@ -17,9 +17,10 @@
 				    _        = require('lodash'),
 					Backbone = require('backbone'),
 					View     = require('backbone.view'),
-					Template = require('template');
+					Template = require('template'),
+				 AlphabetBar = require('alphabetBar');
 					
-				return factory($, _, Backbone, View, Template);
+				return factory($, _, Backbone, View, Template, AlphabetBar);
 			});
 		
 		} else if (define.cmd) {
@@ -30,9 +31,10 @@
 				    _        = require('lodash'),
 					Backbone = require('backbone'),
 					View     = require('backbone.view'),
-					Template = require('template');
+					Template = require('template'),
+				AlphabetBar = require('alphabetBar');
 				
-				return factory($, _, Backbone, View, Template);
+				return factory($, _, Backbone, View, Template, AlphabetBar);
 			});
 		}
 		
@@ -41,7 +43,7 @@
 		root.listView = factory(root.listView);
 	}
 	
-}(this, function($, _, Backbone, View, Template) {
+}(this, function($, _, Backbone, View, Template, AlphabetBar) {
 	'use strict'
 
 	var ViewAttributes = {
@@ -58,8 +60,7 @@
 		 this.apiUrl = 
 	     this.parentNode = 
 		 this.$main = this.$list = this.$pullDown = this.$pullDownLabel = this.$pullUp = this.$pullUpLabel = this.topOffset = 
-		 this.style = 
-		 this.page = this.params = this.view = null;
+		 this.style = this.page = this.params = this.view = this.displayField = null;
 		 this.iScroll = null;
 		 this.activate = true;//是否激活状态
 		 
@@ -78,9 +79,10 @@
 		 
 		 this.doLoad = true;
 		 
-		 this.delegatesEvents = {};
+		 this.alphabetBar = null;
 		 
 		 this.renderAfter = null;
+		 this.scrollEnd = null;
 		 this.loadedHtml = '';
 	}
 	
@@ -98,6 +100,7 @@
 		var type  	     = view.getAttr('type');
 		this.$main	     = $(this.parentNode);
 		this.renderAfter = view.getAttr('renderAfter');
+		this.displayField= view.getAttr('displayField');
 		this.doLoad      = view.getAttr('doLoad') === 'false' ? false : true; //开始是否加载数据 true = 加载 , false 不加载
 		
 		if(this.style){
@@ -135,6 +138,8 @@
 		this.$pullUp        = this.$main.find('#pull-up');
 		this.$pullUpLabel   = this.$main.find('#pull-up-label');
 		this.topOffset      = -this.$pullDown.outerHeight();
+		
+		this.scrollEndPolicy();
 		this.bindIScroll();
 		this.setActivate();
 		this.load();
@@ -150,6 +155,7 @@
 		this.$list      = this.$main.find('#events-list');
 		this.scrollView = this.view.getAttr('scrollView');
 		
+		this.scrollEndPolicy();
 		if(this.doLoad){
 			this.setActivate();
 			this.load();
@@ -161,13 +167,37 @@
 	 * 不存在分页功能
 	 */
 	ListView.prototype.initAlphabetMode = function(){
-		this.$warpiscroll = $("<div>", {'id' : 'warp-iscroll'});
+		this.$warpiscroll = $("<div>", {'id' : 'warp-iscroll'})
 		$(this.$warpiscroll, this.parentNode).append(this.bodyContext());
+		$(this.$warpiscroll, this.parentNode).append(this.pullUpTpl());
 		this.$warpiscroll.appendTo(this.$main);
-		this.$list      = this.$main.find('#events-list');
-		this.scrollView = this.view.getAttr('scrollView');
+		
+		this.$list          = this.$main.find('#events-list');
+		this.$pullDown      = this.$main.find('#pull-down');
+		this.$pullDownLabel = this.$main.find('#pull-down-label');
+		this.$pullUp        = this.$main.find('#pull-up');
+		this.$pullUpLabel   = this.$main.find('#pull-up-label');
+		this.topOffset      = -this.$pullDown.outerHeight();
+		
+		this.scrollEndPolicy();
+		this.bindIScroll();
 		this.setActivate();
+		this.setAlphabetBar();
+		this.loadAlphabetData();
 	}
+	
+	/**
+	 * 设置字母导航组件
+	 */
+	ListView.prototype.setAlphabetBar = function(){
+		var height = this.$main.height();
+		var alphabetBar = new AlphabetBar();
+		alphabetBar.bindTractionScroll(this.iScroll);
+		alphabetBar.bind$DataView(this.$main);
+		alphabetBar.renderTo(this.$main, height);
+		this.alphabetBar = alphabetBar;
+	}
+	
 	
 	/**
 	 * 渲染Dom之后处理入口
@@ -228,7 +258,19 @@
 	 * 字母导航模式渲染Dom之后执行
 	 */
 	ListView.prototype.renderAfterAlphabetModeHandle = function(){
-
+		var self = this;
+        self.resetLoading(self.$pullUp);
+        self.correctView();
+        
+        self.$pullUp.remove();
+ 
+		if(this.renderAfter){
+			this.renderAfter();
+		}
+		
+		this.listenerImageOnload();
+		this.imageLazyLoad();
+		
 	}
 	
 	/**
@@ -279,23 +321,19 @@
 	ListView.prototype.pullDownTpl = function(){
 		return "<div class=\"pull-action loading\" id=\"pull-down\">"+
 			        "<span class=\"am-icon-arrow-down pull-label\" id=\"pull-down-label\">下拉刷新</span>"+
-			        "<span class=\"am-icon-spinner am-icon-spin\"></span>"+
+			        "<span class=\"am-icon-spinner am-icon-spin\"></span><span>正在加载内容</span>"+
 	           "</div>";
 	}
 	
 	ListView.prototype.pullUpTpl = function(){
 		return "<div class=\"pull-action loading\" id=\"pull-up\">"+
 		"<span class=\"am-icon-arrow-down pull-label\" id=\"pull-up-label\">上拉加载更多</span>"+
-		"<span class=\"am-icon-spinner am-icon-spin\"></span>"+
+		"<span class=\"am-icon-spinner am-icon-spin\"></span><span>正在加载内容</span>"+
 		"</div>";
 	}
 	
 	ListView.prototype.bodyContext = function(){
-		return "<ul class=\"am-list\" id=\"events-list\">"+
-			        "<li class=\"am-list-item-desced\">"+
-			        	"<div class=\"am-list-item-text\">正在加载内容...</div>"+
-			        "</li>"+
-	           "</ul>";
+		return "<ul class=\"am-list\" id=\"events-list\"></ul>";
 	}
 	
 	ListView.prototype.setLoading = function($el) {
@@ -309,6 +347,32 @@
 			$el.removeClass('loading');
 	};
 	
+	
+	/**
+	 * scrollEndPolicy
+	 */
+	ListView.prototype.scrollEndPolicy = function(){
+		var self = this;
+		switch(self.type){
+			case ViewAttributes.Type.Waterfall : self.scrollEnd = function(){
+	    	    //pull down
+	    		if(this.directionY === -1){
+	    			self.handleSwipeDown();
+	    		}
+	    		//pull up
+	    		if(this.directionY === 1){
+	    			self.handleSwipeUp();
+	    		}
+	    		
+	    		$(self.parentNode).trigger('scroll');
+	    		
+			}; break;
+			case ViewAttributes.Type.Alphabet : self.scrollEnd = null; break;
+			case ViewAttributes.Type.Pivot : self.scrollEnd = null; break;
+		}
+	}
+	
+	
 	/**
 	 * console.log("scrollStart y:{%s} startY:{%s} maxScrollY:{%s} absStartY:{%s} distY:{%s} directionY:{%s} pointY:{%s}", this.y,this.startY,this.maxScrollY,this.absStartY,this.distY,this.directionY,this.pointY);
 	 */
@@ -318,24 +382,19 @@
 		}
 		
 		var self = this;
+		
+		if(this.iScroll){
+			this.iScroll.destroy();
+		}
+		
         var iscroll = this.iScroll = new IScroll(self.parentNode, {
         	click : true
 		});
+        
+        if(self.scrollEnd){
+        	iscroll.on('scrollEnd', self.scrollEnd);
+        }
   	    
-  	    iscroll.on('scrollEnd', function() {
-    	    //pull down
-    		if(this.directionY === -1){
-    			self.handleSwipeDown();
-    		}
-    		//pull up
-    		if(this.directionY === 1){
-    			self.handleSwipeUp();
-    		}
-    		
-    		$(self.parentNode).trigger('scroll');
-    		
-        });
- 
 	}
 	
 	
@@ -364,24 +423,15 @@
 	}
 	
 	/**
-	 * 创建数据加载模型
+	 * 素材元素渲染
 	 */
-	ListView.prototype.createLoadDataMode = function(){
-		var self = this;
-		switch(this.type){
-			case ViewAttributes.Type.Waterfall : (function(){
-				
-				
-			})();
-			case ViewAttributes.Type.Pivot : (function(){
-				
-				
-			})();
-			case ViewAttributes.Type.Alphabet : (function(){
-				
-				
-			})();
-			default : return null;
+	ListView.prototype.renderMaterialElement = function(type, record){
+		switch(type){
+			case 0 : return $('<li>', {'data-object' : JSON.stringify(record)});
+			case 3 : return $("<div>",{ 'id' : 'warp_alphabet_'+record.code, 'class' : 'warp_alphabet_mark'});
+			case 4 : return $("<div class='warp_alphabet_title'><li><h2>"+record.code+"</h2></li></div>");
+			case 5 : return $("<ul>",{ 'id' : 'warp_u_'+record.code, 'class' : 'warp_context'});
+			case 6 : return $("<ul>",{ 'id' : 'warp_u_'+record.code, 'class' : 'warp_context'});
 		}
 	}
  
@@ -393,8 +443,51 @@
 		var self = this;
         $.getJSON(self.getUrl()).then(function(data) {
         	self.page.pageTotal = data[self.page.pageTotalField];
-            var html = self.renderList(data[self.page.result]);
-            self.$list.html(html);
+        	self.createLoadedPageHtmlBox();
+        	self.loadedHtml.html(self.renderList(data[self.page.result]));
+            self.loadedHtml.appendTo(self.$list);
+            self.renderAfterHandle();
+            self.correctView();
+        }, function() {
+            console.log('Error...')
+        });
+	}
+	
+	/**
+	 * 
+	 */
+	ListView.prototype.loadAlphabetData = function(){
+		var self = this;
+        $.getJSON(self.getUrl()).then(function(data) {
+        	var store = data[self.page.result];
+        	
+        	store.forEach(function(record, i) {
+				var $codeWrap  = self.renderMaterialElement(3, record);
+				var $codeTag   = self.renderMaterialElement(4, record);
+				var $codeTagUl = self.renderMaterialElement(5, record);
+				var data = record.data;
+				if(data){
+					data.forEach(function(dataItem, i) {
+						var $dataNode = self.renderMaterialElement(0, dataItem);
+						if(self.template){
+							var html = self.renderList(dataItem);
+							$dataNode.html(html);
+						}else{
+							$dataNode.text(dataItem[self.displayField]);
+						}
+						$dataNode.appendTo($codeTagUl);
+					});
+				}
+				$codeTagUl.appendTo($codeTag);
+				$codeTag.appendTo($codeWrap);
+				$codeWrap.appendTo(self.$list);
+			});
+        	
+//        	self.page.pageTotal = data[self.page.pageTotalField];
+//        	self.createLoadedPageHtmlBox();
+//        	self.loadedHtml.html(self.renderList(data[self.page.result]));
+//          self.loadedHtml.appendTo(self.$list);
+        	
             self.renderAfterHandle();
             self.correctView();
         }, function() {
@@ -423,6 +516,8 @@
 		this.$pullUp        = this.$main.find('#pull-up');
 		this.$pullUpLabel = this.$main.find('#pull-up-label');
 		this.topOffset      = -this.$pullDown.outerHeight();
+		
+		this.scrollEndPolicy();
 		this.bindIScroll();
 		this.load();
 	}

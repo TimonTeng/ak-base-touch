@@ -63,17 +63,15 @@
  			var pivolist1 = new ListView({
 			 	parentNode : '#pivolist1',
 			 	type : 'pivot',
-			 	template : 'assets/template/list-view.tpl?v='+new Date(),
-			 	apiUrl : '${dataCtx}/ak-sw-p2pm/appClubHotestListMessage.html',
-			 	params : {
-				
-			 	},
+			 	template : 'assets/template/demo/assignment-list.tpl?v='+new Date(),
+			 	apiUrl : 'http://test.uni020.com/mobile/appHomeworkListMessage.html',
+			 	doLoad : 'true', //初始化ListView 时是否加载数据 ,默认为true, true：加载， false:不加载 
 				page : {
 					result          : 'form',   // 服务应用返回列表集合 在json属性键值 , set load data collection in json field
 					pageNo          : 1,    // 开始页码
 					pageSize        : 20, // 每页记录数量
-					pageNoField     : 'pageNum',   // 服务应用接收pageNo 变量名
-					pageSizeField   : 'pageSize',	// 服务应用接收pageSize 变量名
+					pageNoField     : 'paramForm.pageNum',   // 服务应用接收pageNo 变量名
+					pageSizeField   : 'paramForm.pageSize',	// 服务应用接收pageSize 变量名
 					pageTotalField  : 'lastPageNumber'    // 服务应用返回pageTotal 在json中的属性键值
 				},
 				scrollView : scrollView
@@ -83,17 +81,15 @@
 			var pivolist2 = new ListView({
 			 	parentNode : '#pivolist2',
 			 	type : 'pivot',
-			 	template : 'assets/template/list-view.tpl?v='+new Date(),
-			 	apiUrl : '${dataCtx}/ak-sw-p2pm/appClubHotestListMessage.html',
-			 	params : {
-				
-			 	},
+			 	template : 'assets/template/demo/assignment-list.tpl?v='+new Date(),
+			 	apiUrl : 'http://test.uni020.com/mobile/appHomeworkListMessage.html',
+			 	doLoad : 'true', //初始化ListView 时是否加载数据 ,默认为true, true：加载， false:不加载 
 				page : {
 					result          : 'form',   // 服务应用返回列表集合 在json属性键值 , set load data collection in json field
 					pageNo          : 1,    // 开始页码
 					pageSize        : 20, // 每页记录数量
-					pageNoField     : 'pageNum',   // 服务应用接收pageNo 变量名
-					pageSizeField   : 'pageSize',	// 服务应用接收pageSize 变量名
+					pageNoField     : 'paramForm.pageNum',   // 服务应用接收pageNo 变量名
+					pageSizeField   : 'paramForm.pageSize',	// 服务应用接收pageSize 变量名
 					pageTotalField  : 'lastPageNumber'    // 服务应用返回pageTotal 在json中的属性键值
 				},
 				scrollView : scrollView

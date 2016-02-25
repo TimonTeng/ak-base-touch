@@ -8,7 +8,7 @@
 		
 		paths: {
 			
-			'jquery'           : 'js/lib/jquery.min',
+			'jquery'           : 'js/lib/jquery-2.1.1',
 			'swipe'  		   : 'js/lib/jquery.touchSwipe',
 			'underscore' 	   : 'js/lib/underscore',
 			'lodash'           : 'js/lib/lodash',
@@ -30,7 +30,8 @@
 		    'toolbar'   	   : 'js/widget/toolbar',
 		    'contextView'	   : 'js/widget/context-view',
 		    'headerNavigate'   : 'js/widget/header-navigate',
-		    'zoneSelector'     : 'js/widget/zone-selector'
+		    'zoneSelector'     : 'js/widget/zone-selector',
+		    'photoGroupView'   : 'js/widget/photo-group-view'
 		},
 		
 		shim: {
@@ -47,7 +48,7 @@
 	        },
 	        
 			'listView' : {
-				deps: ['underscore', 'lodash', 'handlebars', 'backbone', 'backbone.view','swipe']
+				deps: ['underscore', 'lodash', 'handlebars', 'backbone', 'backbone.view', 'swipe', 'alphabetBar']
 			},
 			'contextView' : {
 				deps: ['underscore', 'lodash', 'handlebars', 'backbone', 'backbone.view','swipe']
@@ -83,6 +84,10 @@
 			
 			'toolbar' : {
 				deps: ['underscore', 'lodash', 'handlebars', 'backbone', 'backbone.view','swipe']
+			},
+			
+			'photoGroupView' : {
+				deps: ['underscore', 'lodash', 'handlebars', 'backbone', 'backbone.view', 'swipe']
 			}
 		},
 		
