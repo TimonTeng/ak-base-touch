@@ -63,6 +63,7 @@
 		 this.style = this.page = this.params = this.view = this.displayField = null;
 		 this.iScroll = null;
 		 this.activate = true;//是否激活状态
+		 this.template = null;
 		 
 		 this.page = {
 			result          : '',   // 服务应用返回列表集合 在json属性键值 , set load data collection in json field
@@ -102,6 +103,7 @@
 		this.renderAfter = view.getAttr('renderAfter');
 		this.displayField= view.getAttr('displayField');
 		this.doLoad      = view.getAttr('doLoad') === 'false' ? false : true; //开始是否加载数据 true = 加载 , false 不加载
+		this.template    = view.getAttr('template');
 		
 		if(this.style){
 			this.$main.css(this.style);
@@ -417,8 +419,7 @@
 	 * 渲染内容
 	 */
 	ListView.prototype.renderList = function(data){
-		var path = this.view.getAttr('template');
-		var template = Template.compile(path, data);
+		var template = Template.compile(this.template, data);
 		return template;
 	}
 	
@@ -482,11 +483,6 @@
 				$codeTag.appendTo($codeWrap);
 				$codeWrap.appendTo(self.$list);
 			});
-        	
-//        	self.page.pageTotal = data[self.page.pageTotalField];
-//        	self.createLoadedPageHtmlBox();
-//        	self.loadedHtml.html(self.renderList(data[self.page.result]));
-//          self.loadedHtml.appendTo(self.$list);
         	
             self.renderAfterHandle();
             self.correctView();
@@ -576,7 +572,7 @@
 			return;
 		}
 		var self = this;
-        document.body.style.position = 'fixed';
+        document.body.style.position = 'absolute';
         var size = 5;
         var intervalId = setInterval(function() {
 			self.refresh();

@@ -117,6 +117,7 @@
 		var self = this;
 		
 		self.iscroll = new IScroll(this.parentNode, {
+			    setp: 5,
 		      click : true
 	    });
  
@@ -166,7 +167,7 @@
 	 */
 	ScrollView.prototype.correctView = function(){
 		var self = this;
-        document.body.style.position = 'fixed';
+        document.body.style.position = 'absolute';
         var size = 5;
         var intervalId = setInterval(function() {
         	self.iscroll.refresh();

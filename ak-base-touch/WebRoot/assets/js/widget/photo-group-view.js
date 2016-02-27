@@ -54,6 +54,8 @@
 		
 		menu : [],
 		
+		menuSize : 0,
+		
 		menuElement : {}
 	}
 	
@@ -62,7 +64,8 @@
 	 * @param view
 	 */
 	PopupMenu.prototype.initConfiguration = function(view){
-		this.menu = view.getAttr('menu');
+		this.menu     = view.getAttr('menu');
+		this.menuSize = this.menu ? this.menu.length : 0;
 		this.initMenu();
 	}
 	
@@ -74,10 +77,7 @@
 		this.createMark();
 		this.createMenu();
 	}
-	
-	
-	
-	
+ 
 	/**
 	 * 
 	 */
@@ -111,6 +111,15 @@
 		return cancelItem;
 	}
 	
+	/**
+	 * 
+	 */
+	PopupMenu.prototype.initBodyHeight = function(){
+		var defaultHeight = 65;
+		var menuItemHeight = 45;
+		var bodyHeight = defaultHeight+(menuItemHeight*this.menuSize);
+		return bodyHeight;
+	}
 	
 	/**
 	 * 
@@ -121,9 +130,11 @@
 			'class' : 'popupmenu-body'
 		});
 		
+		var bodyHeight = this.initBodyHeight();
+		
 		var style = {
 			width : '100%',
-			height : 240,
+			height : bodyHeight,
 			background : 'rgba(0,0,0,0.3)',
 			position : 'fixed',
 			zIndex : 9999,
@@ -230,7 +241,6 @@
 	
 	
 	/**
-	 * 隐藏
 	 */
 	PopupMenu.prototype.bodyAnimationHide = function(){
 		var self = this;
@@ -244,19 +254,179 @@
 	}
 	
 	/**
-	 * 
 	 */
 	PopupMenu.prototype.bodyAnimationShow = function(){
 		var self = this;
 		var y = this.$body.height();
 		var transform = { 
-				'transform' : 'translate(0px, 0px)'
+			'transform' : 'translate(0px, 0px)'
 		};
 		setTimeout(function() {
 			self.$body.css(transform);
 		}, 100);
 	}
 	
+	PopupMenu.prototype.destory = function(){
+		this.$body.remove();
+		this.$mark.remove();
+	}
+	
+	/**
+	 * 
+	 */
+	var Plugins = Plugins || function(){
+		this.contextField = null;
+		this.$body = this.$context = this.$tools = null;
+	}
+	
+	/**
+	 * 
+	 */
+	Plugins.prototype = {
+		photoGroupView : null,
+		items : [],
+		meshItem : {},
+	}
+	
+	/**
+	 * 
+	 */
+	Plugins.prototype.initConfiguration = function(view, photoGroupView){
+		this.photoGroupView = photoGroupView;
+		this.items = view.getAttr('plugins').items || null;
+		this.contextField = view.getAttr('plugins').contextField || null;
+		this.createBody();
+		this.createContext();
+		this.createTools();
+		this.createMeshItem();
+	}
+	
+	/**
+	 * 
+	 */
+	Plugins.prototype.createBody = function(){
+		this.$body = $('<div>', {id : 'plugins-body'});
+		var style = {
+			position : 'absolute',
+			zIndex : 4999,
+			width : '100%',
+			height : 'auto',
+			background : 'rgba(0,0,0,0.3)',
+			fontSize : '1.3rem',
+			fontWeight : 500,
+			color : 'white',
+			bottom : 0
+		};
+		this.$body.css(style);
+	}
+	
+	/**
+	 * 
+	 */
+	Plugins.prototype.createContext = function(){
+		this.$context = $('<div>', { id : 'plugins-context' , 'class' : 'plugins-context'});
+	}
+	
+	/**
+	 * 
+	 */
+	Plugins.prototype.createTools = function(){
+		this.$tools = $('<div>', { id : 'plugins-tools' , 'class' : 'plugins-tools am-g'});
+	}
+	
+	
+	/**
+	 * 
+	 */
+	Plugins.prototype.changeContext = function(object){
+		this.$context.text(object[this.contextField]);
+	}
+	
+	
+	/**
+	 * 
+	 */
+	Plugins.prototype.bindTouchEvent = function(){
+		var self = this;
+		for(var id in this.meshItem){
+			if(this.meshItem[id].touch){
+				this.meshItem[id].attr('touch', true);
+			}
+		}
+		
+		$('[touch]', this.$tools).unbind('touchend').bind('touchend', function(event){
+			var item = self.meshItem[event.target.getAttribute('id')];
+			var currentPhotoEl = self.photoGroupView.getCurrentPhotoEl();
+			item.touch(event, currentPhotoEl.object);
+		});
+	}	
+	
+	/**
+	 * 
+	 */
+	Plugins.prototype.createMeshItem = function(){
+		var self = this;
+		this.items.forEach(function(config, i) {
+			var meshClass = self.defineMeshClass(config.digit);
+			var cssClass = config.cssClass|| '';
+			var meshAttribute = {
+					'id' : config.id + '',
+					'class' : meshClass + ' ' +cssClass + ' am-plugin-toolbar-mesh'
+			};
+			var $mesh = $('<div>', meshAttribute);
+			var html = config.html || '';
+			$mesh.append(html);
+			$mesh.appendTo(self.$tools);
+			var touch = config.touch || undefined;
+			if(typeof(touch) == 'function'){
+				$mesh.touch = touch;
+			}
+			var render = config.render || undefined;
+			if(typeof(render) == 'function'){
+				$mesh.render = render;
+			}
+			self.meshItem[config.id] = $mesh;
+		});
+	}
+	
+	/**
+	 * 定义网格
+	 * @param digit
+	 */
+	Plugins.prototype.defineMeshClass = function(digit){
+		if(digit >= 1 && digit <= 12){
+			return 'am-u-sm-'+digit;
+		}else{
+			return 'am-u-sm-12';
+		}
+	}
+	
+	
+	/**
+	 * 
+	 */
+	Plugins.prototype.renderTo = function(element){
+		this.$context.appendTo(this.$body);
+		this.$tools.appendTo(this.$body);
+		this.$body.appendTo(element);
+		this.bindTouchEvent();
+	}
+	
+	
+	Plugins.prototype.destory = function(){
+		this.$body.remove();
+	}
+	
+	/**
+	 * 
+	 */
+	Plugins.prototype.executeItemRender = function(object){
+		for(var id in this.meshItem){
+			if(this.meshItem[id].render){
+				this.meshItem[id].render(this.meshItem[id], object);
+			}
+		}
+	}
 
 	var PhotoGroupView = PhotoGroupView || function(){
 		this.parentNode = null;
@@ -270,8 +440,8 @@
 		this.$clonePhotoEl = null;
 		this.$currentPhotoEl = null;
 		
-		this.popupMenu = new PopupMenu();
-		
+		this.popupMenu = null;
+		this.plugins = null;
 	}
 	
 	PhotoGroupView.prototype = {
@@ -300,7 +470,16 @@
 	 */
 	PhotoGroupView.prototype.initConfiguration = function(view){
 		this.parentNode = view.getAttr('parentNode');
-		this.popupMenu.initConfiguration(view);
+		var menu    = view.getAttr('menu');
+		var plugins = view.getAttr('plugins');
+		if(menu){
+			this.popupMenu = new PopupMenu();
+			this.popupMenu.initConfiguration(view);
+		}
+		if(plugins){
+			this.plugins = new Plugins();
+			this.plugins.initConfiguration(view, this);
+		}
 	}
 	
 	
@@ -340,7 +519,7 @@
 			top : 10,
 			width : '100%',
 			height : 30,
-			zIndex : 99
+			zIndex : 3999
 		}; 
 		
 		var paginationLayout = $('<div>', {id : 'pagination-layout'});
@@ -385,7 +564,7 @@
 		this.pageScroller = new IScroll('#photo-group-wrapper', {
 			scrollX: true,
 			scrollY: false,
-			momentum: true,
+			momentum: false,
 			snap: true,
 			snapSpeed: 500,
 			keyBindings: true
@@ -399,10 +578,20 @@
 		this.pageScroller.on('scrollEnd', function() {
 			var pageNum = self.getPageNumber();
 			self.setPaginationSize(pageNum);
-			self.$currentPhotoEl = self.photoElementMap[pageNum];
+			self.$currentPhotoEl = self.photoElementMap[pageNum-1];
+			self.changePluginsData();
 		});
 		
 	}
+	
+	
+	PhotoGroupView.prototype.changePluginsData = function(){
+		if(this.plugins && this.$currentPhotoEl.object){
+			this.plugins.changeContext(this.$currentPhotoEl.object);
+			this.plugins.executeItemRender(this.$currentPhotoEl.object);
+		}
+	}
+	
 	
 	/**
 	 * 
@@ -444,6 +633,13 @@
 	}
 	
 	/**
+	 * 
+	 */
+	PhotoGroupView.prototype.getCurrentPhotoEl = function(){
+		return this.$currentPhotoEl;
+	}
+	
+	/**
 	 * 收集组里的图片元素
 	 */
 	PhotoGroupView.prototype.collectPhotoElements = function(groupEl){
@@ -452,11 +648,34 @@
 		this.photoElementsSize = photoElements.length;
 		photoElements.each(function(index){
 			var cloneNode = this.cloneNode();
+			cloneNode.removeAttribute('class');
+			cloneNode.removeAttribute('style');
+			cloneNode.removeAttribute('id');
 			cloneNode.setAttribute('pageNum', index);
-			self.photoElementMap[index] = cloneNode;
-			if(self.$targetPhotoEl.src === cloneNode.src){
-				self.$clonePhotoEl = cloneNode;
+			
+			var object = cloneNode.getAttribute('data-object');
+			if(object){
+				cloneNode.object = eval("("+object+")");
 			}
+			
+			var originalSrc = cloneNode.getAttribute('photo-original');
+			
+			self.photoElementMap[index] = cloneNode;
+			
+			if(originalSrc){
+				cloneNode.src = originalSrc;
+				var targetOriginalSrc = self.$targetPhotoEl.getAttribute('photo-original');
+				if(targetOriginalSrc === originalSrc){
+					self.$clonePhotoEl = cloneNode;
+					self.$currentPhotoEl = cloneNode;
+				}
+			}else{
+				if(self.$targetPhotoEl.src === cloneNode.src){
+					self.$clonePhotoEl = cloneNode;
+					self.$currentPhotoEl = cloneNode;
+				}
+			}
+ 
 		});
 		return photoElements;
 	}
@@ -474,7 +693,7 @@
 			top : '0px',
 			bottom : '0px',
 			width : '100%',
-			zIndex : 99,
+			zIndex : 3999,
 			background : '#000'
 		};
 		this.$viewport.css(style);
@@ -590,6 +809,8 @@
 			this.pageScroller.destroy();
 			this.pageScroller = null;
 		}
+		
+		this.popupMenu.destory();
 	}
 	
 	/**
@@ -617,7 +838,6 @@
 			this.createZoomScroller('photo'+index);
 		}
 		
-		
 		this.showScalePhoto();
 	}
 	
@@ -625,6 +845,19 @@
 		var pageNum = this.$clonePhotoEl.getAttribute('pageNum');
 		this.pageScroller.goToPage(parseInt(pageNum), 0, 1);
 		$(this.$clonePhotoEl).addClass('photo-scale');
+		this.changePluginsData();
+	}
+	
+	/**
+	 * 
+	 */
+	PhotoGroupView.prototype.appendToDocument = function(){
+		this.$scroller.appendTo(this.$wrapper);
+		this.$wrapper.appendTo(this.$viewport);
+		this.$viewport.appendTo(document.body);
+		if(this.plugins){
+			this.plugins.renderTo(this.$viewport);
+		}
 	}
 	
 	/**
@@ -644,10 +877,7 @@
 		
 		this.createPagination();
 		this.setPaginationSize(1);
- 
-		this.$scroller.appendTo(this.$wrapper);
-		this.$wrapper.appendTo(this.$viewport);
-		this.$viewport.appendTo(document.body);
+		this.appendToDocument();
 		this.createPhotoElements();
 		this.display();
 	}
@@ -682,6 +912,12 @@
 			var self = this;
 			var photoGroupView = self.getAttr('photoGroupView');
 			photoGroupView.show(photoEl);
+		},
+		
+		destory : function(){
+			var self = this;
+			var photoGroupView = self.getAttr('photoGroupView');
+			photoGroupView.destory();
 		}
 		
 	});

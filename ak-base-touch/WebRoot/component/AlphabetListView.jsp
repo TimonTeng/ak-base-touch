@@ -30,7 +30,7 @@
 		</h1>
 
 		<div class="am-header-right am-header-nav">
-			<a href="#right-link" class="" onclick="listView.reload();"> <i
+			<a href="#right-link" class="" onclick="sideFrameView.openUrl('AlphabetListView.html', 'B');"> <i
 				class="am-header-icon am-icon-bars"></i>
 			</a>
 		</div>
@@ -44,8 +44,21 @@
 	<script src="${ctx}/assets/js/lib/require.js"></script>
 	<script src="${ctx}/assets/js/src/config.js"></script>
 	<script type="text/javascript">
+		var sideFrameView = null;
+		require(['jquery', 'amazeui', 'listView', 'sideFrameView'], function($, amazeui, ListView, SideFrameView){
 		
-		require(['jquery', 'amazeui', 'listView'], function($, amazeui, ListView){
+		
+		 	sideFrameView = new SideFrameView({
+		 		url : '${ctx}/SideframeView.html' 
+		 	});
+		 	
+		 	sideFrameView.registerCallback('A', function(){
+		 		alert('A');
+		 	});
+ 
+		 	sideFrameView.registerCallback('B', function(){
+		 		alert('B');
+		 	});
 		
 			var listView = new ListView({
 			 	parentNode : '#AlphabetListView',

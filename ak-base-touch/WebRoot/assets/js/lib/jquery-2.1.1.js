@@ -11520,6 +11520,11 @@ jQuery.extend({
 				start(e);
 			}
 			
+			var toucheLength = e.originalEvent.targetTouches.length;
+			if(toucheLength > 1){
+				return;
+			}
+			
 			if(onPress.execulteStart){
 				onPress.executeTimer();
 			}
